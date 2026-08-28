@@ -287,9 +287,9 @@ const {useState,useEffect,useMemo,useRef} = React;
 /* ============================================================
    CONFIG
    ============================================================ */
-const SUPABASE_URL = "";       // <-- paste Supabase Project URL
-const SUPABASE_ANON_KEY = "";  // <-- paste Supabase anon public key
-const ADMIN_PASSWORD = "upaa2026";  // <-- CHANGE THIS
+const SUPABASE_URL = "https://sfqiltmndauooheirznw.supabase.co";       // <-- paste Supabase Project URL
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmcWlsdG1uZGF1b29oZWlyem53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4ODMxMjQsImV4cCI6MjEwMzQ1OTEyNH0.UtCHhzz45XNWEnokd9bEB-XoiYAi9ncdNOGRLXPZkfQ";  // <-- paste Supabase anon public key
+const ADMIN_PASSWORD = "upaafall2026";  // <-- CHANGE THIS
 
 const LIVE = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 const sb = LIVE ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
