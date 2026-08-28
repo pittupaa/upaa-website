@@ -77,6 +77,20 @@
   .ledger-row:last-of-type{border-bottom:none}
   .ledger-row span:first-child{color:var(--ink-soft)}
   .ledger-row span:last-child{font-family:'JetBrains Mono',monospace;font-weight:500;color:var(--navy);text-align:right}
+  .ledger-next{display:block;width:100%;text-align:left;font:inherit;cursor:pointer;
+    background:rgba(255,184,28,.10);border:none;border-top:1px solid var(--line);
+    padding:15px 18px 17px;transition:.15s;border-radius:0 0 13px 13px}
+  .ledger-next:hover{background:rgba(255,184,28,.20)}
+  .ledger-next .lbl{display:flex;align-items:center;justify-content:space-between;
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:5px}
+  .ledger-next .when{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);display:block}
+  .ledger-next .what{font-family:'Fraunces',serif;font-size:15.5px;font-weight:600;color:var(--navy);
+    line-height:1.25;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden}
+  .ledger-next .arrow{font-size:13px;color:var(--gold-deep)}
+  .ledger-tba{border-top:1px solid var(--line);padding:15px 18px 17px;border-radius:0 0 13px 13px;
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft)}
   .ledger-foot{background:var(--paper-2);padding:12px 18px;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--navy)}
 
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -402,10 +416,18 @@ const {useState,useEffect,useMemo,useRef} = React;
    ============================================================ */
 const SUPABASE_URL = "https://sfqiltmndauooheirznw.supabase.co";       // <-- paste Supabase Project URL
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmcWlsdG1uZGF1b29oZWlyem53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4ODMxMjQsImV4cCI6MjEwMzQ1OTEyNH0.UtCHhzz45XNWEnokd9bEB-XoiYAi9ncdNOGRLXPZkfQ";  // <-- paste Supabase anon public key
-const ADMIN_PASSWORD = "upaafall2026";  // <-- CHANGE THIS
+/* Only used in demo mode (no Supabase keys). Once connected, the admin panel
+   uses real Supabase Auth accounts and this value is ignored entirely. */
+const DEMO_PASSWORD = "upaafall2026";
 
 const LIVE = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
-const sb = LIVE ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+/* detectSessionInUrl is off deliberately: this site routes on the URL hash
+   (#admin, #subscribe) and Supabase's redirect flows also return tokens in the
+   hash. Password sign-in never puts tokens in the URL, so turning it off costs
+   nothing and keeps the two from colliding. */
+const sb = LIVE ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth:{ detectSessionInUrl:false, persistSession:true, autoRefreshToken:true }
+}) : null;
 
 const CLUB = {
   meetDay:"Wednesdays", meetTime:"7:00 PM", meetRoom:"2500 Sennott Square",
@@ -482,12 +504,33 @@ function payload(row){
   return out;
 }
 
-/* ---- data hook ---- */
-function useTable(table, seed, orderBy){
-  const [rows,setRows]=useState(seed);
-  const [err,setErr]=useState("");
+/* ---- auth ----
+   Email + password, with email confirmation switched OFF in Supabase, so no
+   auth emails are ever sent (the built-in sender is capped at 2/hour). Accounts
+   are created by hand in the dashboard — there are seven of them. */
+function useAuth(){
+  const [session,setSession]=useState(null);
+  const [ready,setReady]=useState(!LIVE);
   useEffect(()=>{
     if(!LIVE) return;
+    let alive=true;
+    sb.auth.getSession().then(({data})=>{
+      if(!alive) return;
+      setSession(data.session||null); setReady(true);
+    });
+    const {data}=sb.auth.onAuthStateChange((_e,s)=>{ if(alive) setSession(s); });
+    return ()=>{ alive=false; data?.subscription?.unsubscribe(); };
+  },[]);
+  return {session,ready};
+}
+
+/* ---- data hook ---- */
+function useTable(table, seed, orderBy, opts){
+  const [rows,setRows]=useState(seed);
+  const [err,setErr]=useState("");
+  const skipFetch=opts&&opts.fetch===false;
+  useEffect(()=>{
+    if(!LIVE||skipFetch) return;
     let alive=true;
     (async()=>{
       try{
@@ -1188,7 +1231,9 @@ function Public({toAdmin}){
   const events=useTable("events",SEED.events,"date");
   const sponsors=useTable("sponsors",SEED.sponsors,"id");
   const recaps=useTable("recaps",SEED.recaps,"date");
-  const signups=useTable("signups",SEED.signups,"id");
+  /* fetch:false — the mailing list is readable only when signed in, so the
+     public site never tries to SELECT it. It only ever inserts. */
+  const signups=useTable("signups",SEED.signups,"id",{fetch:false});
   const stats=useStats(events,sponsors);
   const nav=(p)=>{setPage(p);setMenu(false);window.scrollTo(0,0)};
   const links=[["home","Home"],["about","About"],["board","E-Board"],["events","Events"],["recaps","Recaps"],["sponsors","Recruiters"]];
@@ -1250,10 +1295,14 @@ function Home({nav,events,recaps,stats}){
         <div className="ledger">
           <div className="ledger-top"><span>UPAA · {stats.term.toUpperCase()}</span><span className="dot"></span></div>
           <div className="ledger-row"><span>Events this semester</span><span>{stats.meetings}</span></div>
-          <div className="ledger-row"><span>Held so far</span><span>{stats.held}</span></div>
-          <div className="ledger-row"><span>Next event</span><span>{nextEv?fmtDate(nextEv.date).mon+" "+fmtDate(nextEv.date).day:"TBA"}</span></div>
-          <div className="ledger-row"><span>Dues</span><span>{CLUB.dues}/sem</span></div>
-          <div className="ledger-foot"><span>Career value</span><span>▲ compounding</span></div>
+          {nextEv
+            ? <button className="ledger-next" onClick={()=>nav("events")}
+                title={"See details for "+nextEv.title}>
+                <span className="lbl">Next up <span className="arrow">→</span></span>
+                <span className="when">{fmtDate(nextEv.date).short} · {fmtTime(nextEv.time)}</span>
+                <span className="what">{nextEv.title}</span>
+              </button>
+            : <div className="ledger-tba">Next event — to be announced</div>}
         </div>
       </div></main>
     </section>
@@ -1621,10 +1670,58 @@ function SubscribePage({signups,toSite}){
   </div></div>);
 }
 
+/* Sign-in screen. Real Supabase accounts when connected; a shared password
+   only in demo mode, where there's no auth server to talk to. */
+function Login({toSite,onDemo}){
+  const [email,setEmail]=useState("");
+  const [pw,setPw]=useState("");
+  const [err,setErr]=useState("");
+  const [busy,setBusy]=useState(false);
+
+  const submit=async()=>{
+    setErr("");
+    if(!LIVE){
+      pw===DEMO_PASSWORD ? onDemo() : setErr("Incorrect password.");
+      return;
+    }
+    if(!email.trim()||!pw){ setErr("Enter your email and password."); return; }
+    setBusy(true);
+    const {error}=await sb.auth.signInWithPassword({email:email.trim(),password:pw});
+    setBusy(false);
+    if(error){
+      setErr(/invalid login/i.test(error.message)
+        ? "That email and password don't match. Check for typos, or ask Conner to reset it."
+        : error.message);
+    }
+  };
+
+  return(<div className="admin-wrap"><div className="login-box">
+    <h2 className="serif">E-Board Login</h2>
+    <p>{LIVE
+      ? "Sign in with the account you were given. Each E-Board member has their own."
+      : "Demo mode — enter the shared password to try the panel."}</p>
+    {LIVE&&<div className="field"><label htmlFor="ad-e">Email</label>
+      <input id="ad-e" type="email" autoComplete="username" inputMode="email" autoCapitalize="off"
+        value={email} autoFocus onChange={e=>{setEmail(e.target.value);setErr("")}}
+        onKeyDown={e=>e.key==="Enter"&&submit()} placeholder="abc123@pitt.edu"/></div>}
+    <div className="field"><label htmlFor="ad-p">Password</label>
+      <input id="ad-p" type="password" autoComplete="current-password"
+        value={pw} autoFocus={!LIVE} onChange={e=>{setPw(e.target.value);setErr("")}}
+        onKeyDown={e=>e.key==="Enter"&&submit()} placeholder="••••••••"/></div>
+    {err&&<p style={{color:"var(--danger)",fontSize:13,marginBottom:12}}>{err}</p>}
+    <button className="btn btn-primary" style={{width:"100%",justifyContent:"center"}}
+      disabled={busy} onClick={submit}>{busy?"Signing in…":"Sign in"}</button>
+    {LIVE&&<div className="hint" style={{marginTop:12}}>
+      Forgotten it? Ask Conner — passwords are reset from the Supabase dashboard.</div>}
+    <button className="mini" style={{width:"100%",marginTop:12}} onClick={toSite}>← Back to site</button>
+  </div></div>);
+}
+
 /* ================= ADMIN ================= */
 function Admin({toSite}){
-  const [authed,setAuthed]=useState(false);
-  const [pw,setPw]=useState("");const [err,setErr]=useState("");
+  const {session,ready}=useAuth();
+  const [demoAuthed,setDemoAuthed]=useState(false);
+  const authed = LIVE ? Boolean(session) : demoAuthed;
   const [tab,setTab]=useState("events");
   const [toast,setToast]=useState("");
   const say=(m)=>{setToast(m);setTimeout(()=>setToast(""),2200)};
@@ -1634,24 +1731,18 @@ function Admin({toSite}){
   const recaps=useTable("recaps",SEED.recaps,"date");
   const signups=useTable("signups",SEED.signups,"id");
   const stats=useStats(events,sponsors);
-  const tryLogin=()=>pw===ADMIN_PASSWORD?setAuthed(true):setErr("Incorrect password.");
+  if(LIVE&&!ready) return (<div className="admin-wrap"><div className="login-box">
+    <p style={{margin:0,color:"var(--ink-soft)",fontSize:14}}>Checking your session…</p></div></div>);
 
-  if(!authed) return (<div className="admin-wrap"><div className="login-box">
-    <h2 className="serif">E-Board Login</h2>
-    <p>Enter the shared E-Board password to manage the site.</p>
-    <div className="field"><label htmlFor="pw">Password</label>
-      <input id="pw" type="password" value={pw} autoFocus
-        onChange={e=>{setPw(e.target.value);setErr("")}}
-        onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="••••••••"/></div>
-    {err&&<p style={{color:"var(--danger)",fontSize:13,marginBottom:12}}>{err}</p>}
-    <button className="btn btn-primary" style={{width:"100%",justifyContent:"center"}} onClick={tryLogin}>Log in</button>
-    <button className="mini" style={{width:"100%",marginTop:12}} onClick={toSite}>← Back to site</button>
-  </div></div>);
+  if(!authed) return <Login toSite={toSite} onDemo={()=>setDemoAuthed(true)}/>;
 
   return (<div className="admin-wrap">
     <div className="admin-top"><b>UPAA Admin</b><div className="r">
+      {session?.user?.email&&<span style={{opacity:.75}}>{session.user.email}</span>}
       <button className="mini" onClick={toSite}>View site</button>
-      <button className="mini" onClick={()=>setAuthed(false)}>Log out</button></div></div>
+      <button className="mini" onClick={async()=>{
+        if(LIVE) await sb.auth.signOut(); else setDemoAuthed(false);
+      }}>Log out</button></div></div>
     <div className="admin-body">
       {!LIVE&&<div className="banner"><span>⚠️</span><div><b>Demo mode.</b> Everything works so you can try it out, but changes reset on refresh until Supabase is connected. The README has the setup.</div></div>}
       <div className="tabs">
@@ -1677,8 +1768,12 @@ function ErrBar({t,name}){
   if(!t.err) return null;
   const missing=/column\s+\S*?\.?(\w+)\s+does not exist/i.exec(t.err)
     || /Could not find the '(\w+)' column/i.exec(t.err);
+  const rls=/row-level security|permission denied|JWT|not authorized/i.test(t.err);
   return(<div className="err-banner">
     <b>The database rejected that.</b> {name?`(${name})`:""} <code>{t.err}</code>
+    {rls&&<div style={{marginTop:8}}>
+      This usually means your sign-in expired. Log out and back in, then try again.
+    </div>}
     {missing&&<div style={{marginTop:8}}>
       It looks like the <code>{missing[1]}</code> column doesn't exist yet. Run the migration
       from the README in Supabase → SQL Editor, then reload this page:
@@ -2102,7 +2197,7 @@ function App(){
   };
   /* The subscribe page needs its own signups handle, since it renders outside
      the main site tree. */
-  const signups=useTable("signups",SEED.signups,"id");
+  const signups=useTable("signups",SEED.signups,"id",{fetch:false});
   if(view==="admin") return <Admin toSite={()=>go("public")}/>;
   if(view==="subscribe") return <SubscribePage signups={signups} toSite={()=>go("public")}/>;
   return <Public toAdmin={()=>go("admin")}/>;
