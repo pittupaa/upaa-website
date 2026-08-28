@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UPAA — University of Pittsburgh Accounting Association</title>
+<meta name="description" content="The University of Pittsburgh Accounting Association connects Pitt students with recruiters and professionals from leading public accounting firms. Meetings Wednesdays at 7PM in 2500 Sennott Square." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --navy:#0A2342; --navy-2:#12345B; --gold:#FFB81C; --gold-deep:#B87D00;
+    --paper:#F7F5EF; --paper-2:#EFEBE0; --ink:#1A1F26; --ink-soft:#4A5361;
+    --line:#D9D3C4; --white:#FFFFFF; --danger:#B03A32; --ok:#2E7D5B;
+    --shadow:0 1px 2px rgba(10,35,66,.06),0 8px 24px rgba(10,35,66,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .serif{font-family:'Fraunces',Georgia,serif}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  .ticker{background:var(--navy);color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;padding:7px 0;overflow:hidden;white-space:nowrap;border-bottom:2px solid var(--gold)}
+  .ticker span{display:inline-block;padding-left:100%;animation:tick 30s linear infinite}
+  @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(247,245,239,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-in{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:11px;cursor:pointer;background:none;border:none;font:inherit;text-align:left}
+  .brand-mark{width:38px;height:38px;background:var(--navy);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .brand-mark b{color:var(--white);font-family:'Fraunces',serif;font-weight:600;font-size:15px;letter-spacing:-.5px}
+  .brand-mark b .g{color:var(--gold)}
+  .brand-txt small{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+  .brand-txt strong{font-family:'Fraunces',serif;font-size:17px;font-weight:600;letter-spacing:-.3px;color:var(--navy)}
+  .nav-links{display:flex;gap:4px;align-items:center}
+  .nav-links button{font:inherit;font-size:14px;font-weight:500;color:var(--ink-soft);background:none;border:none;cursor:pointer;padding:8px 13px;border-radius:6px;transition:.15s}
+  .nav-links button:hover{color:var(--navy);background:var(--paper-2)}
+  .nav-links button.on{color:var(--navy);font-weight:600}
+  .nav-cta{background:var(--navy)!important;color:var(--paper)!important;font-weight:600!important}
+  .nav-cta:hover{background:var(--navy-2)!important}
+  .burger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--navy)}
+
+  main{max-width:1120px;margin:0 auto;padding:0 24px}
+  .section{padding:72px 0}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);font-weight:500;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--gold-deep)}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;line-height:1.08;letter-spacing:-.02em;color:var(--navy)}
+  .h-sec{font-size:clamp(28px,4vw,40px);margin-bottom:16px}
+  .lead{font-size:18px;color:var(--ink-soft);max-width:62ch}
+
+  .hero{position:relative;padding:80px 0 68px;overflow:hidden}
+  .hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;opacity:.5;mask-image:radial-gradient(ellipse 80% 70% at 70% 30%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 70% 30%,#000 30%,transparent 75%)}
+  .hero-in{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+  .hero h1{font-size:clamp(38px,6vw,62px);margin-bottom:20px}
+  .hero h1 em{font-style:italic;color:var(--gold-deep)}
+  .hero p{font-size:19px;color:var(--ink-soft);max-width:48ch;margin-bottom:16px}
+  .meet-line{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--navy);background:var(--paper-2);border:1px solid var(--line);border-radius:7px;padding:9px 13px;display:inline-block;margin-bottom:26px}
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{font:inherit;font-weight:600;font-size:15px;padding:13px 22px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:.15s;display:inline-flex;align-items:center;gap:8px}
+  .btn:disabled{opacity:.55;cursor:default}
+  .btn-primary{background:var(--navy);color:var(--paper)}
+  .btn-primary:hover:not(:disabled){background:var(--navy-2);transform:translateY(-1px)}
+  .btn-ghost{background:transparent;color:var(--navy);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--navy);background:var(--white)}
+
+  .ledger{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .ledger-top{background:var(--navy);color:var(--paper);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.05em}
+  .ledger-top .dot{width:9px;height:9px;border-radius:50%;background:var(--gold)}
+  .ledger-row{display:grid;grid-template-columns:1fr auto;padding:12px 18px;border-bottom:1px solid var(--paper-2);font-size:14px;gap:12px}
+  .ledger-row:last-of-type{border-bottom:none}
+  .ledger-row span:first-child{color:var(--ink-soft)}
+  .ledger-row span:last-child{font-family:'JetBrains Mono',monospace;font-weight:500;color:var(--navy);text-align:right}
+  .ledger-foot{background:var(--paper-2);padding:12px 18px;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--navy)}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .stat{background:var(--paper);padding:26px 22px}
+  .stat b{font-family:'Fraunces',serif;font-size:34px;font-weight:600;color:var(--navy);display:block;line-height:1}
+  .stat small{font-size:13px;color:var(--ink-soft);font-weight:500}
+
+  .grid{display:grid;gap:20px}
+  .g-3{grid-template-columns:repeat(3,1fr)}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:26px;transition:.15s}
+  .card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .card .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold-deep);font-weight:500}
+  .card h3{font-size:20px;margin:10px 0 8px}
+  .card p{font-size:14.5px;color:var(--ink-soft)}
+
+  /* ---- e-board ---- */
+  .board-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .member{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:.15s;display:flex;flex-direction:column}
+  .member:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .member .ph{aspect-ratio:1;background:linear-gradient(140deg,var(--navy),var(--navy-2));display:flex;align-items:center;justify-content:center;position:relative}
+  .member .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .member .ph .init{font-family:'Fraunces',serif;font-size:44px;color:var(--paper);font-weight:600;letter-spacing:1px}
+  .member .ph .tag{position:absolute;top:12px;left:12px;background:var(--gold);color:var(--navy);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.05em;padding:4px 8px;border-radius:5px}
+  .member .info{padding:16px 18px;flex:1;display:flex;flex-direction:column}
+  .member .info b{font-family:'Fraunces',serif;font-size:18px;color:var(--navy);display:block}
+  .member .info .role{font-size:12.5px;color:var(--gold-deep);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+  .member .info .ym{font-size:13px;color:var(--ink-soft);margin-top:5px}
+  .member .info .bio{font-size:13.5px;color:var(--ink-soft);margin-top:9px;line-height:1.55}
+  .m-links{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--paper-2)}
+  .m-links a{width:30px;height:30px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);transition:.15s}
+  .m-links a:hover{border-color:var(--navy);color:var(--navy);background:var(--paper)}
+  .m-links svg{width:15px;height:15px;fill:currentColor}
+
+  /* ---- events list ---- */
+  .event{display:grid;grid-template-columns:88px 1fr;gap:20px;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:14px;transition:.15s}
+  .event:hover{box-shadow:var(--shadow)}
+  .event.past{opacity:.62}
+  .event .date{text-align:center;border-right:1px solid var(--line);padding-right:16px}
+  .event .date b{font-family:'Fraunces',serif;font-size:26px;color:var(--navy);display:block;line-height:1}
+  .event .date small{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep)}
+  .event .body b{font-size:17px;color:var(--navy);display:block;margin-bottom:3px}
+  .event .body p{font-size:14px;color:var(--ink-soft)}
+  .event .body .where{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);margin-top:7px}
+  .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--paper-2);color:var(--ink-soft);margin-left:8px;vertical-align:middle}
+  .pill.next{background:var(--gold);color:var(--navy)}
+  .pill.type{background:var(--navy);color:var(--paper)}
+
+  /* ---- calendar ---- */
+  .view-toggle{display:inline-flex;background:var(--paper-2);border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px}
+  .view-toggle button{font:inherit;font-size:13px;font-weight:600;padding:7px 15px;border:none;background:none;border-radius:6px;cursor:pointer;color:var(--ink-soft)}
+  .view-toggle button.on{background:var(--white);color:var(--navy);box-shadow:0 1px 2px rgba(10,35,66,.1)}
+  .cal{background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:26px}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .cal-head b{font-family:'Fraunces',serif;font-size:19px;color:var(--navy)}
+  .cal-nav{display:flex;gap:6px}
+  .cal-nav button{width:32px;height:32px;border:1px solid var(--line);background:var(--paper);border-radius:7px;cursor:pointer;color:var(--navy);font-size:15px;line-height:1}
+  .cal-nav button:hover{border-color:var(--navy)}
+  .cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--paper-2);border-bottom:1px solid var(--line)}
+  .cal-dow span{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);padding:9px 6px;text-align:center;font-weight:500}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+  .cal-cell{min-height:92px;border-right:1px solid var(--paper-2);border-bottom:1px solid var(--paper-2);padding:7px 8px;position:relative}
+  .cal-cell:nth-child(7n){border-right:none}
+  .cal-cell.dim{background:var(--paper);opacity:.5}
+  .cal-cell.today{background:rgba(255,184,28,.09)}
+  .cal-cell .dn{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft)}
+  .cal-cell.today .dn{color:var(--navy);font-weight:600;background:var(--gold);border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+  .cal-ev{display:block;width:100%;text-align:left;font-size:11px;font-weight:500;line-height:1.3;background:var(--navy);color:var(--paper);border:none;border-radius:5px;padding:4px 6px;margin-top:4px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cal-ev:hover{background:var(--navy-2)}
+  .cal-ev.pastev{background:var(--paper-2);color:var(--ink-soft)}
+  .cal-foot{padding:12px 20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .swatch{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+  .spons{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .spon{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:26px 18px;text-align:center;font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--navy);display:flex;align-items:center;justify-content:center;min-height:92px;transition:.15s}
+  .spon:hover{border-color:var(--gold);transform:translateY(-2px)}
+
+  .join{background:var(--navy);border-radius:16px;padding:48px;color:var(--paper);position:relative;overflow:hidden}
+  .join::after{content:"";position:absolute;right:-60px;bottom:-60px;width:220px;height:220px;border:2px solid rgba(255,184,28,.2);border-radius:50%}
+  .join h2{color:var(--paper);font-size:32px;margin-bottom:12px}
+  .join p{color:rgba(247,245,239,.82);max-width:52ch;margin-bottom:24px}
+  .join .btn-gold{background:var(--gold);color:var(--navy)}
+  .join .btn-gold:hover{background:#e8a800}
+  .join .btn-out{background:transparent;color:var(--paper);border-color:rgba(247,245,239,.32)}
+  .join .btn-out:hover{border-color:var(--paper)}
+  .dues{background:rgba(255,184,28,.12);border:1px solid rgba(255,184,28,.4);border-radius:10px;padding:14px 16px;font-size:14px;color:var(--paper);margin-bottom:24px;position:relative;z-index:1}
+  .dues b{color:var(--gold)}
+  .signup-card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:30px;margin-top:22px;max-width:520px}
+  .signup-card h3{font-size:21px;margin-bottom:6px}
+  .signup-card>p{font-size:14.5px;color:var(--ink-soft);margin-bottom:20px}
+  .ok-msg{background:#E8F5EE;border:1px solid var(--ok);color:#1d5e43;border-radius:10px;padding:14px 16px;font-size:14px}
+
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:40px 0}
+  .foot-in{max-width:1120px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+  .foot-in small{color:var(--ink-soft);font-size:13px}
+  .foot-links{display:flex;gap:18px;font-size:13px;font-weight:500}
+  .foot-links a{color:var(--ink-soft);cursor:pointer}
+  .foot-links a:hover{color:var(--navy)}
+
+  .admin-wrap{min-height:100vh;background:var(--paper-2)}
+  .login-box{max-width:380px;margin:80px auto;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:36px;box-shadow:var(--shadow)}
+  .login-box h2{font-size:24px;margin-bottom:6px}
+  .login-box>p{font-size:14px;color:var(--ink-soft);margin-bottom:22px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px}
+  .field input,.field textarea,.field select{width:100%;font:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+  .field textarea{min-height:74px;resize:vertical}
+  .field .hint{font-size:12px;color:var(--ink-soft);margin-top:5px}
+  .f2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .admin-top{background:var(--navy);color:var(--paper);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  .admin-top b{font-family:'Fraunces',serif;font-size:18px}
+  .admin-top .r{display:flex;gap:10px;align-items:center;font-size:13px}
+  .admin-body{max-width:1000px;margin:0 auto;padding:28px 24px 60px}
+  .tabs{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tabs button{font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);background:none;border:none;border-bottom:2px solid transparent;padding:11px 16px;cursor:pointer;margin-bottom:-1px}
+  .tabs button.on{color:var(--navy);border-bottom-color:var(--gold)}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:14px;flex-wrap:wrap}
+  .panel-head h3{font-size:20px}
+  .panel-head .acts{display:flex;gap:8px;flex-wrap:wrap}
+  .adm-item{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+  .adm-item .meta b{color:var(--navy)}
+  .adm-item .meta small{display:block;color:var(--ink-soft);font-size:13px;margin-top:2px}
+  .adm-item .acts{display:flex;gap:8px;flex-shrink:0}
+  .mini{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:6px;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+  .mini:hover{border-color:var(--navy)}
+  .mini.del{color:var(--danger)}.mini.del:hover{border-color:var(--danger);background:#fbeceb}
+  .mini.good{color:var(--ok);border-color:var(--ok)}
+  .modal-bg{position:fixed;inset:0;background:rgba(10,35,66,.42);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .modal{background:var(--white);border-radius:14px;padding:28px;max-width:540px;width:100%;max-height:90vh;overflow:auto}
+  .modal h3{font-size:20px;margin-bottom:18px}
+  .modal-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap}
+  .banner{background:#FFF6E0;border:1px solid var(--gold);border-radius:10px;padding:12px 16px;font-size:13px;color:#6b5210;margin-bottom:22px;display:flex;gap:10px;align-items:flex-start;line-height:1.5}
+  .info-box{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--ink-soft);margin-bottom:18px;line-height:1.55}
+  .info-box b{color:var(--navy)}
+  .empty{color:var(--ink-soft);font-size:14px;padding:18px;background:var(--white);border:1px dashed var(--line);border-radius:10px}
+  table.sig{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:14px}
+  table.sig th{background:var(--paper-2);text-align:left;padding:11px 14px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft)}
+  table.sig td{padding:11px 14px;border-top:1px solid var(--paper-2)}
+  table.sig tr.off td{opacity:.5}
+  .stat-preview{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+  .sp{background:var(--white);border:1px solid var(--line);border-radius:9px;padding:14px}
+  .sp b{font-family:'Fraunces',serif;font-size:24px;color:var(--navy);display:block;line-height:1}
+  .sp small{font-size:11.5px;color:var(--ink-soft)}
+  .searchbar{width:100%;max-width:280px;font:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--white)}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:var(--paper);font-size:14px;padding:11px 20px;border-radius:9px;z-index:200;box-shadow:var(--shadow)}
+
+  @media(max-width:860px){
+    .hero-in{grid-template-columns:1fr;gap:36px}
+    .stats,.stat-preview{grid-template-columns:repeat(2,1fr)}
+    .g-3,.board-grid{grid-template-columns:1fr 1fr}
+    .spons{grid-template-columns:repeat(2,1fr)}
+    .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--paper);border-bottom:1px solid var(--line);padding:12px}
+    .nav-links.open{display:flex}
+    .nav-links button{width:100%;text-align:left}
+    .burger{display:block}
+    .join{padding:34px 26px}
+    .cal-cell{min-height:64px;padding:5px}
+    .cal-ev{font-size:0;padding:0;height:6px;border-radius:99px;margin-top:3px}
+  }
+  @media(max-width:560px){
+    .g-3,.board-grid,.stats,.spons{grid-template-columns:1fr}
+    .section{padding:52px 0}
+    .event{grid-template-columns:64px 1fr;gap:14px}
+    .f2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useMemo,useRef} = React;
+
+/* ============================================================
+   CONFIG  —  fill these in to go live. See README.
+   ============================================================ */
+const SUPABASE_URL = "https://sfqiltmndauooheirznw.supabase.co";       // <-- paste Supabase Project URL
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmcWlsdG1uZGF1b29oZWlyem53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4ODMxMjQsImV4cCI6MjEwMzQ1OTEyNH0.UtCHhzz45XNWEnokd9bEB-XoiYAi9ncdNOGRLXPZkfQ";  // <-- paste Supabase anon public key
+const ADMIN_PASSWORD = "upaafall2026";  // <-- CHANGE THIS
+
+const LIVE = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+const sb = LIVE ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+const CLUB = {
+  meetDay:"Wednesdays", meetTime:"7:00 PM", meetRoom:"2500 Sennott Square",
+  email:"contact.upaa@gmail.com",
+  dues:"$10", duesPeriod:"per semester",
+  groupme:"https://groupme.com/join_group/90540929/hL5jPmb9",
+  instagram:"https://www.instagram.com/pitt_accounting/",
+};
+
+const EVENT_TYPES=["Meeting","Firm Presentation","Office Visit","Social","Other"];
+const YEARS=["","Freshman","Sophomore","Junior","Senior","Graduate"];
+
+/* ---- seed data: real Fall 2026 ---- */
+const SEED = {
+  members:[
+    {id:1,name:"Conner Manculich",role:"President",order:1,photo:"",year:"Junior",
+     major:"Finance, Accounting & Business Analytics",linkedin:"https://www.linkedin.com/in/cmanculich",email:"",
+     bio:""},
+    {id:2,name:"Jasen Harrison",role:"VP of Corporate Relations",order:2,photo:"",year:"Junior",
+     major:"Accounting",linkedin:"",email:"",bio:""},
+    {id:3,name:"David Huntoon",role:"VP of Operations",order:3,photo:"",year:"",
+     major:"Accounting",linkedin:"",email:"",bio:""},
+    {id:4,name:"Emily Briggs",role:"VP of Finance",order:4,photo:"",year:"Sophomore",
+     major:"Accounting",linkedin:"",email:"",bio:""},
+    {id:5,name:"Jack Bradley",role:"VP of Membership",order:5,photo:"",year:"Sophomore",
+     major:"Accounting",linkedin:"",email:"",bio:""},
+    {id:6,name:"Makayla Heary",role:"Social Media Chair",order:6,photo:"",year:"Sophomore",
+     major:"Accounting",linkedin:"",email:"",bio:""},
+    {id:7,name:"Benjamin Ni",role:"Historian",order:7,photo:"",year:"Sophomore",
+     major:"Accounting",linkedin:"",email:"",bio:""},
+  ],
+  events:[
+    {id:1,title:"PwC — Co-Hosted with Alpha Kappa Psi",date:"2026-09-23",location:"2500 Sennott Square",
+     type:"Firm Presentation",firm:"PwC",
+     desc:"A joint session with AKPsi featuring PwC recruiters. Hear about internships, recruiting timelines, and life at the firm."},
+    {id:2,title:"Stacy Splitstone — AI and the Accounting Profession",date:"2026-11-11",location:"2500 Sennott Square",
+     type:"Meeting",firm:"",
+     desc:"Pitt Business EIR Stacy Splitstone on how AI is reshaping the profession and what firms are looking for in new hires."},
+  ],
+  sponsors:[
+    {id:1,name:"Deloitte"},{id:2,name:"EY"},{id:3,name:"PwC"},{id:4,name:"KPMG"},
+    {id:5,name:"RSM"},{id:6,name:"BDO"},{id:7,name:"Baker Tilly"},{id:8,name:"CLA"},
+    {id:9,name:"Cohen & Co."},{id:10,name:"Maher Duessel"},
+  ],
+  signups:[],
+};
+
+/* ---- data hook ---- */
+function useTable(table, seed, orderBy){
+  const [rows,setRows]=useState(seed);
+  const [err,setErr]=useState("");
+  useEffect(()=>{
+    if(!LIVE) return;
+    let alive=true;
+    (async()=>{
+      try{
+        let q=sb.from(table).select("*");
+        if(orderBy) q=q.order(orderBy);
+        const {data,error}=await q;
+        if(error) throw error;
+        if(alive&&data) setRows(data);
+      }catch(e){ if(alive) setErr(e.message||"Could not load "+table); }
+    })();
+    return ()=>{alive=false};
+  },[]);
+  return {
+    rows, err,
+    async add(row){
+      if(LIVE){
+        const {data,error}=await sb.from(table).insert(row).select();
+        if(error){setErr(error.message);return false;}
+        if(data) setRows(r=>[...r,...data]);
+      } else setRows(r=>[...r,{...row,id:Date.now()+Math.random()}]);
+      return true;
+    },
+    async addMany(list){
+      if(!list.length) return true;
+      if(LIVE){
+        const {data,error}=await sb.from(table).insert(list).select();
+        if(error){setErr(error.message);return false;}
+        if(data) setRows(r=>[...r,...data]);
+      } else setRows(r=>[...r,...list.map(x=>({...x,id:Date.now()+Math.random()}))]);
+      return true;
+    },
+    async update(id,row){
+      if(LIVE){
+        const {error}=await sb.from(table).update(row).eq("id",id);
+        if(error){setErr(error.message);return false;}
+      }
+      setRows(r=>r.map(x=>x.id===id?{...x,...row}:x));
+      return true;
+    },
+    async remove(id){
+      if(LIVE){
+        const {error}=await sb.from(table).delete().eq("id",id);
+        if(error){setErr(error.message);return false;}
+      }
+      setRows(r=>r.filter(x=>x.id!==id));
+      return true;
+    },
+  };
+}
+
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONF=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const fmtDate=(iso)=>{
+  const d=new Date(iso+"T00:00:00");
+  return {mon:MON[d.getMonth()],day:d.getDate(),
+    full:d.toLocaleString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"}),d};
+};
+const todayISO=()=>{const n=new Date();return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`};
+const isPast=(iso)=>iso<todayISO();
+const initials=(n)=>n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+
+function currentTerm(now=new Date()){
+  const y=now.getFullYear(), m=now.getMonth();
+  if(m>=7) return {label:`Fall ${y}`, start:`${y}-08-01`, end:`${y}-12-31`};
+  if(m<=4) return {label:`Spring ${y}`, start:`${y}-01-01`, end:`${y}-05-31`};
+  return {label:`Fall ${y}`, start:`${y}-08-01`, end:`${y}-12-31`};
+}
+
+function useStats(events, sponsors){
+  return useMemo(()=>{
+    const term=currentTerm();
+    const inTerm=events.rows.filter(e=>e.date>=term.start&&e.date<=term.end);
+    const firms=new Set(inTerm.map(e=>(e.firm||"").trim()).filter(Boolean));
+    return {
+      term:term.label,
+      meetings:inTerm.length,
+      firms:firms.size,
+      network:sponsors.rows.length,
+      held:inTerm.filter(e=>isPast(e.date)).length,
+      visits:inTerm.filter(e=>e.type==="Office Visit").length,
+    };
+  },[events.rows,sponsors.rows]);
+}
+
+/* icons */
+const IconLI=()=>(<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.06c.53-1 1.83-2.05 3.76-2.05 4.02 0 4.76 2.65 4.76 6.1V21h-4v-5.3c0-1.3-.02-2.96-1.8-2.96-1.8 0-2.08 1.4-2.08 2.87V21H9z"/></svg>);
+const IconMail=()=>(<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.4 7H19.6L12 12.2zM4 9.1V17h16V9.1l-8 5.5-8-5.5z"/></svg>);
+
+/* ================= PUBLIC ================= */
+function Public({toAdmin}){
+  const [page,setPage]=useState("home");
+  const [menu,setMenu]=useState(false);
+  const members=useTable("members",SEED.members,"order");
+  const events=useTable("events",SEED.events,"date");
+  const sponsors=useTable("sponsors",SEED.sponsors,"id");
+  const signups=useTable("signups",SEED.signups,"id");
+  const stats=useStats(events,sponsors);
+  const nav=(p)=>{setPage(p);setMenu(false);window.scrollTo(0,0)};
+  const links=[["home","Home"],["about","About"],["board","E-Board"],["events","Events"],["sponsors","Recruiters"]];
+
+  return (<div>
+    <div className="ticker"><span>UPAA · UNIVERSITY OF PITTSBURGH ACCOUNTING ASSOCIATION · MEETINGS {CLUB.meetDay.toUpperCase()} AT {CLUB.meetTime} · {CLUB.meetRoom.toUpperCase()} · ALL PITT STUDENTS WELCOME · FOLLOW @PITT_ACCOUNTING ·</span></div>
+    <nav>
+      <div className="nav-in">
+        <button className="brand" onClick={()=>nav("home")}>
+          <span className="brand-mark"><b>UP<span className="g">AA</span></b></span>
+          <span className="brand-txt"><small>Pitt</small><strong>Accounting Association</strong></span>
+        </button>
+        <button className="burger" aria-label="Menu" onClick={()=>setMenu(m=>!m)}>☰</button>
+        <div className={"nav-links"+(menu?" open":"")}>
+          {links.map(([k,l])=><button key={k} className={page===k?"on":""} onClick={()=>nav(k)}>{l}</button>)}
+          <button className="nav-cta" onClick={()=>nav("join")}>Join UPAA</button>
+        </div>
+      </div>
+    </nav>
+
+    {page==="home" && <Home nav={nav} events={events} stats={stats}/>}
+    {page==="about" && <About/>}
+    {page==="board" && <Board members={members}/>}
+    {page==="events" && <Events events={events} stats={stats}/>}
+    {page==="sponsors" && <Sponsors sponsors={sponsors}/>}
+    {page==="join" && <Join signups={signups}/>}
+
+    <footer><div className="foot-in">
+      <small>© {new Date().getFullYear()} University of Pittsburgh Accounting Association · {CLUB.meetRoom}</small>
+      <div className="foot-links">
+        <a href={CLUB.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href={CLUB.groupme} target="_blank" rel="noopener noreferrer">GroupMe</a>
+        <a href={"mailto:"+CLUB.email}>Contact</a>
+        <a onClick={toAdmin}>E-Board Login</a>
+      </div>
+    </div></footer>
+  </div>);
+}
+
+function Home({nav,events,stats}){
+  const upcoming=events.rows.filter(e=>!isPast(e.date)).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);
+  const nextEv=upcoming[0];
+  return (<>
+    <section className="hero"><div className="hero-grid"></div>
+      <main><div className="hero-in">
+        <div>
+          <div className="eyebrow">University of Pittsburgh</div>
+          <h1>Where accounting students become <em>professionals</em>.</h1>
+          <p>UPAA connects Pitt students with the firms, recruiters, and skills that turn a major into a career — from your first meeting to your first offer.</p>
+          <div className="meet-line">📍 {CLUB.meetDay} · {CLUB.meetTime} · {CLUB.meetRoom}</div>
+          <div className="btn-row">
+            <button className="btn btn-primary" onClick={()=>nav("join")}>Join the club →</button>
+            <button className="btn btn-ghost" onClick={()=>nav("events")}>See the calendar</button>
+          </div>
+        </div>
+        <div className="ledger">
+          <div className="ledger-top"><span>UPAA · {stats.term.toUpperCase()}</span><span className="dot"></span></div>
+          <div className="ledger-row"><span>Events this semester</span><span>{stats.meetings}</span></div>
+          <div className="ledger-row"><span>Held so far</span><span>{stats.held}</span></div>
+          <div className="ledger-row"><span>Next event</span><span>{nextEv?fmtDate(nextEv.date).mon+" "+fmtDate(nextEv.date).day:"TBA"}</span></div>
+          <div className="ledger-row"><span>Dues</span><span>{CLUB.dues}/sem</span></div>
+          <div className="ledger-foot"><span>Career value</span><span>▲ compounding</span></div>
+        </div>
+      </div></main>
+    </section>
+
+    <main>
+      <section className="section" style={{paddingTop:0}}>
+        <div className="stats">
+          <div className="stat"><b>{stats.meetings}</b><small>events this semester</small></div>
+          <div className="stat"><b>{stats.firms||"—"}</b><small>firms presenting this semester</small></div>
+          <div className="stat"><b>{stats.network}</b><small>firms in our network</small></div>
+          <div className="stat"><b>{CLUB.dues}</b><small>dues {CLUB.duesPeriod}</small></div>
+        </div>
+      </section>
+
+      <section className="section" style={{paddingTop:0}}>
+        <div className="eyebrow">What we do</div>
+        <h2 className="h-sec">Three ways UPAA moves your career forward.</h2>
+        <div className="grid g-3" style={{marginTop:32}}>
+          <div className="card"><div className="num">01</div><h3>Meet the firms</h3><p>Recruiters and professionals from public accounting present at nearly every meeting — real faces, real advice, real openings.</p></div>
+          <div className="card"><div className="num">02</div><h3>Build the skills</h3><p>Resume reviews, networking practice, and CPA guidance that bridge the gap between the classroom and the profession.</p></div>
+          <div className="card"><div className="num">03</div><h3>Grow the network</h3><p>Office visits and a community of accounting students all chasing the same goal — and helping each other get there.</p></div>
+        </div>
+      </section>
+
+      {upcoming.length>0 && <section className="section" style={{paddingTop:0}}>
+        <div className="panel-head"><div><div className="eyebrow">On the calendar</div><h2 className="h-sec" style={{marginBottom:0}}>What's coming up.</h2></div>
+          <button className="btn btn-ghost" onClick={()=>nav("events")}>Full calendar</button></div>
+        <div style={{marginTop:28}}>{upcoming.map((e,i)=>{const d=fmtDate(e.date);return(
+          <div className="event" key={e.id}>
+            <div className="date"><b>{d.day}</b><small>{d.mon}</small></div>
+            <div className="body"><b>{e.title}{i===0&&<span className="pill next">next up</span>}</b><p>{e.desc}</p><div className="where">📍 {e.location}</div></div>
+          </div>);})}</div>
+      </section>}
+    </main>
+  </>);
+}
+
+function About(){return(<main><section className="section">
+  <div className="eyebrow">About UPAA</div>
+  <h2 className="h-sec">Built for students chasing the profession.</h2>
+  <p className="lead" style={{marginBottom:18}}>The University of Pittsburgh Accounting Association exists to give accounting and finance students a direct line to the profession they're working toward. We bring firms to campus, put students in front of recruiters, and build the practical skills that coursework alone doesn't cover.</p>
+  <p className="lead">Whether you're a first-year still deciding on a major or an upperclassman prepping for the CPA exam, UPAA is a place to learn what the profession actually looks like — and to meet the people already in it. Meetings are held {CLUB.meetDay.toLowerCase()} at {CLUB.meetTime} in {CLUB.meetRoom}.</p>
+  <div className="grid g-3" style={{marginTop:40}}>
+    <div className="card"><h3>Our mission</h3><p>Connect students with employers and equip them with the knowledge and network to launch a career in accounting.</p></div>
+    <div className="card"><h3>Membership</h3><p>Open to any Pitt student interested in accounting or finance. Dues are {CLUB.dues} {CLUB.duesPeriod} and support our events and materials.</p></div>
+    <div className="card"><h3>When we meet</h3><p>{CLUB.meetDay} at {CLUB.meetTime} in {CLUB.meetRoom} during the fall and spring semesters.</p></div>
+  </div>
+</section></main>);}
+
+function Board({members}){
+  const sorted=members.rows.slice().sort((a,b)=>(a.order??99)-(b.order??99));
+  return(<main><section className="section">
+    <div className="eyebrow">Leadership</div>
+    <h2 className="h-sec">Meet the Executive Board.</h2>
+    <p className="lead" style={{marginBottom:36}}>The students who plan the meetings, book the firms, and keep UPAA running. Reach out to any of us — we're happy to talk.</p>
+    <div className="board-grid">{sorted.map(m=>{
+      const ym=[m.year,m.major].filter(Boolean).join(" · ");
+      return (<div className="member" key={m.id}>
+        <div className="ph">{m.photo?<img src={m.photo} alt={m.name} loading="lazy"/>:<span className="init">{initials(m.name)}</span>}
+          {m.role==="President"&&<span className="tag">PRESIDENT</span>}</div>
+        <div className="info">
+          <b>{m.name}</b>
+          <span className="role">{m.role}</span>
+          {ym&&<span className="ym">{ym}</span>}
+          {m.bio&&<span className="bio">{m.bio}</span>}
+          {(m.linkedin||m.email)&&<span className="m-links" style={{marginTop:"auto"}}>
+            {m.linkedin&&<a href={m.linkedin} target="_blank" rel="noopener noreferrer" title={m.name+" on LinkedIn"} aria-label={m.name+" on LinkedIn"}><IconLI/></a>}
+            {m.email&&<a href={"mailto:"+m.email} title={"Email "+m.name} aria-label={"Email "+m.name}><IconMail/></a>}
+          </span>}
+        </div>
+      </div>);})}</div>
+  </section></main>);
+}
+
+/* ---- Events: list + calendar ---- */
+function Events({events,stats}){
+  const [view,setView]=useState("list");
+  const all=events.rows.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  const up=all.filter(e=>!isPast(e.date)), past=all.filter(e=>isPast(e.date));
+  const Row=({e,i,dim})=>{const d=fmtDate(e.date);return(
+    <div className={"event"+(dim?" past":"")}>
+      <div className="date"><b>{d.day}</b><small>{d.mon}</small></div>
+      <div className="body"><b>{e.title}
+        {e.type&&e.type!=="Other"&&<span className="pill type">{e.type}</span>}
+        {!dim&&i===0&&<span className="pill next">next up</span>}</b>
+        <p>{e.desc}</p><div className="where">📍 {e.location} · {d.full}</div></div>
+    </div>);};
+  return(<main><section className="section">
+    <div className="panel-head" style={{alignItems:"flex-end",marginBottom:0}}>
+      <div>
+        <div className="eyebrow">{stats.term} calendar</div>
+        <h2 className="h-sec" style={{marginBottom:8}}>Events.</h2>
+      </div>
+      <div className="view-toggle" role="group" aria-label="View">
+        <button className={view==="list"?"on":""} onClick={()=>setView("list")}>List</button>
+        <button className={view==="cal"?"on":""} onClick={()=>setView("cal")}>Calendar</button>
+      </div>
+    </div>
+    <p className="lead" style={{marginBottom:30,marginTop:10}}>Meetings, firm presentations, and office visits on the UPAA schedule. All meetings are in {CLUB.meetRoom} at {CLUB.meetTime} unless noted.</p>
+
+    {view==="cal"
+      ? <Calendar events={all}/>
+      : <>
+          {up.length>0 ? up.map((e,i)=><Row key={e.id} e={e} i={i}/>) : <div className="empty">No upcoming events posted yet — check back soon.</div>}
+          {past.length>0&&<>
+            <h3 style={{fontSize:20,marginTop:44,marginBottom:16}}>Past events</h3>
+            {past.slice().reverse().map(e=><Row key={e.id} e={e} dim/>)}
+          </>}
+        </>}
+  </section></main>);
+}
+
+function Calendar({events}){
+  const firstUpcoming=events.find(e=>!isPast(e.date));
+  const anchor=firstUpcoming? new Date(firstUpcoming.date+"T00:00:00") : new Date();
+  const [cur,setCur]=useState({y:anchor.getFullYear(),m:anchor.getMonth()});
+  const [sel,setSel]=useState(null);
+
+  const byDate=useMemo(()=>{
+    const map={};
+    events.forEach(e=>{(map[e.date]=map[e.date]||[]).push(e)});
+    return map;
+  },[events]);
+
+  const shift=(n)=>setCur(c=>{
+    const d=new Date(c.y,c.m+n,1);
+    return {y:d.getFullYear(),m:d.getMonth()};
+  });
+
+  const first=new Date(cur.y,cur.m,1);
+  const startPad=first.getDay();
+  const daysInMonth=new Date(cur.y,cur.m+1,0).getDate();
+  const daysPrev=new Date(cur.y,cur.m,0).getDate();
+  const cells=[];
+  for(let i=startPad-1;i>=0;i--) cells.push({day:daysPrev-i,dim:true});
+  for(let d=1;d<=daysInMonth;d++) cells.push({day:d,dim:false});
+  while(cells.length%7!==0) cells.push({day:cells.length-startPad-daysInMonth+1,dim:true});
+
+  const iso=(d)=>`${cur.y}-${String(cur.m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  const today=todayISO();
+
+  return(<>
+    <div className="cal">
+      <div className="cal-head">
+        <b>{MONF[cur.m]} {cur.y}</b>
+        <div className="cal-nav">
+          <button onClick={()=>shift(-1)} aria-label="Previous month">‹</button>
+          <button onClick={()=>setCur({y:new Date().getFullYear(),m:new Date().getMonth()})} aria-label="This month" style={{width:"auto",padding:"0 11px",fontSize:12,fontWeight:600}}>Today</button>
+          <button onClick={()=>shift(1)} aria-label="Next month">›</button>
+        </div>
+      </div>
+      <div className="cal-dow">{["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=><span key={d}>{d}</span>)}</div>
+      <div className="cal-grid">
+        {cells.map((c,i)=>{
+          const dISO=c.dim?null:iso(c.day);
+          const evs=dISO?(byDate[dISO]||[]):[];
+          return (<div key={i} className={"cal-cell"+(c.dim?" dim":"")+(dISO===today?" today":"")}>
+            <span className="dn">{c.day}</span>
+            {evs.map(e=>(
+              <button key={e.id} className={"cal-ev"+(isPast(e.date)?" pastev":"")}
+                onClick={()=>setSel(e)} title={e.title}>{e.firm||e.title}</button>
+            ))}
+          </div>);
+        })}
+      </div>
+      <div className="cal-foot">
+        <span><span className="swatch" style={{background:"var(--navy)"}}></span>Upcoming</span>
+        <span><span className="swatch" style={{background:"var(--paper-2)",border:"1px solid var(--line)"}}></span>Past</span>
+        <span style={{marginLeft:"auto"}}>Tap an event for details</span>
+      </div>
+    </div>
+    {sel&&<Modal title={sel.title} onClose={()=>setSel(null)}>
+      <p style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12.5,color:"var(--gold-deep)",marginBottom:12,textTransform:"uppercase",letterSpacing:".06em"}}>
+        {fmtDate(sel.date).full}{sel.type?" · "+sel.type:""}</p>
+      {sel.desc&&<p style={{fontSize:14.5,color:"var(--ink-soft)",marginBottom:12}}>{sel.desc}</p>}
+      <p style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12.5,color:"var(--ink-soft)"}}>📍 {sel.location}</p>
+      <div className="modal-acts"><button className="btn btn-primary" onClick={()=>setSel(null)}>Close</button></div>
+    </Modal>}
+  </>);
+}
+
+function Sponsors({sponsors}){return(<main><section className="section">
+  <div className="eyebrow">Our network</div>
+  <h2 className="h-sec">Firms that recruit our members.</h2>
+  <p className="lead" style={{marginBottom:36}}>UPAA members get face time with recruiters from national and regional public accounting firms throughout the year — Big Four, mid-market, and local.</p>
+  <div className="spons">{sponsors.rows.map(s=><div className="spon" key={s.id}>{s.name}</div>)}</div>
+  <p className="lead" style={{marginTop:32,fontSize:15}}>Interested in presenting to our members? Email <a href={"mailto:"+CLUB.email} style={{color:"var(--navy)",fontWeight:600,textDecoration:"underline"}}>{CLUB.email}</a>.</p>
+</section></main>);}
+
+function Join({signups}){
+  const [f,setF]=useState({name:"",email:"",year:"Freshman",major:""});
+  const [sent,setSent]=useState(false);
+  const [busy,setBusy]=useState(false);
+  const set=(k,v)=>setF(s=>({...s,[k]:v}));
+  const submit=async()=>{
+    if(!f.name.trim()||!f.email.trim()) return;
+    setBusy(true);
+    await signups.add({...f,created:todayISO(),status:"active",source:"website"});
+    setBusy(false);setSent(true);
+  };
+  return(<main><section className="section">
+    <div className="join">
+      <div className="eyebrow" style={{color:"var(--gold)"}}>Get involved</div>
+      <h2>Join UPAA this semester.</h2>
+      <p>Membership is open to every Pitt student — no application required. We meet {CLUB.meetDay.toLowerCase()} at {CLUB.meetTime} in {CLUB.meetRoom}. Join the GroupMe for meeting reminders and follow us on Instagram to see what we're up to.</p>
+      <div className="dues"><b>Dues are {CLUB.dues} {CLUB.duesPeriod}</b> — they cover events, materials, and club apparel. You're welcome to come check out a meeting before paying.</div>
+      <div className="btn-row">
+        <a className="btn btn-gold" href={CLUB.groupme} target="_blank" rel="noopener noreferrer">Join the GroupMe →</a>
+        <a className="btn btn-out" href={CLUB.instagram} target="_blank" rel="noopener noreferrer">Follow on Instagram</a>
+      </div>
+    </div>
+
+    <div className="signup-card">
+      <h3 className="serif">Join the mailing list</h3>
+      <p>We'll email you about meetings, firm visits, and recruiting deadlines. No spam.</p>
+      {sent ? <div className="ok-msg">Thanks{f.name?", "+f.name.trim().split(" ")[0]:""}! You're on the list — we'll be in touch before the next meeting.</div> : <>
+        <div className="field"><label htmlFor="su-n">Full name</label><input id="su-n" value={f.name} onChange={e=>set("name",e.target.value)}/></div>
+        <div className="field"><label htmlFor="su-e">Pitt email</label><input id="su-e" type="email" value={f.email} onChange={e=>set("email",e.target.value)} placeholder="abc123@pitt.edu"/></div>
+        <div className="f2">
+          <div className="field"><label htmlFor="su-y">Year</label>
+            <select id="su-y" value={f.year} onChange={e=>set("year",e.target.value)}>
+              {["Freshman","Sophomore","Junior","Senior","Graduate"].map(y=><option key={y}>{y}</option>)}
+            </select></div>
+          <div className="field"><label htmlFor="su-m">Major</label><input id="su-m" value={f.major} onChange={e=>set("major",e.target.value)} placeholder="Accounting"/></div>
+        </div>
+        <button className="btn btn-primary" disabled={busy} onClick={submit}>{busy?"Sending…":"Add me to the list"}</button>
+      </>}
+    </div>
+  </section></main>);
+}
+
+/* ================= ADMIN ================= */
+function Admin({toSite}){
+  const [authed,setAuthed]=useState(false);
+  const [pw,setPw]=useState("");const [err,setErr]=useState("");
+  const [tab,setTab]=useState("events");
+  const members=useTable("members",SEED.members,"order");
+  const events=useTable("events",SEED.events,"date");
+  const sponsors=useTable("sponsors",SEED.sponsors,"id");
+  const signups=useTable("signups",SEED.signups,"id");
+  const stats=useStats(events,sponsors);
+  const tryLogin=()=>pw===ADMIN_PASSWORD?setAuthed(true):setErr("Incorrect password.");
+
+  if(!authed) return (<div className="admin-wrap"><div className="login-box">
+    <h2 className="serif">E-Board Login</h2>
+    <p>Enter the shared E-Board password to manage the site.</p>
+    <div className="field"><label htmlFor="pw">Password</label>
+      <input id="pw" type="password" value={pw} autoFocus
+        onChange={e=>{setPw(e.target.value);setErr("")}}
+        onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="••••••••"/></div>
+    {err&&<p style={{color:"var(--danger)",fontSize:13,marginBottom:12}}>{err}</p>}
+    <button className="btn btn-primary" style={{width:"100%",justifyContent:"center"}} onClick={tryLogin}>Log in</button>
+    <button className="mini" style={{width:"100%",marginTop:12}} onClick={toSite}>← Back to site</button>
+  </div></div>);
+
+  return (<div className="admin-wrap">
+    <div className="admin-top"><b>UPAA Admin</b><div className="r">
+      <button className="mini" onClick={toSite}>View site</button>
+      <button className="mini" onClick={()=>setAuthed(false)}>Log out</button></div></div>
+    <div className="admin-body">
+      {!LIVE&&<div className="banner"><span>⚠️</span><div><b>Demo mode.</b> Everything works so you can try it out, but changes reset on refresh until Supabase is connected. The README has the 3-step setup.</div></div>}
+      <div className="tabs">
+        {[["events","Events"],["members","E-Board"],["sponsors","Recruiters"],["mail","Mailing List"]]
+          .map(([k,l])=><button key={k} className={tab===k?"on":""} onClick={()=>setTab(k)}>{l}</button>)}
+      </div>
+      {tab==="events"&&<EventAdmin t={events} stats={stats}/>}
+      {tab==="members"&&<MemberAdmin t={members}/>}
+      {tab==="sponsors"&&<SponsorAdmin t={sponsors}/>}
+      {tab==="mail"&&<MailAdmin t={signups}/>}
+    </div>
+  </div>);
+}
+
+function Modal({title,children,onClose}){return(<div className="modal-bg" onClick={onClose}>
+  <div className="modal" onClick={e=>e.stopPropagation()}><h3 className="serif">{title}</h3>{children}</div></div>);}
+
+function Toast({msg}){return msg?<div className="toast">{msg}</div>:null;}
+
+/* ---- CSV helpers ---- */
+function toCSV(head, rows){
+  const esc=v=>`"${(v??"").toString().replace(/"/g,'""')}"`;
+  return [head.join(","),...rows.map(r=>r.map(esc).join(","))].join("\n");
+}
+function download(name, text){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([text],{type:"text/csv"}));
+  a.download=name;a.click();
+}
+function parseCSV(text){
+  const rows=[];let row=[],cell="",q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){
+      if(c==='"'&&text[i+1]==='"'){cell+='"';i++;}
+      else if(c==='"'){q=false;}
+      else cell+=c;
+    } else {
+      if(c==='"') q=true;
+      else if(c===","){row.push(cell);cell="";}
+      else if(c==="\n"){row.push(cell);rows.push(row);row=[];cell="";}
+      else if(c!=="\r") cell+=c;
+    }
+  }
+  if(cell||row.length){row.push(cell);rows.push(row);}
+  return rows.filter(r=>r.some(v=>v.trim()!==""));
+}
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); return true; }
+  catch(e){
+    const ta=document.createElement("textarea");
+    ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    let ok=false; try{ ok=document.execCommand("copy"); }catch(_){}
+    document.body.removeChild(ta);return ok;
+  }
+}
+
+function EventAdmin({t,stats}){
+  const [edit,setEdit]=useState(null);
+  const [imp,setImp]=useState(null);
+  const fileRef=useRef();
+  const sorted=t.rows.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  const save=async(e)=>{ e.id?await t.update(e.id,e):await t.add(e); setEdit(null); };
+
+  const exportCSV=()=>download("upaa-events.csv",
+    toCSV(["title","date","type","firm","location","desc"],
+      t.rows.slice().sort((a,b)=>a.date.localeCompare(b.date))
+        .map(e=>[e.title,e.date,e.type||"",e.firm||"",e.location,e.desc])));
+
+  const onFile=async(ev)=>{
+    const file=ev.target.files?.[0]; if(!file) return;
+    const rows=parseCSV(await file.text());
+    ev.target.value="";
+    if(rows.length<2){ setImp({error:"That file didn't have any data rows."}); return; }
+    const head=rows[0].map(h=>h.trim().toLowerCase());
+    const idx=n=>head.indexOf(n);
+    if(idx("title")<0||idx("date")<0){ setImp({error:"The file needs at least a 'title' and 'date' column. Export first to see the expected format."}); return; }
+    const parsed=rows.slice(1).map(r=>({
+      title:(r[idx("title")]||"").trim(),
+      date:(r[idx("date")]||"").trim(),
+      type:idx("type")>=0?(r[idx("type")]||"").trim()||"Meeting":"Meeting",
+      firm:idx("firm")>=0?(r[idx("firm")]||"").trim():"",
+      location:idx("location")>=0?(r[idx("location")]||"").trim()||CLUB.meetRoom:CLUB.meetRoom,
+      desc:idx("desc")>=0?(r[idx("desc")]||"").trim():"",
+    })).filter(e=>e.title&&/^\d{4}-\d{2}-\d{2}$/.test(e.date));
+    if(!parsed.length){ setImp({error:"No valid rows found. Dates must be formatted YYYY-MM-DD."}); return; }
+    setImp({rows:parsed});
+  };
+
+  const doImport=async(mode)=>{
+    if(mode==="replace"){ for(const e of t.rows.slice()) await t.remove(e.id); }
+    await t.addMany(imp.rows);
+    setImp(null);
+  };
+
+  return(<>
+    <div className="stat-preview">
+      <div className="sp"><b>{stats.meetings}</b><small>events in {stats.term}</small></div>
+      <div className="sp"><b>{stats.held}</b><small>already held</small></div>
+      <div className="sp"><b>{stats.firms||"—"}</b><small>firms this semester</small></div>
+      <div className="sp"><b>{stats.network}</b><small>firms in network</small></div>
+    </div>
+    <div className="info-box"><b>These numbers are live.</b> The counters on the homepage are calculated from this event list — add or remove an event here and the site updates itself. Fill in the <b>Firm</b> field to count it toward "firms this semester."</div>
+
+    <div className="panel-head"><h3 className="serif">Events</h3>
+      <div className="acts">
+        <button className="mini" onClick={exportCSV}>Export CSV</button>
+        <button className="mini" onClick={()=>fileRef.current.click()}>Import CSV</button>
+        <input ref={fileRef} type="file" accept=".csv,text/csv" style={{display:"none"}} onChange={onFile}/>
+        <button className="btn btn-primary" onClick={()=>setEdit({title:"",date:"",type:"Meeting",firm:"",location:CLUB.meetRoom,desc:""})}>+ Add event</button>
+      </div></div>
+
+    {sorted.length===0&&<div className="empty">No events yet. Add one, or import a CSV.</div>}
+    {sorted.map(e=>(
+      <div className="adm-item" key={e.id}>
+        <div className="meta"><b>{e.title}</b><small>
+          {e.date?fmtDate(e.date).full:"no date"} · {e.location}
+          {e.type?" · "+e.type:""}{e.firm?" · "+e.firm:""}{isPast(e.date)?" · past":""}</small></div>
+        <div className="acts"><button className="mini" onClick={()=>setEdit(e)}>Edit</button>
+          <button className="mini del" onClick={()=>window.confirm("Delete this event?")&&t.remove(e.id)}>Delete</button></div>
+      </div>))}
+
+    {edit&&<Modal title={edit.id?"Edit event":"Add event"} onClose={()=>setEdit(null)}>
+      <EventForm init={edit} onSave={save} onCancel={()=>setEdit(null)}/></Modal>}
+
+    {imp&&<Modal title="Import events from CSV" onClose={()=>setImp(null)}>
+      {imp.error
+        ? <><p style={{fontSize:14,color:"var(--danger)",marginBottom:18}}>{imp.error}</p>
+            <div className="modal-acts"><button className="mini" onClick={()=>setImp(null)}>Close</button></div></>
+        : <><p style={{fontSize:14,color:"var(--ink-soft)",marginBottom:14}}>Found <b>{imp.rows.length}</b> valid {imp.rows.length===1?"event":"events"}.</p>
+            <div style={{maxHeight:180,overflow:"auto",border:"1px solid var(--line)",borderRadius:8,marginBottom:18}}>
+              {imp.rows.map((r,i)=><div key={i} style={{padding:"9px 12px",borderBottom:"1px solid var(--paper-2)",fontSize:13}}>
+                <b style={{color:"var(--navy)"}}>{r.title}</b><span style={{color:"var(--ink-soft)"}}> · {r.date}{r.firm?" · "+r.firm:""}</span></div>)}
+            </div>
+            <div className="modal-acts">
+              <button className="mini" onClick={()=>setImp(null)}>Cancel</button>
+              <button className="mini" onClick={()=>doImport("append")}>Add to existing</button>
+              <button className="btn btn-primary" onClick={()=>window.confirm("Replace all current events with these "+imp.rows.length+"?")&&doImport("replace")}>Replace all</button>
+            </div></>}
+    </Modal>}
+  </>);
+}
+
+function EventForm({init,onSave,onCancel}){
+  const [f,setF]=useState(init);const set=(k,v)=>setF(s=>({...s,[k]:v}));
+  return(<>
+    <div className="field"><label>Event title</label><input value={f.title} autoFocus onChange={e=>set("title",e.target.value)} placeholder="e.g. Deloitte Office Visit"/></div>
+    <div className="f2">
+      <div className="field"><label>Date</label><input type="date" value={f.date} onChange={e=>set("date",e.target.value)}/></div>
+      <div className="field"><label>Type</label>
+        <select value={f.type||"Meeting"} onChange={e=>set("type",e.target.value)}>{EVENT_TYPES.map(t=><option key={t}>{t}</option>)}</select></div>
+    </div>
+    <div className="field"><label>Firm (optional)</label><input value={f.firm||""} onChange={e=>set("firm",e.target.value)} placeholder="e.g. PwC"/>
+      <div className="hint">Shows on the calendar view and counts toward "firms this semester."</div></div>
+    <div className="field"><label>Location</label><input value={f.location} onChange={e=>set("location",e.target.value)}/></div>
+    <div className="field"><label>Description</label><textarea value={f.desc} onChange={e=>set("desc",e.target.value)} placeholder="One or two sentences about the event."/></div>
+    <div className="modal-acts"><button className="mini" onClick={onCancel}>Cancel</button>
+      <button className="btn btn-primary" onClick={()=>f.title.trim()&&f.date&&onSave(f)}>Save</button></div>
+  </>);
+}
+
+function MemberAdmin({t}){
+  const [edit,setEdit]=useState(null);
+  const sorted=t.rows.slice().sort((a,b)=>(a.order??99)-(b.order??99));
+  const save=async(m)=>{ m.id?await t.update(m.id,m):await t.add(m); setEdit(null); };
+  return(<>
+    <div className="panel-head"><h3 className="serif">E-Board Members</h3>
+      <button className="btn btn-primary" onClick={()=>setEdit({name:"",role:"",order:t.rows.length+1,photo:"",year:"",major:"",linkedin:"",email:"",bio:""})}>+ Add member</button></div>
+    <div className="info-box">Year, major, bio, LinkedIn, and email are all <b>optional</b> — the card looks right with any combination filled in or left blank.</div>
+    {sorted.map(m=>{
+      const extras=[m.year,m.major].filter(Boolean).join(" · ");
+      const has=[m.bio&&"bio",m.linkedin&&"LinkedIn",m.email&&"email",m.photo&&"photo"].filter(Boolean);
+      return (<div className="adm-item" key={m.id}>
+        <div className="meta"><b>{m.name}</b><small>
+          {m.role} · shown #{m.order}{extras?" · "+extras:""}
+          {has.length?" · has "+has.join(", "):""}</small></div>
+        <div className="acts"><button className="mini" onClick={()=>setEdit(m)}>Edit</button>
+          <button className="mini del" onClick={()=>window.confirm("Remove "+m.name+"?")&&t.remove(m.id)}>Delete</button></div>
+      </div>);})}
+    {edit&&<Modal title={edit.id?"Edit member":"Add member"} onClose={()=>setEdit(null)}>
+      <MemberForm init={edit} onSave={save} onCancel={()=>setEdit(null)}/></Modal>}
+  </>);
+}
+function MemberForm({init,onSave,onCancel}){
+  const [f,setF]=useState({year:"",major:"",linkedin:"",email:"",bio:"",...init});
+  const set=(k,v)=>setF(s=>({...s,[k]:v}));
+  return(<>
+    <div className="field"><label>Full name</label><input value={f.name} autoFocus onChange={e=>set("name",e.target.value)}/></div>
+    <div className="field"><label>Role / title</label><input value={f.role} onChange={e=>set("role",e.target.value)} placeholder="e.g. VP of Finance"/>
+      <div className="hint">Type exactly "President" to show the gold President badge.</div></div>
+    <div className="f2">
+      <div className="field"><label>Year <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+        <select value={f.year||""} onChange={e=>set("year",e.target.value)}>{YEARS.map(y=><option key={y} value={y}>{y||"—"}</option>)}</select></div>
+      <div className="field"><label>Display order</label><input type="number" min="1" value={f.order} onChange={e=>set("order",+e.target.value)}/></div>
+    </div>
+    <div className="field"><label>Major <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+      <input value={f.major||""} onChange={e=>set("major",e.target.value)} placeholder="Accounting"/></div>
+    <div className="field"><label>Short bio <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+      <textarea value={f.bio||""} onChange={e=>set("bio",e.target.value)} placeholder="A sentence or two — internship experience, what they're excited about this year, etc."/>
+      <div className="hint">Two sentences reads best. Leave blank and the card just shows name, role, and year.</div></div>
+    <div className="field"><label>LinkedIn URL <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+      <input value={f.linkedin||""} onChange={e=>set("linkedin",e.target.value)} placeholder="https://www.linkedin.com/in/..."/></div>
+    <div className="field"><label>Email <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+      <input value={f.email||""} onChange={e=>set("email",e.target.value)} placeholder="abc123@pitt.edu"/></div>
+    <div className="field"><label>Photo URL <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+      <input value={f.photo||""} onChange={e=>set("photo",e.target.value)} placeholder="https://..."/>
+      <div className="hint">Leave blank to show initials. See the README for where to host photos.</div></div>
+    <div className="modal-acts"><button className="mini" onClick={onCancel}>Cancel</button>
+      <button className="btn btn-primary" onClick={()=>f.name.trim()&&f.role.trim()&&onSave(f)}>Save</button></div>
+  </>);
+}
+
+function SponsorAdmin({t}){
+  const [edit,setEdit]=useState(null);
+  const save=async(s)=>{ s.id?await t.update(s.id,s):await t.add(s); setEdit(null); };
+  return(<>
+    <div className="panel-head"><h3 className="serif">Recruiters / Firms</h3>
+      <button className="btn btn-primary" onClick={()=>setEdit({name:""})}>+ Add firm</button></div>
+    <div className="info-box">This is the firm wall on the Recruiters page — every firm in UPAA's network, not just this semester.</div>
+    {t.rows.map(s=>(
+      <div className="adm-item" key={s.id}>
+        <div className="meta"><b>{s.name}</b></div>
+        <div className="acts"><button className="mini" onClick={()=>setEdit(s)}>Edit</button>
+          <button className="mini del" onClick={()=>window.confirm("Remove "+s.name+"?")&&t.remove(s.id)}>Delete</button></div>
+      </div>))}
+    {edit&&<Modal title={edit.id?"Edit firm":"Add firm"} onClose={()=>setEdit(null)}>
+      <div className="field"><label>Firm name</label>
+        <input autoFocus value={edit.name} onChange={e=>setEdit({...edit,name:e.target.value})}
+          onKeyDown={e=>e.key==="Enter"&&edit.name.trim()&&save(edit)}/></div>
+      <div className="modal-acts"><button className="mini" onClick={()=>setEdit(null)}>Cancel</button>
+        <button className="btn btn-primary" onClick={()=>edit.name.trim()&&save(edit)}>Save</button></div></Modal>}
+  </>);
+}
+
+/* ---- Mailing list ---- */
+function MailAdmin({t}){
+  const [q,setQ]=useState("");
+  const [add,setAdd]=useState(null);
+  const [imp,setImp]=useState(null);
+  const [toast,setToast]=useState("");
+  const fileRef=useRef();
+  const say=(m)=>{setToast(m);setTimeout(()=>setToast(""),2200)};
+
+  const all=t.rows.slice().reverse();
+  const active=all.filter(r=>(r.status||"active")==="active");
+  const shown=all.filter(r=>{
+    const s=q.trim().toLowerCase();
+    return !s||[r.name,r.email,r.year,r.major].some(v=>(v||"").toLowerCase().includes(s));
+  });
+
+  const copyEmails=async()=>{
+    const list=active.map(r=>r.email).filter(Boolean).join(", ");
+    if(!list){ say("No active emails to copy."); return; }
+    say(await copyText(list)?`Copied ${active.length} email${active.length===1?"":"s"} — paste into BCC`:"Couldn't copy — try Export CSV");
+  };
+  const exportCSV=()=>download("upaa-mailing-list.csv",
+    toCSV(["name","email","year","major","status","source","joined"],
+      all.map(r=>[r.name,r.email,r.year,r.major,r.status||"active",r.source||"",r.created])));
+
+  const onFile=async(ev)=>{
+    const file=ev.target.files?.[0]; if(!file) return;
+    const rows=parseCSV(await file.text()); ev.target.value="";
+    if(rows.length<2){ setImp({error:"That file had no data rows."}); return; }
+    const head=rows[0].map(h=>h.trim().toLowerCase());
+    const idx=n=>head.indexOf(n);
+    if(idx("email")<0){ setImp({error:"The file needs an 'email' column."}); return; }
+    const have=new Set(t.rows.map(r=>(r.email||"").toLowerCase()));
+    const parsed=[];
+    rows.slice(1).forEach(r=>{
+      const email=(r[idx("email")]||"").trim();
+      if(!email||!email.includes("@")||have.has(email.toLowerCase())) return;
+      have.add(email.toLowerCase());
+      parsed.push({
+        name:idx("name")>=0?(r[idx("name")]||"").trim():"",
+        email,
+        year:idx("year")>=0?(r[idx("year")]||"").trim():"",
+        major:idx("major")>=0?(r[idx("major")]||"").trim():"",
+        status:"active", source:"import", created:todayISO(),
+      });
+    });
+    if(!parsed.length){ setImp({error:"No new email addresses found — everything in that file is already on the list."}); return; }
+    setImp({rows:parsed});
+  };
+
+  const toggle=(r)=>t.update(r.id,{status:(r.status||"active")==="active"?"unsubscribed":"active"});
+
+  return(<>
+    <div className="stat-preview" style={{gridTemplateColumns:"repeat(3,1fr)"}}>
+      <div className="sp"><b>{all.length}</b><small>total on the list</small></div>
+      <div className="sp"><b>{active.length}</b><small>active</small></div>
+      <div className="sp"><b>{all.length-active.length}</b><small>unsubscribed</small></div>
+    </div>
+    <div className="info-box"><b>This is the live mailing list.</b> Anyone who fills out the form on the Join page lands here automatically. Use <b>Copy all emails</b> to grab every active address as a comma-separated list, then paste it straight into the BCC field in Outlook or Gmail.</div>
+
+    <div className="panel-head">
+      <input className="searchbar" placeholder="Search name, email, major…" value={q} onChange={e=>setQ(e.target.value)}/>
+      <div className="acts">
+        <button className="mini" onClick={copyEmails}>Copy all emails</button>
+        <button className="mini" onClick={exportCSV}>Export CSV</button>
+        <button className="mini" onClick={()=>fileRef.current.click()}>Import CSV</button>
+        <input ref={fileRef} type="file" accept=".csv,text/csv" style={{display:"none"}} onChange={onFile}/>
+        <button className="btn btn-primary" onClick={()=>setAdd({name:"",email:"",year:"",major:""})}>+ Add manually</button>
+      </div>
+    </div>
+
+    {all.length===0
+      ? <div className="empty">Nobody on the list yet. Sign-ups from the Join page appear here — put the site on a QR code at tabling and it fills itself. You can also add people by hand or import a CSV from a sign-in sheet.</div>
+      : shown.length===0
+        ? <div className="empty">No one matches "{q}".</div>
+        : <table className="sig"><thead><tr>
+            <th>Name</th><th>Email</th><th>Year</th><th>Major</th><th>Joined</th><th></th></tr></thead>
+            <tbody>{shown.map(r=>{const off=(r.status||"active")!=="active";return(<tr key={r.id} className={off?"off":""}>
+              <td>{r.name||"—"}</td><td>{r.email}</td><td>{r.year||"—"}</td><td>{r.major||"—"}</td><td>{r.created}</td>
+              <td style={{textAlign:"right",whiteSpace:"nowrap"}}>
+                <button className={"mini"+(off?" good":"")} onClick={()=>toggle(r)}>{off?"Resubscribe":"Unsubscribe"}</button>{" "}
+                <button className="mini del" onClick={()=>window.confirm("Delete "+(r.name||r.email)+" from the list?")&&t.remove(r.id)}>×</button>
+              </td></tr>);})}</tbody></table>}
+
+    {add&&<Modal title="Add to mailing list" onClose={()=>setAdd(null)}>
+      <div className="field"><label>Full name</label><input autoFocus value={add.name} onChange={e=>setAdd({...add,name:e.target.value})}/></div>
+      <div className="field"><label>Email</label><input type="email" value={add.email} onChange={e=>setAdd({...add,email:e.target.value})} placeholder="abc123@pitt.edu"/></div>
+      <div className="f2">
+        <div className="field"><label>Year</label>
+          <select value={add.year} onChange={e=>setAdd({...add,year:e.target.value})}>{YEARS.map(y=><option key={y} value={y}>{y||"—"}</option>)}</select></div>
+        <div className="field"><label>Major</label><input value={add.major} onChange={e=>setAdd({...add,major:e.target.value})}/></div>
+      </div>
+      <div className="modal-acts"><button className="mini" onClick={()=>setAdd(null)}>Cancel</button>
+        <button className="btn btn-primary" onClick={async()=>{
+          if(!add.email.includes("@")) return;
+          await t.add({...add,status:"active",source:"manual",created:todayISO()});
+          setAdd(null);say("Added to the list");
+        }}>Add</button></div>
+    </Modal>}
+
+    {imp&&<Modal title="Import to mailing list" onClose={()=>setImp(null)}>
+      {imp.error
+        ? <><p style={{fontSize:14,color:"var(--danger)",marginBottom:18}}>{imp.error}</p>
+            <div className="modal-acts"><button className="mini" onClick={()=>setImp(null)}>Close</button></div></>
+        : <><p style={{fontSize:14,color:"var(--ink-soft)",marginBottom:14}}>
+              Found <b>{imp.rows.length}</b> new {imp.rows.length===1?"person":"people"}. Duplicates already on the list were skipped.</p>
+            <div style={{maxHeight:180,overflow:"auto",border:"1px solid var(--line)",borderRadius:8,marginBottom:18}}>
+              {imp.rows.map((r,i)=><div key={i} style={{padding:"9px 12px",borderBottom:"1px solid var(--paper-2)",fontSize:13}}>
+                <b style={{color:"var(--navy)"}}>{r.name||r.email}</b>{r.name&&<span style={{color:"var(--ink-soft)"}}> · {r.email}</span>}</div>)}
+            </div>
+            <div className="modal-acts"><button className="mini" onClick={()=>setImp(null)}>Cancel</button>
+              <button className="btn btn-primary" onClick={async()=>{await t.addMany(imp.rows);say("Added "+imp.rows.length+" to the list");setImp(null);}}>Add {imp.rows.length}</button></div></>}
+    </Modal>}
+
+    <Toast msg={toast}/>
+  </>);
+}
+
+/* ================= ROOT ================= */
+function App(){
+  const [view,setView]=useState(location.hash==="#admin"?"admin":"public");
+  useEffect(()=>{
+    const onHash=()=>setView(location.hash==="#admin"?"admin":"public");
+    window.addEventListener("hashchange",onHash);
+    return ()=>window.removeEventListener("hashchange",onHash);
+  },[]);
+  const go=(v)=>{ location.hash = v==="admin"?"admin":""; setView(v); window.scrollTo(0,0); };
+  return view==="admin"
+    ? <Admin toSite={()=>go("public")}/>
+    : <Public toAdmin={()=>go("admin")}/>;
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
