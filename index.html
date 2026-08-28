@@ -313,6 +313,27 @@
   .modal.wide{max-width:680px}
   .modal h3{font-size:20px;margin-bottom:18px}
   .modal-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap}
+  /* calendar picker */
+  .cal-opts{display:flex;flex-direction:column;gap:8px;margin:4px 0 6px}
+  .cal-opt{display:flex;align-items:center;gap:13px;width:100%;text-align:left;font:inherit;
+    background:var(--white);border:1px solid var(--line);border-radius:10px;padding:13px 15px;
+    cursor:pointer;transition:.15s;color:var(--ink)}
+  .cal-opt:hover{border-color:var(--navy);background:var(--paper);transform:translateY(-1px)}
+  .cal-opt .ico{width:34px;height:34px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;
+    justify-content:center;background:var(--paper-2);font-size:16px}
+  .cal-opt b{display:block;font-size:14.5px;font-weight:600;color:var(--navy);font-family:'Inter',sans-serif}
+  .cal-opt small{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:1px}
+  .cal-opt .arrow{margin-left:auto;color:var(--ink-soft);font-size:15px}
+  .cal-sec{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--gold-deep);font-weight:500;margin:20px 0 9px;display:flex;align-items:center;gap:9px}
+  .cal-sec:first-of-type{margin-top:4px}
+  .cal-sec::after{content:"";flex:1;height:1px;background:var(--line)}
+  .cal-note{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-top:14px}
+  .err-banner{background:#FCEBEB;border:1px solid var(--danger);border-radius:10px;padding:12px 16px;
+    font-size:13px;color:#7d2420;margin-bottom:18px;line-height:1.55}
+  .err-banner b{color:#7d2420}
+  .err-banner code{font-family:'JetBrains Mono',monospace;font-size:12px;background:rgba(0,0,0,.06);
+    padding:1px 5px;border-radius:4px;word-break:break-word}
   .banner{background:#FFF6E0;border:1px solid var(--gold);border-radius:10px;padding:12px 16px;font-size:13px;color:#6b5210;margin-bottom:22px;display:flex;gap:10px;align-items:flex-start;line-height:1.5}
   .info-box{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--ink-soft);margin-bottom:18px;line-height:1.55}
   .info-box b{color:var(--navy)}
@@ -429,6 +450,19 @@ const SEED = {
   signups:[],
 };
 
+/* Strip fields that must never appear in a write payload:
+   - `id` is `generated always as identity`, so Postgres rejects any attempt to
+     set it — this silently killed every edit until it was fixed.
+   - keys starting with `_` are internal scratch values, never real columns. */
+function payload(row){
+  const out={};
+  for(const k in row){
+    if(k==="id"||k.startsWith("_")) continue;
+    out[k]=row[k];
+  }
+  return out;
+}
+
 /* ---- data hook ---- */
 function useTable(table, seed, orderBy){
   const [rows,setRows]=useState(seed);
@@ -451,16 +485,16 @@ function useTable(table, seed, orderBy){
     rows, err,
     async add(row){
       if(LIVE){
-        const {data,error}=await sb.from(table).insert(row).select();
+        const {data,error}=await sb.from(table).insert(payload(row)).select();
         if(error){setErr(error.message);return false;}
-        if(data) setRows(r=>[...r,...data]);
+        if(data){ setRows(r=>[...r,...data]); setErr(""); }
       } else setRows(r=>[...r,{...row,id:Date.now()+Math.random()}]);
       return true;
     },
     async addMany(list){
       if(!list.length) return true;
       if(LIVE){
-        const {data,error}=await sb.from(table).insert(list).select();
+        const {data,error}=await sb.from(table).insert(list.map(payload)).select();
         if(error){setErr(error.message);return false;}
         if(data) setRows(r=>[...r,...data]);
       } else setRows(r=>[...r,...list.map(x=>({...x,id:Date.now()+Math.random()}))]);
@@ -468,10 +502,11 @@ function useTable(table, seed, orderBy){
     },
     async update(id,row){
       if(LIVE){
-        const {error}=await sb.from(table).update(row).eq("id",id);
+        const {error}=await sb.from(table).update(payload(row)).eq("id",id);
         if(error){setErr(error.message);return false;}
+        setErr("");
       }
-      setRows(r=>r.map(x=>x.id===id?{...x,...row}:x));
+      setRows(r=>r.map(x=>x.id===id?{...x,...payload(row)}:x));
       return true;
     },
     async remove(id){
@@ -626,6 +661,51 @@ function googleCalUrl(e){
   return "https://calendar.google.com/calendar/render?"+p.toString();
 }
 
+/* One picker for both "subscribe to everything" and "download everything".
+   Subscribing via a raw webcal:// link jumps straight into Apple Calendar with
+   no choice, so every destination gets its own explicit option instead. */
+function CalendarPicker({events,onClose}){
+  const [copied,setCopied]=useState(false);
+  const feed=CALENDAR_FEED_URL;
+  const webcal=feed.replace(/^https?:/,"webcal:");
+  const google=`https://calendar.google.com/calendar/render?cid=${encodeURIComponent(feed)}`;
+  const outlook=`https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(feed)}&name=${encodeURIComponent("UPAA Events")}`;
+  const dl=()=>{ downloadICS("upaa-events.ics",icsForEvents(events,"UPAA Events")); onClose(); };
+  const Opt=({icon,title,sub,href,onClick})=>{
+    const inner=(<>
+      <span className="ico">{icon}</span>
+      <span style={{flex:1}}><b>{title}</b><small>{sub}</small></span>
+      <span className="arrow">→</span>
+    </>);
+    return href
+      ? <a className="cal-opt" href={href} target="_blank" rel="noopener noreferrer" onClick={onClose}>{inner}</a>
+      : <button className="cal-opt" onClick={onClick}>{inner}</button>;
+  };
+  return(<Modal title="Add UPAA to your calendar" onClose={onClose}>
+    {feed ? <>
+      <div className="cal-sec">Subscribe — stays up to date</div>
+      <div className="cal-opts">
+        <Opt icon="📅" title="Google Calendar" sub="Opens Google and asks you to confirm" href={google}/>
+        <Opt icon="" title="Apple Calendar" sub="Opens Calendar on Mac, iPhone, or iPad" href={webcal}/>
+        <Opt icon="📨" title="Outlook" sub="For your Pitt Microsoft 365 account" href={outlook}/>
+        <Opt icon="🔗" title={copied?"Link copied":"Copy the feed link"} sub="For any other calendar app"
+          onClick={async()=>{ setCopied(await copyText(feed)); }}/>
+      </div>
+      <div className="cal-sec">Or download once</div>
+      <div className="cal-opts">
+        <Opt icon="↓" title="Download .ics file" sub="A one-time snapshot — won't pick up later changes" onClick={dl}/>
+      </div>
+      <div className="cal-note">Subscribing is the better option: new meetings and any schedule changes show up on their own. Calendar apps refresh subscriptions on their own timetable, usually within a day.</div>
+    </> : <>
+      <div className="cal-opts">
+        <Opt icon="↓" title="Download .ics file" sub={`All ${events.length} events — works with Apple Calendar, Google, and Outlook`} onClick={dl}/>
+      </div>
+      <div className="cal-note">This is a one-time snapshot, so events added later won't appear automatically. Open the file and your calendar app will offer to import it.</div>
+    </>}
+    <div className="modal-acts"><button className="mini" onClick={onClose}>Close</button></div>
+  </Modal>);
+}
+
 /* Small "add to calendar" control shown on upcoming events. */
 function AddToCal({e}){
   const [open,setOpen]=useState(false);
@@ -635,14 +715,19 @@ function AddToCal({e}){
       <p style={{fontSize:14,color:"var(--ink-soft)",marginBottom:6}}><b style={{color:"var(--navy)"}}>{e.title}</b></p>
       <p style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12.5,color:"var(--gold-deep)",marginBottom:18,textTransform:"uppercase",letterSpacing:".06em"}}>
         {fmtDate(e.date).full} · {fmtRange(e)}</p>
-      <div className="btn-row">
-        <button className="btn btn-primary" onClick={()=>{
+      <div className="cal-opts">
+        <a className="cal-opt" href={googleCalUrl(e)} target="_blank" rel="noopener noreferrer" onClick={()=>setOpen(false)}>
+          <span className="ico">📅</span>
+          <span style={{flex:1}}><b>Google Calendar</b><small>Opens a pre-filled event</small></span>
+          <span className="arrow">→</span></a>
+        <button className="cal-opt" onClick={()=>{
           downloadICS(`upaa-${e.date}.ics`, icsForEvents([e], e.title));
           setOpen(false);
-        }}>Download .ics</button>
-        <a className="btn btn-ghost" href={googleCalUrl(e)} target="_blank" rel="noopener noreferrer" onClick={()=>setOpen(false)}>Google Calendar</a>
+        }}>
+          <span className="ico">↓</span>
+          <span style={{flex:1}}><b>Apple Calendar, Outlook, or other</b><small>Downloads an .ics file to open</small></span>
+          <span className="arrow">→</span></button>
       </div>
-      <div className="hint" style={{marginTop:14}}>The .ics file works with Apple Calendar, Outlook, and most others — open it and your calendar will offer to add the event.</div>
       <div className="modal-acts"><button className="mini" onClick={()=>setOpen(false)}>Close</button></div>
     </Modal>}
   </>);
@@ -986,7 +1071,12 @@ function CsvBar({specKey,t,say}){
   };
   const doImport=async(replace)=>{
     if(replace){ for(const r of t.rows.slice()) await t.remove(r.id); }
-    await t.addMany(imp.rows);
+    const ok=await t.addMany(imp.rows);
+    if(ok===false){
+      // Keep the modal open and say so — silently closing looks like success.
+      setImp({error:"The database rejected the import. The exact message is in the red banner above this panel — it usually means a column from the CSV doesn't exist in the table yet, which the README migration fixes."});
+      return;
+    }
     say&&say(`${replace?"Replaced with":"Added"} ${imp.rows.length} row${imp.rows.length===1?"":"s"}`);
     setImp(null);
   };
@@ -1184,6 +1274,7 @@ function Board({members}){
 function Events({events,recaps,stats}){
   const [view,setView]=useState("list");
   const [openRecap,setOpenRecap]=useState(null);
+  const [picker,setPicker]=useState(false);
   const all=events.rows.slice().sort((a,b)=>a.date.localeCompare(b.date));
   const up=all.filter(e=>!isPast(e.date)), past=all.filter(e=>isPast(e.date));
   const recapFor=(e)=>recaps.rows.find(r=>r.date===e.date);
@@ -1207,11 +1298,9 @@ function Events({events,recaps,stats}){
     </div>
     <p className="lead" style={{marginBottom:18,marginTop:10}}>Meetings, firm presentations, and office visits on the UPAA schedule. All meetings are in {CLUB.meetRoom} at {CLUB.meetTime} unless noted.</p>
     {all.length>0&&<div className="btn-row" style={{marginBottom:30}}>
-      <button className="btn btn-ghost" onClick={()=>downloadICS("upaa-events.ics",icsForEvents(all,"UPAA Events"))}>
-        ↓ Add all events to my calendar</button>
-      {CALENDAR_FEED_URL&&<a className="btn btn-ghost"
-        href={CALENDAR_FEED_URL.replace(/^https?:/,"webcal:")}>⟳ Subscribe (auto-updates)</a>}
+      <button className="btn btn-ghost" onClick={()=>setPicker(true)}>📅 Add to calendar</button>
     </div>}
+    {picker&&<CalendarPicker events={all} onClose={()=>setPicker(false)}/>}
     {view==="cal"
       ? <Calendar events={all}/>
       : <>
@@ -1274,9 +1363,15 @@ function Calendar({events}){
         {fmtDate(sel.date).full} · {fmtRange(sel)}{sel.type?" · "+sel.type:""}</p>
       {sel.desc&&<p style={{fontSize:14.5,color:"var(--ink-soft)",marginBottom:12}}>{sel.desc}</p>}
       <p style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12.5,color:"var(--ink-soft)"}}>📍 {sel.location}</p>
-      <div className="btn-row" style={{marginTop:18}}>
-        <button className="btn btn-primary" onClick={()=>downloadICS(`upaa-${sel.date}.ics`,icsForEvents([sel],sel.title))}>Download .ics</button>
-        <a className="btn btn-ghost" href={googleCalUrl(sel)} target="_blank" rel="noopener noreferrer">Google Calendar</a>
+      <div className="cal-opts" style={{marginTop:18}}>
+        <a className="cal-opt" href={googleCalUrl(sel)} target="_blank" rel="noopener noreferrer">
+          <span className="ico">📅</span>
+          <span style={{flex:1}}><b>Google Calendar</b><small>Opens a pre-filled event</small></span>
+          <span className="arrow">→</span></a>
+        <button className="cal-opt" onClick={()=>downloadICS(`upaa-${sel.date}.ics`,icsForEvents([sel],sel.title))}>
+          <span className="ico">↓</span>
+          <span style={{flex:1}}><b>Apple Calendar, Outlook, or other</b><small>Downloads an .ics file to open</small></span>
+          <span className="arrow">→</span></button>
       </div>
       <div className="modal-acts"><button className="mini" onClick={()=>setSel(null)}>Close</button></div>
     </Modal>}
@@ -1508,12 +1603,31 @@ function Admin({toSite}){
 
 function Modal({title,children,onClose,wide}){return(<div className="modal-bg" onClick={onClose}>
   <div className={"modal"+(wide?" wide":"")} onClick={e=>e.stopPropagation()}><h3 className="serif">{title}</h3>{children}</div></div>);}
+
+/* Shows any database error for a table. Without this a rejected write looks
+   exactly like nothing happening, which is the worst possible failure mode. */
+function ErrBar({t,name}){
+  if(!t.err) return null;
+  const missing=/column\s+\S*?\.?(\w+)\s+does not exist/i.exec(t.err)
+    || /Could not find the '(\w+)' column/i.exec(t.err);
+  return(<div className="err-banner">
+    <b>The database rejected that.</b> {name?`(${name})`:""} <code>{t.err}</code>
+    {missing&&<div style={{marginTop:8}}>
+      It looks like the <code>{missing[1]}</code> column doesn't exist yet. Run the migration
+      from the README in Supabase → SQL Editor, then reload this page:
+      <div style={{marginTop:6}}><code>{`alter table ${name||"<table>"} add column if not exists ${missing[1]} text default '';`}</code></div>
+    </div>}
+  </div>);
+}
 function Toast({msg}){return msg?<div className="toast">{msg}</div>:null;}
 
 function EventAdmin({t,stats,say}){
   const [edit,setEdit]=useState(null);
   const sorted=t.rows.slice().sort((a,b)=>b.date.localeCompare(a.date));
-  const save=async(e)=>{ e.id?await t.update(e.id,e):await t.add(e); setEdit(null); };
+  const save=async(e)=>{
+    const ok=e.id?await t.update(e.id,e):await t.add(e);
+    if(ok!==false) setEdit(null);   // keep the form open if the write failed
+  };
   return(<>
     <div className="stat-preview">
       <div className="sp"><b>{stats.meetings}</b><small>events in {stats.term}</small></div>
@@ -1522,6 +1636,7 @@ function EventAdmin({t,stats,say}){
       <div className="sp"><b>{stats.network}</b><small>firms in network</small></div>
     </div>
     <div className="info-box"><b>These numbers are live.</b> The homepage counters are calculated from this list. Fill in the <b>Firm</b> field to count an event toward "firms this semester."</div>
+    <ErrBar t={t} name="events"/>
     <div className="panel-head"><h3 className="serif">Events</h3>
       <div className="acts"><CsvBar specKey="events" t={t} say={say}/>
         <button className="mini" onClick={()=>{
@@ -1570,7 +1685,10 @@ function EventForm({init,onSave,onCancel}){
 function RecapAdmin({t,events,say}){
   const [edit,setEdit]=useState(null);
   const sorted=t.rows.slice().sort((a,b)=>b.date.localeCompare(a.date));
-  const save=async(r)=>{ r.id?await t.update(r.id,r):await t.add(r); setEdit(null); };
+  const save=async(r)=>{
+    const ok=r.id?await t.update(r.id,r):await t.add(r);
+    if(ok!==false) setEdit(null);
+  };
   const pastEvents=events.rows.filter(e=>isPast(e.date)).sort((a,b)=>b.date.localeCompare(a.date));
   const covered=new Set(t.rows.map(r=>r.date));
   const missing=pastEvents.filter(e=>!covered.has(e.date));
@@ -1580,6 +1698,7 @@ function RecapAdmin({t,events,say}){
       <b>{missing.length} past event{missing.length>1?"s":""} without a recap yet:</b>{" "}
       {missing.slice(0,4).map(e=>e.title).join("; ")}{missing.length>4?`; and ${missing.length-4} more`:""}.
     </div></div>}
+    <ErrBar t={t} name="recaps"/>
     <div className="panel-head"><h3 className="serif">Event Recaps</h3>
       <div className="acts"><CsvBar specKey="recaps" t={t} say={say}/>
         <button className="btn btn-primary" onClick={()=>setEdit({title:"",date:"",author:"",summary:"",body:"",photos:""})}>+ Write recap</button></div></div>
@@ -1685,7 +1804,10 @@ function RecapPhotos({value,onChange}){
 function MemberAdmin({t,say}){
   const [edit,setEdit]=useState(null);
   const sorted=t.rows.slice().sort((a,b)=>(a.order??99)-(b.order??99));
-  const save=async(m)=>{ m.id?await t.update(m.id,m):await t.add(m); setEdit(null); };
+  const save=async(m)=>{
+    const ok=m.id?await t.update(m.id,m):await t.add(m);
+    if(ok!==false) setEdit(null);   // leave the form open if the write failed
+  };
   /* Swap the two rows' order values, then renumber 1..n so the list can never
      drift into duplicate or gapped positions. */
   const shift=async(idx,dir)=>{
@@ -1698,6 +1820,7 @@ function MemberAdmin({t,say}){
     }
   };
   return(<>
+    <ErrBar t={t} name="members"/>
     <div className="panel-head"><h3 className="serif">E-Board Members</h3>
       <div className="acts"><CsvBar specKey="members" t={t} say={say}/>
         <button className="btn btn-primary" onClick={()=>setEdit({name:"",role:"",order:t.rows.length+1,photo:"",pos:"50 50",zoom:"1",year:"",majors:"",linkedin:"",email:"",bio:""})}>+ Add member</button></div></div>
@@ -1779,9 +1902,13 @@ function MemberForm({init,onSave,onCancel}){
 
 function SponsorAdmin({t,say}){
   const [edit,setEdit]=useState(null);
-  const save=async(s)=>{ s.id?await t.update(s.id,s):await t.add(s); setEdit(null); };
+  const save=async(s)=>{
+    const ok=s.id?await t.update(s.id,s):await t.add(s);
+    if(ok!==false) setEdit(null);
+  };
   const withLogo=t.rows.filter(r=>r.logo).length;
   return(<>
+    <ErrBar t={t} name="sponsors"/>
     <div className="panel-head"><h3 className="serif">Recruiters / Firms</h3>
       <div className="acts"><CsvBar specKey="sponsors" t={t} say={say}/>
         <button className="btn btn-primary" onClick={()=>setEdit({name:"",logo:"",site:""})}>+ Add firm</button></div></div>
@@ -1838,6 +1965,7 @@ function MailAdmin({t,say}){
       <div className="sp"><b>{active.length}</b><small>active</small></div>
       <div className="sp"><b>{all.length-active.length}</b><small>unsubscribed</small></div>
     </div>
+    <ErrBar t={t} name="signups"/>
     <div className="info-box"><b>This is the live mailing list.</b> Sign-ups land here automatically. <b>Copy all emails</b> puts every active address on your clipboard, comma-separated — paste straight into BCC in Outlook or Gmail.</div>
     <div className="info-box">
       <b>Sign-up link for QR codes.</b> This page is just the mailing-list form — no nav, nothing else to get lost in. Put it on a QR code for tabling.
