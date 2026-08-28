@@ -328,6 +328,14 @@
     color:var(--gold-deep);font-weight:500;margin:20px 0 9px;display:flex;align-items:center;gap:9px}
   .cal-sec:first-of-type{margin-top:4px}
   .cal-sec::after{content:"";flex:1;height:1px;background:var(--line)}
+  .cal-steps{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:4px 0}
+  .cal-steps ol{margin:0;padding-left:20px}
+  .cal-steps li{font-size:14px;color:var(--ink);line-height:1.65;margin-bottom:5px}
+  .cal-steps li:last-child{margin-bottom:0}
+  .cal-steps code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--paper-2);
+    padding:1px 5px;border-radius:4px}
+  .copied-pill{display:inline-flex;align-items:center;gap:6px;background:#E8F5EE;border:1px solid var(--ok);
+    color:#1d5e43;border-radius:99px;padding:5px 12px;font-size:12.5px;font-weight:600;margin-bottom:12px}
   .cal-note{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-top:14px}
   .err-banner{background:#FCEBEB;border:1px solid var(--danger);border-radius:10px;padding:12px 16px;
     font-size:13px;color:#7d2420;margin-bottom:18px;line-height:1.55}
@@ -397,7 +405,7 @@ const CLUB = {
 };
 
 /* Optional: a published .ics feed people can subscribe to (auto-updating).
-   Leave blank and the Subscribe button simply doesn't appear.
+   Leave blank and the Subscribe options simply don't appear.
    See "Publishing a subscribable calendar" in the README. */
 const CALENDAR_FEED_URL = "https://sfqiltmndauooheirznw.supabase.co/functions/v1/calendar";
 
@@ -626,7 +634,10 @@ function icsForEvents(list,calName){
     const t=normTime(e.time);
     const parts=[
       "BEGIN:VEVENT",
-      `UID:upaa-${e.id}-${e.date}@pittupaa`,
+      // Stable per event, deliberately NOT including the date: calendar apps
+      // match on UID, so a date change must update the same entry rather than
+      // create a second one.
+      `UID:upaa-${e.id}@pittupaa`,
       `DTSTAMP:${now}`,
       `DTSTART:${icsStamp(e.date,t)}`,
       `DTEND:${icsStamp(spansMidnight(e)?nextDay(e.date):e.date,endOf(e))}`,
@@ -666,11 +677,18 @@ function googleCalUrl(e){
    no choice, so every destination gets its own explicit option instead. */
 function CalendarPicker({events,onClose}){
   const [copied,setCopied]=useState(false);
+  const [guide,setGuide]=useState(null);   // null | "google" | "other"
   const feed=CALENDAR_FEED_URL;
   const webcal=feed.replace(/^https?:/,"webcal:");
-  const google=`https://calendar.google.com/calendar/render?cid=${encodeURIComponent(feed)}`;
-  const outlook=`https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(feed)}&name=${encodeURIComponent("UPAA Events")}`;
+  /* Note the http: — not a typo. Google's cid parameter treats an https:// value
+     as a Google calendar ID and rejects it ("check the URL"); with http:// it
+     correctly reads the value as an .ics feed to subscribe to. Google fetches
+     over https regardless, so nothing is actually sent unencrypted. Left
+     unencoded because that is the form Google accepts. */
+  const googleFeedUrl=`https://calendar.google.com/calendar/u/0/r?cid=${feed.replace(/^https:/,"http:")}`;
   const dl=()=>{ downloadICS("upaa-events.ics",icsForEvents(events,"UPAA Events")); onClose(); };
+  const copyFeed=async()=>setCopied(await copyText(feed));
+
   const Opt=({icon,title,sub,href,onClick})=>{
     const inner=(<>
       <span className="ico">{icon}</span>
@@ -681,21 +699,59 @@ function CalendarPicker({events,onClose}){
       ? <a className="cal-opt" href={href} target="_blank" rel="noopener noreferrer" onClick={onClose}>{inner}</a>
       : <button className="cal-opt" onClick={onClick}>{inner}</button>;
   };
+
+  /* Google has no supported deep link for subscribing to an .ics feed — the
+     cid= parameter expects a Google calendar ID, not a feed URL, and passing
+     one gives "check the URL". The only reliable route is Settings → From URL,
+     so copy the link and walk the person through it. */
+  if(guide){
+    const isGoogle=guide==="google";
+    return(<Modal title={isGoogle?"Subscribe in Google Calendar":"Subscribe in another app"} onClose={onClose}>
+      {copied
+        ? <div className="copied-pill">✓ Feed link copied to your clipboard</div>
+        : <button className="mini" style={{marginBottom:12}} onClick={copyFeed}>Copy the feed link</button>}
+      <div className="cal-steps"><ol>
+        {isGoogle ? <>
+          <li>Open Google Calendar on a computer.</li>
+          <li>In the left sidebar, click the <b>+</b> next to <b>Other calendars</b>.</li>
+          <li>Choose <b>From URL</b>.</li>
+          <li>Paste the link and click <b>Add calendar</b>.</li>
+        </> : <>
+          <li>Open your calendar app's settings.</li>
+          <li>Look for <b>Subscribe to calendar</b>, <b>Add by URL</b>, or <b>From URL</b>.</li>
+          <li>Paste the link and confirm.</li>
+        </>}
+      </ol></div>
+      <div className="cal-note" style={{wordBreak:"break-all",fontFamily:"'JetBrains Mono',monospace",fontSize:11.5}}>{feed}</div>
+      <div className="cal-note">Google only offers this on desktop, not in the mobile app — but once it's added there, it syncs to your phone automatically.</div>
+      <div className="modal-acts">
+        <button className="mini" onClick={()=>setGuide(null)}>← Back</button>
+        {isGoogle&&<a className="btn btn-primary" href="https://calendar.google.com/calendar/u/0/r/settings/addcalendar"
+          target="_blank" rel="noopener noreferrer">Open Google Calendar</a>}
+      </div>
+    </Modal>);
+  }
+
   return(<Modal title="Add UPAA to your calendar" onClose={onClose}>
     {feed ? <>
       <div className="cal-sec">Subscribe — stays up to date</div>
       <div className="cal-opts">
-        <Opt icon="📅" title="Google Calendar" sub="Opens Google and asks you to confirm" href={google}/>
-        <Opt icon="" title="Apple Calendar" sub="Opens Calendar on Mac, iPhone, or iPad" href={webcal}/>
-        <Opt icon="📨" title="Outlook" sub="For your Pitt Microsoft 365 account" href={outlook}/>
-        <Opt icon="🔗" title={copied?"Link copied":"Copy the feed link"} sub="For any other calendar app"
-          onClick={async()=>{ setCopied(await copyText(feed)); }}/>
+        <Opt icon="" title="Apple Calendar" sub="Opens Calendar on Mac, iPhone, or iPad"
+          href={webcal}/>
+        <Opt icon="📨" title="Outlook" sub="For your Pitt Microsoft 365 account"
+          href={`https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(feed)}&name=${encodeURIComponent("UPAA Events")}`}/>
+        <Opt icon="📅" title="Google Calendar" sub="Opens Google and asks you to confirm"
+          href={googleFeedUrl}/>
+        <Opt icon="🔗" title="Another calendar app" sub="Copy the feed link and paste it in"
+          onClick={()=>{ copyFeed(); setGuide("other"); }}/>
       </div>
       <div className="cal-sec">Or download once</div>
       <div className="cal-opts">
         <Opt icon="↓" title="Download .ics file" sub="A one-time snapshot — won't pick up later changes" onClick={dl}/>
       </div>
-      <div className="cal-note">Subscribing is the better option: new meetings and any schedule changes show up on their own. Calendar apps refresh subscriptions on their own timetable, usually within a day.</div>
+      <div className="cal-note">Subscribing is the better option: new meetings and schedule changes show up on their own. Calendar apps refresh subscriptions on their own timetable, usually within a day.
+        <br/><br/>Google not working? <a onClick={()=>{copyFeed();setGuide("google")}}
+          style={{color:"var(--navy)",fontWeight:600,textDecoration:"underline",cursor:"pointer"}}>Add it manually instead</a>.</div>
     </> : <>
       <div className="cal-opts">
         <Opt icon="↓" title="Download .ics file" sub={`All ${events.length} events — works with Apple Calendar, Google, and Outlook`} onClick={dl}/>
