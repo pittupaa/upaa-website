@@ -39,11 +39,11 @@
   .brand-mark b .g{color:var(--gold)}
   .brand-txt small{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
   .brand-txt strong{font-family:'Fraunces',serif;font-size:17px;font-weight:600;letter-spacing:-.3px;color:var(--navy)}
-  .nav-links{display:flex;gap:4px;align-items:center}
-  .nav-links button{font:inherit;font-size:14px;font-weight:500;color:var(--ink-soft);background:none;border:none;cursor:pointer;padding:8px 13px;border-radius:6px;transition:.15s}
+  .nav-links{display:flex;gap:2px;align-items:center}
+  .nav-links button{font:inherit;font-size:14px;font-weight:500;color:var(--ink-soft);background:none;border:none;cursor:pointer;padding:8px 11px;border-radius:6px;transition:.15s;white-space:nowrap}
   .nav-links button:hover{color:var(--navy);background:var(--paper-2)}
   .nav-links button.on{color:var(--navy);font-weight:600}
-  .nav-cta{background:var(--navy)!important;color:var(--paper)!important;font-weight:600!important}
+  .nav-cta{background:var(--navy)!important;color:var(--paper)!important;font-weight:600!important;margin-left:6px}
   .nav-cta:hover{background:var(--navy-2)!important}
   .burger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--navy)}
 
@@ -102,9 +102,11 @@
   .member .ph .tag{position:absolute;top:12px;left:12px;background:var(--gold);color:var(--navy);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.05em;padding:4px 8px;border-radius:5px}
   .member .info{padding:16px 18px;flex:1;display:flex;flex-direction:column}
   .member .info b{font-family:'Fraunces',serif;font-size:18px;color:var(--navy);display:block}
-  .member .info .role{font-size:12.5px;color:var(--gold-deep);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
-  .member .info .ym{font-size:13px;color:var(--ink-soft);margin-top:5px}
-  .member .info .bio{font-size:13.5px;color:var(--ink-soft);margin-top:9px;line-height:1.55}
+  .member .info .role{font-size:12.5px;color:var(--gold-deep);font-weight:600;text-transform:uppercase;letter-spacing:.03em;display:block}
+  .member .info .yr{font-size:13px;color:var(--ink-soft);margin-top:7px;display:block}
+  .member .info .majors{margin-top:3px;display:flex;flex-wrap:wrap;gap:5px}
+  .member .info .majors span{font-size:11.5px;color:var(--navy);background:var(--paper-2);border-radius:99px;padding:2px 9px;white-space:nowrap}
+  .member .info .bio{font-size:13.5px;color:var(--ink-soft);margin-top:10px;line-height:1.55;display:block}
   .m-links{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--paper-2)}
   .m-links a{width:30px;height:30px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);transition:.15s}
   .m-links a:hover{border-color:var(--navy);color:var(--navy);background:var(--paper)}
@@ -123,6 +125,7 @@
   .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--paper-2);color:var(--ink-soft);margin-left:8px;vertical-align:middle}
   .pill.next{background:var(--gold);color:var(--navy)}
   .pill.type{background:var(--navy);color:var(--paper)}
+  .pill.recap{background:var(--gold-deep);color:var(--white);cursor:pointer;border:none;font-family:'JetBrains Mono',monospace}
 
   /* ---- calendar ---- */
   .view-toggle{display:inline-flex;background:var(--paper-2);border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px}
@@ -137,7 +140,7 @@
   .cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--paper-2);border-bottom:1px solid var(--line)}
   .cal-dow span{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);padding:9px 6px;text-align:center;font-weight:500}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
-  .cal-cell{min-height:92px;border-right:1px solid var(--paper-2);border-bottom:1px solid var(--paper-2);padding:7px 8px;position:relative}
+  .cal-cell{min-height:92px;border-right:1px solid var(--paper-2);border-bottom:1px solid var(--paper-2);padding:7px 8px}
   .cal-cell:nth-child(7n){border-right:none}
   .cal-cell.dim{background:var(--paper);opacity:.5}
   .cal-cell.today{background:rgba(255,184,28,.09)}
@@ -149,9 +152,28 @@
   .cal-foot{padding:12px 20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);display:flex;gap:18px;flex-wrap:wrap;align-items:center}
   .swatch{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
 
+  /* ---- recruiters ---- */
   .spons{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-  .spon{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:26px 18px;text-align:center;font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--navy);display:flex;align-items:center;justify-content:center;min-height:92px;transition:.15s}
+  .spon{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:22px 18px;text-align:center;display:flex;align-items:center;justify-content:center;min-height:100px;transition:.15s}
   .spon:hover{border-color:var(--gold);transform:translateY(-2px)}
+  .spon img{max-width:100%;max-height:52px;width:auto;height:auto;object-fit:contain;display:block}
+  .spon .txt{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--navy);line-height:1.2}
+
+  /* ---- recaps ---- */
+  .recap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .recap{background:var(--white);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:.15s;cursor:pointer;text-align:left;padding:0;font:inherit;display:flex;flex-direction:column}
+  .recap:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .recap .cover{aspect-ratio:16/9;background:linear-gradient(140deg,var(--navy),var(--navy-2));overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .recap .cover img{width:100%;height:100%;object-fit:cover;display:block}
+  .recap .cover .ph-mark{font-family:'Fraunces',serif;font-size:26px;color:rgba(247,245,239,.35);font-weight:600}
+  .recap .rbody{padding:20px 22px;flex:1;display:flex;flex-direction:column}
+  .recap .rdate{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--gold-deep);font-weight:500}
+  .recap h3{font-size:19px;margin:7px 0 8px}
+  .recap p{font-size:14px;color:var(--ink-soft);line-height:1.6}
+  .recap .by{font-size:12.5px;color:var(--ink-soft);margin-top:12px;padding-top:12px;border-top:1px solid var(--paper-2)}
+  .recap-full p{font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:14px;white-space:pre-wrap}
+  .recap-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;margin-top:16px}
+  .recap-gal img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
 
   .join{background:var(--navy);border-radius:16px;padding:48px;color:var(--paper);position:relative;overflow:hidden}
   .join::after{content:"";position:absolute;right:-60px;bottom:-60px;width:220px;height:220px;border:2px solid rgba(255,184,28,.2);border-radius:50%}
@@ -175,22 +197,30 @@
   .foot-links a{color:var(--ink-soft);cursor:pointer}
   .foot-links a:hover{color:var(--navy)}
 
+  /* ---- admin ---- */
   .admin-wrap{min-height:100vh;background:var(--paper-2)}
   .login-box{max-width:380px;margin:80px auto;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:36px;box-shadow:var(--shadow)}
   .login-box h2{font-size:24px;margin-bottom:6px}
   .login-box>p{font-size:14px;color:var(--ink-soft);margin-bottom:22px}
   .field{margin-bottom:16px}
   .field label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px}
+  .field .opt{font-weight:400;color:var(--ink-soft)}
   .field input,.field textarea,.field select{width:100%;font:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
   .field textarea{min-height:74px;resize:vertical}
   .field .hint{font-size:12px;color:var(--ink-soft);margin-top:5px}
   .f2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .major-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+  .major-row select{flex:1}
+  .major-row button{width:34px;height:38px;flex-shrink:0;border:1px solid var(--line);background:var(--paper);border-radius:8px;cursor:pointer;color:var(--danger);font-size:16px;line-height:1}
+  .major-row button:hover{border-color:var(--danger);background:#fbeceb}
+  .add-major{font:inherit;font-size:13px;font-weight:600;color:var(--navy);background:none;border:1px dashed var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;width:100%}
+  .add-major:hover{border-color:var(--navy);background:var(--paper)}
   .admin-top{background:var(--navy);color:var(--paper);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
   .admin-top b{font-family:'Fraunces',serif;font-size:18px}
   .admin-top .r{display:flex;gap:10px;align-items:center;font-size:13px}
   .admin-body{max-width:1000px;margin:0 auto;padding:28px 24px 60px}
   .tabs{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-  .tabs button{font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);background:none;border:none;border-bottom:2px solid transparent;padding:11px 16px;cursor:pointer;margin-bottom:-1px}
+  .tabs button{font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);background:none;border:none;border-bottom:2px solid transparent;padding:11px 14px;cursor:pointer;margin-bottom:-1px}
   .tabs button.on{color:var(--navy);border-bottom-color:var(--gold)}
   .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:14px;flex-wrap:wrap}
   .panel-head h3{font-size:20px}
@@ -199,12 +229,15 @@
   .adm-item .meta b{color:var(--navy)}
   .adm-item .meta small{display:block;color:var(--ink-soft);font-size:13px;margin-top:2px}
   .adm-item .acts{display:flex;gap:8px;flex-shrink:0}
+  .adm-item .logo-chip{width:44px;height:30px;border:1px solid var(--line);border-radius:5px;display:flex;align-items:center;justify-content:center;background:var(--white);flex-shrink:0;margin-right:12px;overflow:hidden}
+  .adm-item .logo-chip img{max-width:100%;max-height:100%;object-fit:contain}
   .mini{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:6px;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
   .mini:hover{border-color:var(--navy)}
   .mini.del{color:var(--danger)}.mini.del:hover{border-color:var(--danger);background:#fbeceb}
   .mini.good{color:var(--ok);border-color:var(--ok)}
   .modal-bg{position:fixed;inset:0;background:rgba(10,35,66,.42);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
-  .modal{background:var(--white);border-radius:14px;padding:28px;max-width:540px;width:100%;max-height:90vh;overflow:auto}
+  .modal{background:var(--white);border-radius:14px;padding:28px;max-width:560px;width:100%;max-height:90vh;overflow:auto}
+  .modal.wide{max-width:680px}
   .modal h3{font-size:20px;margin-bottom:18px}
   .modal-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap}
   .banner{background:#FFF6E0;border:1px solid var(--gold);border-radius:10px;padding:12px 16px;font-size:13px;color:#6b5210;margin-bottom:22px;display:flex;gap:10px;align-items:flex-start;line-height:1.5}
@@ -221,22 +254,25 @@
   .sp small{font-size:11.5px;color:var(--ink-soft)}
   .searchbar{width:100%;max-width:280px;font:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--white)}
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:var(--paper);font-size:14px;padding:11px 20px;border-radius:9px;z-index:200;box-shadow:var(--shadow)}
+  .cols{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--paper-2);border-radius:7px;padding:10px 12px;color:var(--navy);word-break:break-word;margin:10px 0 14px}
 
+  @media(max-width:980px){ .nav-links button{font-size:13px;padding:8px 9px} }
   @media(max-width:860px){
     .hero-in{grid-template-columns:1fr;gap:36px}
     .stats,.stat-preview{grid-template-columns:repeat(2,1fr)}
-    .g-3,.board-grid{grid-template-columns:1fr 1fr}
+    .g-3,.board-grid,.recap-grid{grid-template-columns:1fr 1fr}
     .spons{grid-template-columns:repeat(2,1fr)}
     .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--paper);border-bottom:1px solid var(--line);padding:12px}
     .nav-links.open{display:flex}
     .nav-links button{width:100%;text-align:left}
+    .nav-cta{margin-left:0}
     .burger{display:block}
     .join{padding:34px 26px}
     .cal-cell{min-height:64px;padding:5px}
     .cal-ev{font-size:0;padding:0;height:6px;border-radius:99px;margin-top:3px}
   }
   @media(max-width:560px){
-    .g-3,.board-grid,.stats,.spons{grid-template-columns:1fr}
+    .g-3,.board-grid,.stats,.spons,.recap-grid{grid-template-columns:1fr}
     .section{padding:52px 0}
     .event{grid-template-columns:64px 1fr;gap:14px}
     .f2{grid-template-columns:1fr}
@@ -249,9 +285,9 @@
 const {useState,useEffect,useMemo,useRef} = React;
 
 /* ============================================================
-   CONFIG  —  fill these in to go live. See README.
+   CONFIG
    ============================================================ */
-const SUPABASE_URL = "https://sfqiltmndauooheirznw.supabase.co";       // <-- paste Supabase Project URL
+const SUPABASE_URL = ""https://sfqiltmndauooheirznw.supabase.co";       // <-- paste Supabase Project URL
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmcWlsdG1uZGF1b29oZWlyem53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4ODMxMjQsImV4cCI6MjEwMzQ1OTEyNH0.UtCHhzz45XNWEnokd9bEB-XoiYAi9ncdNOGRLXPZkfQ";  // <-- paste Supabase anon public key
 const ADMIN_PASSWORD = "upaafall2026";  // <-- CHANGE THIS
 
@@ -269,24 +305,27 @@ const CLUB = {
 const EVENT_TYPES=["Meeting","Firm Presentation","Office Visit","Social","Other"];
 const YEARS=["","Freshman","Sophomore","Junior","Senior","Graduate"];
 
-/* ---- seed data: real Fall 2026 ---- */
+/* Standardized major list — edit here and every dropdown updates.
+   Keeping this canonical is what stops "Business Analytics" vs "Bus Analytics"
+   vs "analytics" from all appearing on the same page. */
+const MAJORS=[
+  "Accounting","Business Analytics","Finance","Global Management",
+  "Human Resources Management","Marketing","Supply Chain Management",
+  "Economics","Computer Science","Information Science","Statistics","Other",
+];
+
+/* ---- seed data ---- */
 const SEED = {
   members:[
     {id:1,name:"Conner Manculich",role:"President",order:1,photo:"",year:"Junior",
-     major:"Finance, Accounting & Business Analytics",linkedin:"https://www.linkedin.com/in/cmanculich",email:"",
-     bio:""},
-    {id:2,name:"Jasen Harrison",role:"VP of Corporate Relations",order:2,photo:"",year:"Junior",
-     major:"Accounting",linkedin:"",email:"",bio:""},
-    {id:3,name:"David Huntoon",role:"VP of Operations",order:3,photo:"",year:"",
-     major:"Accounting",linkedin:"",email:"",bio:""},
-    {id:4,name:"Emily Briggs",role:"VP of Finance",order:4,photo:"",year:"Sophomore",
-     major:"Accounting",linkedin:"",email:"",bio:""},
-    {id:5,name:"Jack Bradley",role:"VP of Membership",order:5,photo:"",year:"Sophomore",
-     major:"Accounting",linkedin:"",email:"",bio:""},
-    {id:6,name:"Makayla Heary",role:"Social Media Chair",order:6,photo:"",year:"Sophomore",
-     major:"Accounting",linkedin:"",email:"",bio:""},
-    {id:7,name:"Benjamin Ni",role:"Historian",order:7,photo:"",year:"Sophomore",
-     major:"Accounting",linkedin:"",email:"",bio:""},
+     majors:"Finance, Accounting, Business Analytics",
+     linkedin:"https://www.linkedin.com/in/cmanculich",email:"",bio:""},
+    {id:2,name:"Jasen Harrison",role:"VP of Corporate Relations",order:2,photo:"",year:"Junior",majors:"Accounting",linkedin:"",email:"",bio:""},
+    {id:3,name:"David Huntoon",role:"VP of Operations",order:3,photo:"",year:"",majors:"Accounting",linkedin:"",email:"",bio:""},
+    {id:4,name:"Emily Briggs",role:"VP of Finance",order:4,photo:"",year:"Sophomore",majors:"Accounting",linkedin:"",email:"",bio:""},
+    {id:5,name:"Jack Bradley",role:"VP of Membership",order:5,photo:"",year:"Sophomore",majors:"Accounting",linkedin:"",email:"",bio:""},
+    {id:6,name:"Makayla Heary",role:"Social Media Chair",order:6,photo:"",year:"Sophomore",majors:"Accounting",linkedin:"",email:"",bio:""},
+    {id:7,name:"Benjamin Ni",role:"Historian",order:7,photo:"",year:"Sophomore",majors:"Accounting",linkedin:"",email:"",bio:""},
   ],
   events:[
     {id:1,title:"PwC — Co-Hosted with Alpha Kappa Psi",date:"2026-09-23",location:"2500 Sennott Square",
@@ -297,10 +336,18 @@ const SEED = {
      desc:"Pitt Business EIR Stacy Splitstone on how AI is reshaping the profession and what firms are looking for in new hires."},
   ],
   sponsors:[
-    {id:1,name:"Deloitte"},{id:2,name:"EY"},{id:3,name:"PwC"},{id:4,name:"KPMG"},
-    {id:5,name:"RSM"},{id:6,name:"BDO"},{id:7,name:"Baker Tilly"},{id:8,name:"CLA"},
-    {id:9,name:"Cohen & Co."},{id:10,name:"Maher Duessel"},
+    {id:1,name:"Deloitte",logo:"",site:"https://www2.deloitte.com"},
+    {id:2,name:"EY",logo:"",site:"https://www.ey.com"},
+    {id:3,name:"PwC",logo:"",site:"https://www.pwc.com"},
+    {id:4,name:"KPMG",logo:"",site:"https://kpmg.com"},
+    {id:5,name:"RSM",logo:"",site:"https://rsmus.com"},
+    {id:6,name:"BDO",logo:"",site:"https://www.bdo.com"},
+    {id:7,name:"Baker Tilly",logo:"",site:"https://www.bakertilly.com"},
+    {id:8,name:"CLA",logo:"",site:"https://www.claconnect.com"},
+    {id:9,name:"Cohen & Co.",logo:"",site:"https://www.cohenco.com"},
+    {id:10,name:"Maher Duessel",logo:"",site:"https://www.md-cpas.com"},
   ],
+  recaps:[],
   signups:[],
 };
 
@@ -365,11 +412,28 @@ const MONF=["January","February","March","April","May","June","July","August","S
 const fmtDate=(iso)=>{
   const d=new Date(iso+"T00:00:00");
   return {mon:MON[d.getMonth()],day:d.getDate(),
-    full:d.toLocaleString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"}),d};
+    full:d.toLocaleString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"}),
+    short:d.toLocaleString("en-US",{month:"long",day:"numeric",year:"numeric"}),d};
 };
 const todayISO=()=>{const n=new Date();return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`};
 const isPast=(iso)=>iso<todayISO();
 const initials=(n)=>n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+const splitList=(s)=>(s||"").split(/[,;|]/).map(x=>x.trim()).filter(Boolean);
+
+/* Strict majors parser, used on CSV import so the page never ends up with
+   "Finance & Accounting" next to "Accounting and Finance". Splits on commas,
+   semicolons, pipes, ampersands and the word "and", matches case-insensitively
+   against MAJORS, de-dupes, and reports anything it couldn't match. */
+function parseMajors(raw){
+  const parts=(raw||"").split(/\s*(?:[,;|&]|\band\b)\s*/i).map(x=>x.trim()).filter(Boolean);
+  const kept=[],unknown=[];
+  parts.forEach(p=>{
+    const hit=MAJORS.find(m=>m.toLowerCase()===p.toLowerCase());
+    if(hit){ if(!kept.includes(hit)) kept.push(hit); }
+    else unknown.push(p);
+  });
+  return {majors:kept.join(", "),unknown};
+}
 
 function currentTerm(now=new Date()){
   const y=now.getFullYear(), m=now.getMonth();
@@ -377,26 +441,232 @@ function currentTerm(now=new Date()){
   if(m<=4) return {label:`Spring ${y}`, start:`${y}-01-01`, end:`${y}-05-31`};
   return {label:`Fall ${y}`, start:`${y}-08-01`, end:`${y}-12-31`};
 }
-
 function useStats(events, sponsors){
   return useMemo(()=>{
     const term=currentTerm();
     const inTerm=events.rows.filter(e=>e.date>=term.start&&e.date<=term.end);
     const firms=new Set(inTerm.map(e=>(e.firm||"").trim()).filter(Boolean));
-    return {
-      term:term.label,
-      meetings:inTerm.length,
-      firms:firms.size,
-      network:sponsors.rows.length,
-      held:inTerm.filter(e=>isPast(e.date)).length,
-      visits:inTerm.filter(e=>e.type==="Office Visit").length,
-    };
+    return {term:term.label,meetings:inTerm.length,firms:firms.size,
+      network:sponsors.rows.length,held:inTerm.filter(e=>isPast(e.date)).length};
   },[events.rows,sponsors.rows]);
 }
 
-/* icons */
 const IconLI=()=>(<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.06c.53-1 1.83-2.05 3.76-2.05 4.02 0 4.76 2.65 4.76 6.1V21h-4v-5.3c0-1.3-.02-2.96-1.8-2.96-1.8 0-2.08 1.4-2.08 2.87V21H9z"/></svg>);
 const IconMail=()=>(<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.4 7H19.6L12 12.2zM4 9.1V17h16V9.1l-8 5.5-8-5.5z"/></svg>);
+
+/* ============================================================
+   CSV: one spec per table drives template / export / import
+   ============================================================ */
+const CSV = {
+  events:{
+    file:"upaa-events",
+    cols:["title","date","type","firm","location","desc"],
+    required:["title","date"],
+    sample:[
+      ["First General Body Meeting","2026-09-02","Meeting","","2500 Sennott Square","Kick off the semester, meet the E-Board, and hear what UPAA has planned."],
+      ["PwC — Co-Hosted with AKPsi","2026-09-23","Firm Presentation","PwC","2500 Sennott Square","Joint session with AKPsi featuring PwC recruiters."],
+      ["Deloitte Office Visit","2026-10-07","Office Visit","Deloitte","Deloitte — Downtown Pittsburgh","Tour the office and meet recruiters."],
+    ],
+    notes:"date must be YYYY-MM-DD. type must be one of: Meeting, Firm Presentation, Office Visit, Social, Other. Leave firm blank for non-firm events.",
+    build:(g)=>({title:g("title"),date:g("date"),
+      type:EVENT_TYPES.includes(g("type"))?g("type"):"Meeting",
+      firm:g("firm"),location:g("location")||CLUB.meetRoom,desc:g("desc")}),
+    valid:(r)=>r.title&&/^\d{4}-\d{2}-\d{2}$/.test(r.date),
+    label:(r)=>`${r.title} · ${r.date}`,
+    out:(r)=>[r.title,r.date,r.type||"",r.firm||"",r.location||"",r.desc||""],
+  },
+  members:{
+    file:"upaa-eboard",
+    cols:["name","role","order","year","majors","bio","linkedin","email","photo"],
+    required:["name","role"],
+    sample:[
+      ["Conner Manculich","President","1","Junior","Finance, Accounting, Business Analytics","","https://www.linkedin.com/in/cmanculich","",""],
+      ["Emily Briggs","VP of Finance","4","Sophomore","Accounting","Interned in assurance last summer and is sitting for the CPA next year.","","eeb166@pitt.edu",""],
+    ],
+    notes:"majors: separate multiple with commas, and use the exact names from the dropdown (Accounting, Business Analytics, Finance, Global Management, Human Resources Management, Marketing, Supply Chain Management, Economics, Computer Science, Information Science, Statistics, Other). order controls display position. Only name and role are required.",
+    build:(g)=>{
+      const pm=parseMajors(g("majors"));
+      return {name:g("name"),role:g("role"),order:+(g("order")||99)||99,
+        year:YEARS.find(y=>y.toLowerCase()===g("year").toLowerCase())||"",
+        majors:pm.majors,_unknown:pm.unknown,
+        bio:g("bio"),linkedin:g("linkedin"),email:g("email"),photo:g("photo")};
+    },
+    valid:(r)=>r.name&&r.role,
+    label:(r)=>`${r.name} · ${r.role}`,
+    out:(r)=>[r.name,r.role,r.order??"",r.year||"",r.majors||r.major||"",r.bio||"",r.linkedin||"",r.email||"",r.photo||""],
+  },
+  sponsors:{
+    file:"upaa-recruiters",
+    cols:["name","logo","site"],
+    required:["name"],
+    sample:[
+      ["Deloitte","","https://www2.deloitte.com"],
+      ["PwC","https://your-project.supabase.co/storage/v1/object/public/logos/pwc.png","https://www.pwc.com"],
+    ],
+    notes:"logo: a direct image URL (.png or .svg with a transparent background looks best). Leave blank and the firm name shows as text instead. site: optional — makes the tile clickable.",
+    build:(g)=>({name:g("name"),logo:g("logo"),site:g("site")}),
+    valid:(r)=>!!r.name,
+    label:(r)=>r.name,
+    out:(r)=>[r.name,r.logo||"",r.site||""],
+  },
+  recaps:{
+    file:"upaa-recaps",
+    cols:["title","date","author","summary","body","photos"],
+    required:["title","date"],
+    sample:[
+      ["PwC & AKPsi Joint Session","2026-09-23","Benjamin Ni",
+       "PwC recruiters walked us through internship timelines and what stands out on a resume.",
+       "Roughly 60 students packed 2500 Sennott for our first firm event of the semester...\n\nKey takeaways: apply early, the Pittsburgh office recruits heavily from Pitt, and reaching out to a recruiter directly matters more than people think.",
+       ""],
+    ],
+    notes:"date is the date of the event being recapped. summary is the short blurb on the card (1-2 sentences). body is the full write-up — use a blank line between paragraphs. photos: optional, comma-separated image URLs; the first one becomes the cover image.",
+    build:(g)=>({title:g("title"),date:g("date"),author:g("author"),
+      summary:g("summary"),body:g("body"),photos:g("photos")}),
+    valid:(r)=>r.title&&/^\d{4}-\d{2}-\d{2}$/.test(r.date),
+    label:(r)=>`${r.title} · ${r.date}`,
+    out:(r)=>[r.title,r.date,r.author||"",r.summary||"",r.body||"",r.photos||""],
+  },
+  signups:{
+    file:"upaa-mailing-list",
+    cols:["name","email","year","major","status","source","created"],
+    required:["email"],
+    sample:[
+      ["Mason Gallardo","mag123@pitt.edu","Sophomore","Accounting","active","tabling","2026-08-23"],
+      ["","dtc50@pitt.edu","Freshman","","active","sign-in sheet",""],
+    ],
+    notes:"Only email is required — a blank name is fine. status: active or unsubscribed (defaults to active). created: YYYY-MM-DD, or leave blank for today. Duplicate emails are skipped on import.",
+    build:(g)=>({name:g("name"),email:g("email"),year:g("year"),major:g("major"),
+      status:g("status")==="unsubscribed"?"unsubscribed":"active",
+      source:g("source")||"import",created:/^\d{4}-\d{2}-\d{2}$/.test(g("created"))?g("created"):todayISO()}),
+    valid:(r)=>r.email&&r.email.includes("@"),
+    label:(r)=>r.name?`${r.name} · ${r.email}`:r.email,
+    out:(r)=>[r.name||"",r.email,r.year||"",r.major||"",r.status||"active",r.source||"",r.created||""],
+    dedupeOn:"email",
+  },
+};
+
+function toCSV(head, rows){
+  const esc=v=>`"${(v??"").toString().replace(/"/g,'""')}"`;
+  return [head.map(esc).join(","),...rows.map(r=>r.map(esc).join(","))].join("\r\n");
+}
+function download(name, text){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\uFEFF"+text],{type:"text/csv;charset=utf-8"}));
+  a.download=name;a.click();
+}
+function parseCSV(text){
+  if(text.charCodeAt(0)===0xFEFF) text=text.slice(1);
+  const rows=[];let row=[],cell="",q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){
+      if(c==='"'&&text[i+1]==='"'){cell+='"';i++;}
+      else if(c==='"'){q=false;}
+      else cell+=c;
+    } else {
+      if(c==='"') q=true;
+      else if(c===","){row.push(cell);cell="";}
+      else if(c==="\n"){row.push(cell);rows.push(row);row=[];cell="";}
+      else if(c!=="\r") cell+=c;
+    }
+  }
+  if(cell||row.length){row.push(cell);rows.push(row);}
+  return rows.filter(r=>r.some(v=>v.trim()!==""));
+}
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); return true; }
+  catch(e){
+    const ta=document.createElement("textarea");
+    ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    let ok=false; try{ ok=document.execCommand("copy"); }catch(_){}
+    document.body.removeChild(ta);return ok;
+  }
+}
+
+/* Reusable CSV toolbar: Template / Export / Import for any table */
+function CsvBar({specKey,t,say}){
+  const spec=CSV[specKey];
+  const fileRef=useRef();
+  const [imp,setImp]=useState(null);
+
+  const template=()=>{
+    download(spec.file+"-template.csv", toCSV(spec.cols, spec.sample));
+    say&&say("Template downloaded");
+  };
+  const exportAll=()=>{
+    if(!t.rows.length){ say&&say("Nothing to export yet"); return; }
+    download(spec.file+".csv", toCSV(spec.cols, t.rows.map(spec.out)));
+  };
+  const onFile=async(ev)=>{
+    const file=ev.target.files?.[0]; if(!file) return;
+    let rows;
+    try{ rows=parseCSV(await file.text()); }
+    catch(e){ setImp({error:"Couldn't read that file. Make sure it's saved as CSV."}); return; }
+    ev.target.value="";
+    if(rows.length<2){ setImp({error:"That file has a header row but no data rows."}); return; }
+    const head=rows[0].map(h=>h.trim().toLowerCase().replace(/^\uFEFF/,""));
+    const missing=spec.required.filter(c=>!head.includes(c));
+    if(missing.length){
+      setImp({error:`Missing required column${missing.length>1?"s":""}: ${missing.join(", ")}. Download the template to see the expected format.`});
+      return;
+    }
+    const seen=new Set(spec.dedupeOn?t.rows.map(r=>(r[spec.dedupeOn]||"").toLowerCase()):[]);
+    const good=[],bad=[],warn=new Set();
+    rows.slice(1).forEach((r,i)=>{
+      const g=(c)=>{const k=head.indexOf(c);return k>=0?(r[k]||"").trim():""};
+      const built=spec.build(g);
+      if(!spec.valid(built)){ bad.push(i+2); return; }
+      if(spec.dedupeOn){
+        const key=(built[spec.dedupeOn]||"").toLowerCase();
+        if(seen.has(key)) return;
+        seen.add(key);
+      }
+      if(built._unknown&&built._unknown.length) built._unknown.forEach(u=>warn.add(u));
+      delete built._unknown;
+      good.push(built);
+    });
+    if(!good.length){ setImp({error:"No valid rows found."+(bad.length?` Check row${bad.length>1?"s":""} ${bad.slice(0,6).join(", ")}.`:"")+" "+spec.notes}); return; }
+    setImp({rows:good,skipped:bad.length,warn:[...warn]});
+  };
+  const doImport=async(replace)=>{
+    if(replace){ for(const r of t.rows.slice()) await t.remove(r.id); }
+    await t.addMany(imp.rows);
+    say&&say(`${replace?"Replaced with":"Added"} ${imp.rows.length} row${imp.rows.length===1?"":"s"}`);
+    setImp(null);
+  };
+
+  return(<>
+    <button className="mini" onClick={template}>Template</button>
+    <button className="mini" onClick={exportAll}>Export</button>
+    <button className="mini" onClick={()=>fileRef.current.click()}>Import</button>
+    <input ref={fileRef} type="file" accept=".csv,text/csv" style={{display:"none"}} onChange={onFile}/>
+    {imp&&<Modal title={imp.error?"Import problem":"Confirm import"} onClose={()=>setImp(null)}>
+      {imp.error
+        ? <><p style={{fontSize:14,color:"var(--danger)",marginBottom:10}}>{imp.error}</p>
+            <div className="cols">Expected columns: {spec.cols.join(", ")}</div>
+            <div className="modal-acts">
+              <button className="mini" onClick={()=>{template();setImp(null)}}>Download template</button>
+              <button className="btn btn-primary" onClick={()=>setImp(null)}>Close</button></div></>
+        : <><p style={{fontSize:14,color:"var(--ink-soft)",marginBottom:14}}>
+              Found <b>{imp.rows.length}</b> valid row{imp.rows.length===1?"":"s"}
+              {imp.skipped?<> · <span style={{color:"var(--danger)"}}>{imp.skipped} skipped</span></>:null}
+              {spec.dedupeOn?" · duplicates skipped":""}.</p>
+            <div style={{maxHeight:200,overflow:"auto",border:"1px solid var(--line)",borderRadius:8,marginBottom:14}}>
+              {imp.rows.map((r,i)=><div key={i} style={{padding:"9px 12px",borderBottom:"1px solid var(--paper-2)",fontSize:13,color:"var(--navy)"}}>{spec.label(r)}</div>)}
+            </div>
+            {imp.warn&&imp.warn.length>0&&<div className="banner" style={{marginBottom:14}}><span>⚠️</span><div>
+              <b>Dropped {imp.warn.length} unrecognized major{imp.warn.length>1?"s":""}:</b> {imp.warn.join(", ")}.
+              Majors have to match the standard list exactly. Either fix the spelling in your file, or add the option to the <b>MAJORS</b> list at the top of index.html.
+            </div></div>}
+            <div className="modal-acts">
+              <button className="mini" onClick={()=>setImp(null)}>Cancel</button>
+              <button className="mini" onClick={()=>doImport(false)}>Add to existing</button>
+              <button className="btn btn-primary" onClick={()=>window.confirm(`Delete all ${t.rows.length} current row(s) and replace with these ${imp.rows.length}?`)&&doImport(true)}>Replace all</button>
+            </div></>}
+    </Modal>}
+  </>);
+}
 
 /* ================= PUBLIC ================= */
 function Public({toAdmin}){
@@ -405,10 +675,11 @@ function Public({toAdmin}){
   const members=useTable("members",SEED.members,"order");
   const events=useTable("events",SEED.events,"date");
   const sponsors=useTable("sponsors",SEED.sponsors,"id");
+  const recaps=useTable("recaps",SEED.recaps,"date");
   const signups=useTable("signups",SEED.signups,"id");
   const stats=useStats(events,sponsors);
   const nav=(p)=>{setPage(p);setMenu(false);window.scrollTo(0,0)};
-  const links=[["home","Home"],["about","About"],["board","E-Board"],["events","Events"],["sponsors","Recruiters"]];
+  const links=[["home","Home"],["about","About"],["board","E-Board"],["events","Events"],["recaps","Recaps"],["sponsors","Recruiters"]];
 
   return (<div>
     <div className="ticker"><span>UPAA · UNIVERSITY OF PITTSBURGH ACCOUNTING ASSOCIATION · MEETINGS {CLUB.meetDay.toUpperCase()} AT {CLUB.meetTime} · {CLUB.meetRoom.toUpperCase()} · ALL PITT STUDENTS WELCOME · FOLLOW @PITT_ACCOUNTING ·</span></div>
@@ -426,10 +697,11 @@ function Public({toAdmin}){
       </div>
     </nav>
 
-    {page==="home" && <Home nav={nav} events={events} stats={stats}/>}
+    {page==="home" && <Home nav={nav} events={events} recaps={recaps} stats={stats}/>}
     {page==="about" && <About/>}
     {page==="board" && <Board members={members}/>}
-    {page==="events" && <Events events={events} stats={stats}/>}
+    {page==="events" && <Events events={events} recaps={recaps} stats={stats}/>}
+    {page==="recaps" && <Recaps recaps={recaps}/>}
     {page==="sponsors" && <Sponsors sponsors={sponsors}/>}
     {page==="join" && <Join signups={signups}/>}
 
@@ -445,9 +717,10 @@ function Public({toAdmin}){
   </div>);
 }
 
-function Home({nav,events,stats}){
+function Home({nav,events,recaps,stats}){
   const upcoming=events.rows.filter(e=>!isPast(e.date)).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);
   const nextEv=upcoming[0];
+  const latest=recaps.rows.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,2);
   return (<>
     <section className="hero"><div className="hero-grid"></div>
       <main><div className="hero-in">
@@ -501,6 +774,12 @@ function Home({nav,events,stats}){
             <div className="body"><b>{e.title}{i===0&&<span className="pill next">next up</span>}</b><p>{e.desc}</p><div className="where">📍 {e.location}</div></div>
           </div>);})}</div>
       </section>}
+
+      {latest.length>0 && <section className="section" style={{paddingTop:0}}>
+        <div className="panel-head"><div><div className="eyebrow">From the archives</div><h2 className="h-sec" style={{marginBottom:0}}>Recent recaps.</h2></div>
+          <button className="btn btn-ghost" onClick={()=>nav("recaps")}>All recaps</button></div>
+        <div className="recap-grid" style={{marginTop:28}}>{latest.map(r=><RecapCard key={r.id} r={r} onOpen={()=>nav("recaps")}/>)}</div>
+      </section>}
     </main>
   </>);
 }
@@ -524,50 +803,49 @@ function Board({members}){
     <h2 className="h-sec">Meet the Executive Board.</h2>
     <p className="lead" style={{marginBottom:36}}>The students who plan the meetings, book the firms, and keep UPAA running. Reach out to any of us — we're happy to talk.</p>
     <div className="board-grid">{sorted.map(m=>{
-      const ym=[m.year,m.major].filter(Boolean).join(" · ");
+      const majors=splitList(m.majors||m.major);
       return (<div className="member" key={m.id}>
         <div className="ph">{m.photo?<img src={m.photo} alt={m.name} loading="lazy"/>:<span className="init">{initials(m.name)}</span>}
           {m.role==="President"&&<span className="tag">PRESIDENT</span>}</div>
         <div className="info">
           <b>{m.name}</b>
           <span className="role">{m.role}</span>
-          {ym&&<span className="ym">{ym}</span>}
+          {m.year&&<span className="yr">{m.year}</span>}
+          {majors.length>0&&<span className="majors">{majors.map(x=><span key={x}>{x}</span>)}</span>}
           {m.bio&&<span className="bio">{m.bio}</span>}
           {(m.linkedin||m.email)&&<span className="m-links" style={{marginTop:"auto"}}>
-            {m.linkedin&&<a href={m.linkedin} target="_blank" rel="noopener noreferrer" title={m.name+" on LinkedIn"} aria-label={m.name+" on LinkedIn"}><IconLI/></a>}
-            {m.email&&<a href={"mailto:"+m.email} title={"Email "+m.name} aria-label={"Email "+m.name}><IconMail/></a>}
+            {m.linkedin&&<a href={m.linkedin} target="_blank" rel="noopener noreferrer" aria-label={m.name+" on LinkedIn"}><IconLI/></a>}
+            {m.email&&<a href={"mailto:"+m.email} aria-label={"Email "+m.name}><IconMail/></a>}
           </span>}
         </div>
       </div>);})}</div>
   </section></main>);
 }
 
-/* ---- Events: list + calendar ---- */
-function Events({events,stats}){
+function Events({events,recaps,stats}){
   const [view,setView]=useState("list");
+  const [openRecap,setOpenRecap]=useState(null);
   const all=events.rows.slice().sort((a,b)=>a.date.localeCompare(b.date));
   const up=all.filter(e=>!isPast(e.date)), past=all.filter(e=>isPast(e.date));
-  const Row=({e,i,dim})=>{const d=fmtDate(e.date);return(
+  const recapFor=(e)=>recaps.rows.find(r=>r.date===e.date);
+  const Row=({e,i,dim})=>{const d=fmtDate(e.date);const rc=dim?recapFor(e):null;return(
     <div className={"event"+(dim?" past":"")}>
       <div className="date"><b>{d.day}</b><small>{d.mon}</small></div>
       <div className="body"><b>{e.title}
         {e.type&&e.type!=="Other"&&<span className="pill type">{e.type}</span>}
-        {!dim&&i===0&&<span className="pill next">next up</span>}</b>
+        {!dim&&i===0&&<span className="pill next">next up</span>}
+        {rc&&<button className="pill recap" onClick={()=>setOpenRecap(rc)}>read recap</button>}</b>
         <p>{e.desc}</p><div className="where">📍 {e.location} · {d.full}</div></div>
     </div>);};
   return(<main><section className="section">
     <div className="panel-head" style={{alignItems:"flex-end",marginBottom:0}}>
-      <div>
-        <div className="eyebrow">{stats.term} calendar</div>
-        <h2 className="h-sec" style={{marginBottom:8}}>Events.</h2>
-      </div>
+      <div><div className="eyebrow">{stats.term} calendar</div><h2 className="h-sec" style={{marginBottom:8}}>Events.</h2></div>
       <div className="view-toggle" role="group" aria-label="View">
         <button className={view==="list"?"on":""} onClick={()=>setView("list")}>List</button>
         <button className={view==="cal"?"on":""} onClick={()=>setView("cal")}>Calendar</button>
       </div>
     </div>
     <p className="lead" style={{marginBottom:30,marginTop:10}}>Meetings, firm presentations, and office visits on the UPAA schedule. All meetings are in {CLUB.meetRoom} at {CLUB.meetTime} unless noted.</p>
-
     {view==="cal"
       ? <Calendar events={all}/>
       : <>
@@ -577,6 +855,7 @@ function Events({events,stats}){
             {past.slice().reverse().map(e=><Row key={e.id} e={e} dim/>)}
           </>}
         </>}
+    {openRecap&&<RecapModal r={openRecap} onClose={()=>setOpenRecap(null)}/>}
   </section></main>);
 }
 
@@ -585,18 +864,8 @@ function Calendar({events}){
   const anchor=firstUpcoming? new Date(firstUpcoming.date+"T00:00:00") : new Date();
   const [cur,setCur]=useState({y:anchor.getFullYear(),m:anchor.getMonth()});
   const [sel,setSel]=useState(null);
-
-  const byDate=useMemo(()=>{
-    const map={};
-    events.forEach(e=>{(map[e.date]=map[e.date]||[]).push(e)});
-    return map;
-  },[events]);
-
-  const shift=(n)=>setCur(c=>{
-    const d=new Date(c.y,c.m+n,1);
-    return {y:d.getFullYear(),m:d.getMonth()};
-  });
-
+  const byDate=useMemo(()=>{const map={};events.forEach(e=>{(map[e.date]=map[e.date]||[]).push(e)});return map;},[events]);
+  const shift=(n)=>setCur(c=>{const d=new Date(c.y,c.m+n,1);return {y:d.getFullYear(),m:d.getMonth()}});
   const first=new Date(cur.y,cur.m,1);
   const startPad=first.getDay();
   const daysInMonth=new Date(cur.y,cur.m+1,0).getDate();
@@ -604,18 +873,16 @@ function Calendar({events}){
   const cells=[];
   for(let i=startPad-1;i>=0;i--) cells.push({day:daysPrev-i,dim:true});
   for(let d=1;d<=daysInMonth;d++) cells.push({day:d,dim:false});
-  while(cells.length%7!==0) cells.push({day:cells.length-startPad-daysInMonth+1,dim:true});
-
+  let next=1; while(cells.length%7!==0) cells.push({day:next++,dim:true});
   const iso=(d)=>`${cur.y}-${String(cur.m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
   const today=todayISO();
-
   return(<>
     <div className="cal">
       <div className="cal-head">
         <b>{MONF[cur.m]} {cur.y}</b>
         <div className="cal-nav">
           <button onClick={()=>shift(-1)} aria-label="Previous month">‹</button>
-          <button onClick={()=>setCur({y:new Date().getFullYear(),m:new Date().getMonth()})} aria-label="This month" style={{width:"auto",padding:"0 11px",fontSize:12,fontWeight:600}}>Today</button>
+          <button onClick={()=>setCur({y:new Date().getFullYear(),m:new Date().getMonth()})} style={{width:"auto",padding:"0 11px",fontSize:12,fontWeight:600}}>Today</button>
           <button onClick={()=>shift(1)} aria-label="Next month">›</button>
         </div>
       </div>
@@ -626,10 +893,7 @@ function Calendar({events}){
           const evs=dISO?(byDate[dISO]||[]):[];
           return (<div key={i} className={"cal-cell"+(c.dim?" dim":"")+(dISO===today?" today":"")}>
             <span className="dn">{c.day}</span>
-            {evs.map(e=>(
-              <button key={e.id} className={"cal-ev"+(isPast(e.date)?" pastev":"")}
-                onClick={()=>setSel(e)} title={e.title}>{e.firm||e.title}</button>
-            ))}
+            {evs.map(e=>(<button key={e.id} className={"cal-ev"+(isPast(e.date)?" pastev":"")} onClick={()=>setSel(e)} title={e.title}>{e.firm||e.title}</button>))}
           </div>);
         })}
       </div>
@@ -649,13 +913,64 @@ function Calendar({events}){
   </>);
 }
 
-function Sponsors({sponsors}){return(<main><section className="section">
-  <div className="eyebrow">Our network</div>
-  <h2 className="h-sec">Firms that recruit our members.</h2>
-  <p className="lead" style={{marginBottom:36}}>UPAA members get face time with recruiters from national and regional public accounting firms throughout the year — Big Four, mid-market, and local.</p>
-  <div className="spons">{sponsors.rows.map(s=><div className="spon" key={s.id}>{s.name}</div>)}</div>
-  <p className="lead" style={{marginTop:32,fontSize:15}}>Interested in presenting to our members? Email <a href={"mailto:"+CLUB.email} style={{color:"var(--navy)",fontWeight:600,textDecoration:"underline"}}>{CLUB.email}</a>.</p>
-</section></main>);}
+/* ---- Recaps ---- */
+function RecapCard({r,onOpen}){
+  const photos=splitList(r.photos);
+  return(<button className="recap" onClick={onOpen}>
+    <div className="cover">{photos[0]
+      ? <img src={photos[0]} alt="" loading="lazy"/>
+      : <span className="ph-mark">UPAA</span>}</div>
+    <div className="rbody">
+      <span className="rdate">{fmtDate(r.date).short}</span>
+      <h3>{r.title}</h3>
+      {r.summary&&<p>{r.summary}</p>}
+      {r.author&&<span className="by">Written by {r.author}</span>}
+    </div>
+  </button>);
+}
+function RecapModal({r,onClose}){
+  const photos=splitList(r.photos);
+  return(<Modal wide title={r.title} onClose={onClose}>
+    <p style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,color:"var(--gold-deep)",textTransform:"uppercase",letterSpacing:".08em",marginTop:-10,marginBottom:16}}>
+      {fmtDate(r.date).short}{r.author?" · by "+r.author:""}</p>
+    <div className="recap-full">
+      {(r.body||r.summary||"").split(/\n\s*\n/).map((p,i)=><p key={i}>{p}</p>)}
+    </div>
+    {photos.length>0&&<div className="recap-gal">{photos.map((p,i)=><img key={i} src={p} alt="" loading="lazy"/>)}</div>}
+    <div className="modal-acts"><button className="btn btn-primary" onClick={onClose}>Close</button></div>
+  </Modal>);
+}
+function Recaps({recaps}){
+  const [open,setOpen]=useState(null);
+  const sorted=recaps.rows.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  return(<main><section className="section">
+    <div className="eyebrow">The archive</div>
+    <h2 className="h-sec">Event recaps.</h2>
+    <p className="lead" style={{marginBottom:36}}>Write-ups from our meetings and firm visits, kept by the UPAA Historian. Missed a meeting, or want to know what a firm actually said? Start here.</p>
+    {sorted.length===0
+      ? <div className="empty">No recaps posted yet. Write-ups from each meeting will appear here through the semester.</div>
+      : <div className="recap-grid">{sorted.map(r=><RecapCard key={r.id} r={r} onOpen={()=>setOpen(r)}/>)}</div>}
+    {open&&<RecapModal r={open} onClose={()=>setOpen(null)}/>}
+  </section></main>);
+}
+
+function Sponsors({sponsors}){
+  const Tile=({s})=>{
+    const inner=s.logo
+      ? <img src={s.logo} alt={s.name} loading="lazy"/>
+      : <span className="txt">{s.name}</span>;
+    return s.site
+      ? <a className="spon" href={s.site} target="_blank" rel="noopener noreferrer" title={s.name}>{inner}</a>
+      : <div className="spon" title={s.name}>{inner}</div>;
+  };
+  return(<main><section className="section">
+    <div className="eyebrow">Our network</div>
+    <h2 className="h-sec">Firms that recruit our members.</h2>
+    <p className="lead" style={{marginBottom:36}}>UPAA members get face time with recruiters from national and regional public accounting firms throughout the year — Big Four, mid-market, and local.</p>
+    <div className="spons">{sponsors.rows.map(s=><Tile key={s.id} s={s}/>)}</div>
+    <p className="lead" style={{marginTop:32,fontSize:15}}>Interested in presenting to our members? Email <a href={"mailto:"+CLUB.email} style={{color:"var(--navy)",fontWeight:600,textDecoration:"underline"}}>{CLUB.email}</a>.</p>
+  </section></main>);
+}
 
 function Join({signups}){
   const [f,setF]=useState({name:"",email:"",year:"Freshman",major:""});
@@ -679,7 +994,6 @@ function Join({signups}){
         <a className="btn btn-out" href={CLUB.instagram} target="_blank" rel="noopener noreferrer">Follow on Instagram</a>
       </div>
     </div>
-
     <div className="signup-card">
       <h3 className="serif">Join the mailing list</h3>
       <p>We'll email you about meetings, firm visits, and recruiting deadlines. No spam.</p>
@@ -689,9 +1003,11 @@ function Join({signups}){
         <div className="f2">
           <div className="field"><label htmlFor="su-y">Year</label>
             <select id="su-y" value={f.year} onChange={e=>set("year",e.target.value)}>
-              {["Freshman","Sophomore","Junior","Senior","Graduate"].map(y=><option key={y}>{y}</option>)}
-            </select></div>
-          <div className="field"><label htmlFor="su-m">Major</label><input id="su-m" value={f.major} onChange={e=>set("major",e.target.value)} placeholder="Accounting"/></div>
+              {YEARS.filter(Boolean).map(y=><option key={y}>{y}</option>)}</select></div>
+          <div className="field"><label htmlFor="su-m">Major</label>
+            <select id="su-m" value={f.major} onChange={e=>set("major",e.target.value)}>
+              <option value="">Select…</option>
+              {MAJORS.map(m=><option key={m}>{m}</option>)}</select></div>
         </div>
         <button className="btn btn-primary" disabled={busy} onClick={submit}>{busy?"Sending…":"Add me to the list"}</button>
       </>}
@@ -704,9 +1020,12 @@ function Admin({toSite}){
   const [authed,setAuthed]=useState(false);
   const [pw,setPw]=useState("");const [err,setErr]=useState("");
   const [tab,setTab]=useState("events");
+  const [toast,setToast]=useState("");
+  const say=(m)=>{setToast(m);setTimeout(()=>setToast(""),2200)};
   const members=useTable("members",SEED.members,"order");
   const events=useTable("events",SEED.events,"date");
   const sponsors=useTable("sponsors",SEED.sponsors,"id");
+  const recaps=useTable("recaps",SEED.recaps,"date");
   const signups=useTable("signups",SEED.signups,"id");
   const stats=useStats(events,sponsors);
   const tryLogin=()=>pw===ADMIN_PASSWORD?setAuthed(true):setErr("Incorrect password.");
@@ -728,101 +1047,29 @@ function Admin({toSite}){
       <button className="mini" onClick={toSite}>View site</button>
       <button className="mini" onClick={()=>setAuthed(false)}>Log out</button></div></div>
     <div className="admin-body">
-      {!LIVE&&<div className="banner"><span>⚠️</span><div><b>Demo mode.</b> Everything works so you can try it out, but changes reset on refresh until Supabase is connected. The README has the 3-step setup.</div></div>}
+      {!LIVE&&<div className="banner"><span>⚠️</span><div><b>Demo mode.</b> Everything works so you can try it out, but changes reset on refresh until Supabase is connected. The README has the setup.</div></div>}
       <div className="tabs">
-        {[["events","Events"],["members","E-Board"],["sponsors","Recruiters"],["mail","Mailing List"]]
+        {[["events","Events"],["recaps","Recaps"],["members","E-Board"],["sponsors","Recruiters"],["mail","Mailing List"]]
           .map(([k,l])=><button key={k} className={tab===k?"on":""} onClick={()=>setTab(k)}>{l}</button>)}
       </div>
-      {tab==="events"&&<EventAdmin t={events} stats={stats}/>}
-      {tab==="members"&&<MemberAdmin t={members}/>}
-      {tab==="sponsors"&&<SponsorAdmin t={sponsors}/>}
-      {tab==="mail"&&<MailAdmin t={signups}/>}
+      {tab==="events"&&<EventAdmin t={events} stats={stats} say={say}/>}
+      {tab==="recaps"&&<RecapAdmin t={recaps} events={events} say={say}/>}
+      {tab==="members"&&<MemberAdmin t={members} say={say}/>}
+      {tab==="sponsors"&&<SponsorAdmin t={sponsors} say={say}/>}
+      {tab==="mail"&&<MailAdmin t={signups} say={say}/>}
+      <Toast msg={toast}/>
     </div>
   </div>);
 }
 
-function Modal({title,children,onClose}){return(<div className="modal-bg" onClick={onClose}>
-  <div className="modal" onClick={e=>e.stopPropagation()}><h3 className="serif">{title}</h3>{children}</div></div>);}
-
+function Modal({title,children,onClose,wide}){return(<div className="modal-bg" onClick={onClose}>
+  <div className={"modal"+(wide?" wide":"")} onClick={e=>e.stopPropagation()}><h3 className="serif">{title}</h3>{children}</div></div>);}
 function Toast({msg}){return msg?<div className="toast">{msg}</div>:null;}
 
-/* ---- CSV helpers ---- */
-function toCSV(head, rows){
-  const esc=v=>`"${(v??"").toString().replace(/"/g,'""')}"`;
-  return [head.join(","),...rows.map(r=>r.map(esc).join(","))].join("\n");
-}
-function download(name, text){
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([text],{type:"text/csv"}));
-  a.download=name;a.click();
-}
-function parseCSV(text){
-  const rows=[];let row=[],cell="",q=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i];
-    if(q){
-      if(c==='"'&&text[i+1]==='"'){cell+='"';i++;}
-      else if(c==='"'){q=false;}
-      else cell+=c;
-    } else {
-      if(c==='"') q=true;
-      else if(c===","){row.push(cell);cell="";}
-      else if(c==="\n"){row.push(cell);rows.push(row);row=[];cell="";}
-      else if(c!=="\r") cell+=c;
-    }
-  }
-  if(cell||row.length){row.push(cell);rows.push(row);}
-  return rows.filter(r=>r.some(v=>v.trim()!==""));
-}
-async function copyText(text){
-  try{ await navigator.clipboard.writeText(text); return true; }
-  catch(e){
-    const ta=document.createElement("textarea");
-    ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
-    document.body.appendChild(ta);ta.select();
-    let ok=false; try{ ok=document.execCommand("copy"); }catch(_){}
-    document.body.removeChild(ta);return ok;
-  }
-}
-
-function EventAdmin({t,stats}){
+function EventAdmin({t,stats,say}){
   const [edit,setEdit]=useState(null);
-  const [imp,setImp]=useState(null);
-  const fileRef=useRef();
   const sorted=t.rows.slice().sort((a,b)=>b.date.localeCompare(a.date));
   const save=async(e)=>{ e.id?await t.update(e.id,e):await t.add(e); setEdit(null); };
-
-  const exportCSV=()=>download("upaa-events.csv",
-    toCSV(["title","date","type","firm","location","desc"],
-      t.rows.slice().sort((a,b)=>a.date.localeCompare(b.date))
-        .map(e=>[e.title,e.date,e.type||"",e.firm||"",e.location,e.desc])));
-
-  const onFile=async(ev)=>{
-    const file=ev.target.files?.[0]; if(!file) return;
-    const rows=parseCSV(await file.text());
-    ev.target.value="";
-    if(rows.length<2){ setImp({error:"That file didn't have any data rows."}); return; }
-    const head=rows[0].map(h=>h.trim().toLowerCase());
-    const idx=n=>head.indexOf(n);
-    if(idx("title")<0||idx("date")<0){ setImp({error:"The file needs at least a 'title' and 'date' column. Export first to see the expected format."}); return; }
-    const parsed=rows.slice(1).map(r=>({
-      title:(r[idx("title")]||"").trim(),
-      date:(r[idx("date")]||"").trim(),
-      type:idx("type")>=0?(r[idx("type")]||"").trim()||"Meeting":"Meeting",
-      firm:idx("firm")>=0?(r[idx("firm")]||"").trim():"",
-      location:idx("location")>=0?(r[idx("location")]||"").trim()||CLUB.meetRoom:CLUB.meetRoom,
-      desc:idx("desc")>=0?(r[idx("desc")]||"").trim():"",
-    })).filter(e=>e.title&&/^\d{4}-\d{2}-\d{2}$/.test(e.date));
-    if(!parsed.length){ setImp({error:"No valid rows found. Dates must be formatted YYYY-MM-DD."}); return; }
-    setImp({rows:parsed});
-  };
-
-  const doImport=async(mode)=>{
-    if(mode==="replace"){ for(const e of t.rows.slice()) await t.remove(e.id); }
-    await t.addMany(imp.rows);
-    setImp(null);
-  };
-
   return(<>
     <div className="stat-preview">
       <div className="sp"><b>{stats.meetings}</b><small>events in {stats.term}</small></div>
@@ -830,17 +1077,11 @@ function EventAdmin({t,stats}){
       <div className="sp"><b>{stats.firms||"—"}</b><small>firms this semester</small></div>
       <div className="sp"><b>{stats.network}</b><small>firms in network</small></div>
     </div>
-    <div className="info-box"><b>These numbers are live.</b> The counters on the homepage are calculated from this event list — add or remove an event here and the site updates itself. Fill in the <b>Firm</b> field to count it toward "firms this semester."</div>
-
+    <div className="info-box"><b>These numbers are live.</b> The homepage counters are calculated from this list. Fill in the <b>Firm</b> field to count an event toward "firms this semester."</div>
     <div className="panel-head"><h3 className="serif">Events</h3>
-      <div className="acts">
-        <button className="mini" onClick={exportCSV}>Export CSV</button>
-        <button className="mini" onClick={()=>fileRef.current.click()}>Import CSV</button>
-        <input ref={fileRef} type="file" accept=".csv,text/csv" style={{display:"none"}} onChange={onFile}/>
-        <button className="btn btn-primary" onClick={()=>setEdit({title:"",date:"",type:"Meeting",firm:"",location:CLUB.meetRoom,desc:""})}>+ Add event</button>
-      </div></div>
-
-    {sorted.length===0&&<div className="empty">No events yet. Add one, or import a CSV.</div>}
+      <div className="acts"><CsvBar specKey="events" t={t} say={say}/>
+        <button className="btn btn-primary" onClick={()=>setEdit({title:"",date:"",type:"Meeting",firm:"",location:CLUB.meetRoom,desc:""})}>+ Add event</button></div></div>
+    {sorted.length===0&&<div className="empty">No events yet. Add one, or download the template and import.</div>}
     {sorted.map(e=>(
       <div className="adm-item" key={e.id}>
         <div className="meta"><b>{e.title}</b><small>
@@ -849,28 +1090,10 @@ function EventAdmin({t,stats}){
         <div className="acts"><button className="mini" onClick={()=>setEdit(e)}>Edit</button>
           <button className="mini del" onClick={()=>window.confirm("Delete this event?")&&t.remove(e.id)}>Delete</button></div>
       </div>))}
-
     {edit&&<Modal title={edit.id?"Edit event":"Add event"} onClose={()=>setEdit(null)}>
       <EventForm init={edit} onSave={save} onCancel={()=>setEdit(null)}/></Modal>}
-
-    {imp&&<Modal title="Import events from CSV" onClose={()=>setImp(null)}>
-      {imp.error
-        ? <><p style={{fontSize:14,color:"var(--danger)",marginBottom:18}}>{imp.error}</p>
-            <div className="modal-acts"><button className="mini" onClick={()=>setImp(null)}>Close</button></div></>
-        : <><p style={{fontSize:14,color:"var(--ink-soft)",marginBottom:14}}>Found <b>{imp.rows.length}</b> valid {imp.rows.length===1?"event":"events"}.</p>
-            <div style={{maxHeight:180,overflow:"auto",border:"1px solid var(--line)",borderRadius:8,marginBottom:18}}>
-              {imp.rows.map((r,i)=><div key={i} style={{padding:"9px 12px",borderBottom:"1px solid var(--paper-2)",fontSize:13}}>
-                <b style={{color:"var(--navy)"}}>{r.title}</b><span style={{color:"var(--ink-soft)"}}> · {r.date}{r.firm?" · "+r.firm:""}</span></div>)}
-            </div>
-            <div className="modal-acts">
-              <button className="mini" onClick={()=>setImp(null)}>Cancel</button>
-              <button className="mini" onClick={()=>doImport("append")}>Add to existing</button>
-              <button className="btn btn-primary" onClick={()=>window.confirm("Replace all current events with these "+imp.rows.length+"?")&&doImport("replace")}>Replace all</button>
-            </div></>}
-    </Modal>}
   </>);
 }
-
 function EventForm({init,onSave,onCancel}){
   const [f,setF]=useState(init);const set=(k,v)=>setF(s=>({...s,[k]:v}));
   return(<>
@@ -880,29 +1103,95 @@ function EventForm({init,onSave,onCancel}){
       <div className="field"><label>Type</label>
         <select value={f.type||"Meeting"} onChange={e=>set("type",e.target.value)}>{EVENT_TYPES.map(t=><option key={t}>{t}</option>)}</select></div>
     </div>
-    <div className="field"><label>Firm (optional)</label><input value={f.firm||""} onChange={e=>set("firm",e.target.value)} placeholder="e.g. PwC"/>
-      <div className="hint">Shows on the calendar view and counts toward "firms this semester."</div></div>
+    <div className="field"><label>Firm <span className="opt">(optional)</span></label><input value={f.firm||""} onChange={e=>set("firm",e.target.value)} placeholder="e.g. PwC"/>
+      <div className="hint">Shows on the calendar chip and counts toward "firms this semester."</div></div>
     <div className="field"><label>Location</label><input value={f.location} onChange={e=>set("location",e.target.value)}/></div>
-    <div className="field"><label>Description</label><textarea value={f.desc} onChange={e=>set("desc",e.target.value)} placeholder="One or two sentences about the event."/></div>
+    <div className="field"><label>Description</label><textarea value={f.desc} onChange={e=>set("desc",e.target.value)} placeholder="One or two sentences."/></div>
     <div className="modal-acts"><button className="mini" onClick={onCancel}>Cancel</button>
       <button className="btn btn-primary" onClick={()=>f.title.trim()&&f.date&&onSave(f)}>Save</button></div>
   </>);
 }
 
-function MemberAdmin({t}){
+/* ---- Recap admin (the Historian's tab) ---- */
+function RecapAdmin({t,events,say}){
+  const [edit,setEdit]=useState(null);
+  const sorted=t.rows.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  const save=async(r)=>{ r.id?await t.update(r.id,r):await t.add(r); setEdit(null); };
+  const pastEvents=events.rows.filter(e=>isPast(e.date)).sort((a,b)=>b.date.localeCompare(a.date));
+  const covered=new Set(t.rows.map(r=>r.date));
+  const missing=pastEvents.filter(e=>!covered.has(e.date));
+  return(<>
+    <div className="info-box"><b>Recaps show up on the public Recaps page</b>, and a "read recap" button appears next to the matching past event on the Events page. Matching is by <b>date</b> — give a recap the same date as its event and they link automatically.</div>
+    {missing.length>0&&<div className="banner"><span>📝</span><div>
+      <b>{missing.length} past event{missing.length>1?"s":""} without a recap yet:</b>{" "}
+      {missing.slice(0,4).map(e=>e.title).join("; ")}{missing.length>4?`; and ${missing.length-4} more`:""}.
+    </div></div>}
+    <div className="panel-head"><h3 className="serif">Event Recaps</h3>
+      <div className="acts"><CsvBar specKey="recaps" t={t} say={say}/>
+        <button className="btn btn-primary" onClick={()=>setEdit({title:"",date:"",author:"",summary:"",body:"",photos:""})}>+ Write recap</button></div></div>
+    {sorted.length===0&&<div className="empty">No recaps yet. Write one after the next meeting, or start from a past event above.</div>}
+    {sorted.map(r=>(
+      <div className="adm-item" key={r.id}>
+        <div className="meta"><b>{r.title}</b><small>
+          {fmtDate(r.date).short}{r.author?" · by "+r.author:""}
+          {splitList(r.photos).length?" · "+splitList(r.photos).length+" photo(s)":""}
+          {!r.body?" · no body yet":""}</small></div>
+        <div className="acts"><button className="mini" onClick={()=>setEdit(r)}>Edit</button>
+          <button className="mini del" onClick={()=>window.confirm("Delete this recap?")&&t.remove(r.id)}>Delete</button></div>
+      </div>))}
+    {edit&&<Modal wide title={edit.id?"Edit recap":"Write a recap"} onClose={()=>setEdit(null)}>
+      <RecapForm init={edit} events={pastEvents} onSave={save} onCancel={()=>setEdit(null)}/></Modal>}
+  </>);
+}
+function RecapForm({init,events,onSave,onCancel}){
+  const [f,setF]=useState({author:"",summary:"",body:"",photos:"",...init});
+  const set=(k,v)=>setF(s=>({...s,[k]:v}));
+  const prefill=(id)=>{
+    const e=events.find(x=>String(x.id)===String(id));
+    if(!e) return;
+    setF(s=>({...s,title:s.title||e.title,date:e.date}));
+  };
+  return(<>
+    {events.length>0&&!init.id&&<div className="field">
+      <label>Start from a past event <span className="opt">(optional)</span></label>
+      <select defaultValue="" onChange={e=>prefill(e.target.value)}>
+        <option value="">Choose an event…</option>
+        {events.map(e=><option key={e.id} value={e.id}>{fmtDate(e.date).short} — {e.title}</option>)}
+      </select>
+      <div className="hint">Fills in the title and date so the recap links to that event automatically.</div>
+    </div>}
+    <div className="field"><label>Recap title</label><input value={f.title} onChange={e=>set("title",e.target.value)} placeholder="e.g. PwC & AKPsi Joint Session"/></div>
+    <div className="f2">
+      <div className="field"><label>Event date</label><input type="date" value={f.date} onChange={e=>set("date",e.target.value)}/>
+        <div className="hint">Must match the event's date to link them.</div></div>
+      <div className="field"><label>Written by <span className="opt">(optional)</span></label><input value={f.author} onChange={e=>set("author",e.target.value)} placeholder="Benjamin Ni"/></div>
+    </div>
+    <div className="field"><label>Short summary</label><textarea style={{minHeight:60}} value={f.summary} onChange={e=>set("summary",e.target.value)} placeholder="One or two sentences — this is what shows on the card."/></div>
+    <div className="field"><label>Full write-up</label><textarea style={{minHeight:190}} value={f.body} onChange={e=>set("body",e.target.value)} placeholder={"What happened, who spoke, what the key takeaways were.\n\nLeave a blank line between paragraphs."}/>
+      <div className="hint">Blank line between paragraphs. This is what members read when they open the recap.</div></div>
+    <div className="field"><label>Photo URLs <span className="opt">(optional)</span></label><textarea style={{minHeight:56}} value={f.photos} onChange={e=>set("photos",e.target.value)} placeholder="https://…/photo1.jpg, https://…/photo2.jpg"/>
+      <div className="hint">Comma-separated. The first becomes the cover image. See the README for where to host photos.</div></div>
+    <div className="modal-acts"><button className="mini" onClick={onCancel}>Cancel</button>
+      <button className="btn btn-primary" onClick={()=>f.title.trim()&&f.date&&onSave(f)}>Save recap</button></div>
+  </>);
+}
+
+function MemberAdmin({t,say}){
   const [edit,setEdit]=useState(null);
   const sorted=t.rows.slice().sort((a,b)=>(a.order??99)-(b.order??99));
   const save=async(m)=>{ m.id?await t.update(m.id,m):await t.add(m); setEdit(null); };
   return(<>
     <div className="panel-head"><h3 className="serif">E-Board Members</h3>
-      <button className="btn btn-primary" onClick={()=>setEdit({name:"",role:"",order:t.rows.length+1,photo:"",year:"",major:"",linkedin:"",email:"",bio:""})}>+ Add member</button></div>
-    <div className="info-box">Year, major, bio, LinkedIn, and email are all <b>optional</b> — the card looks right with any combination filled in or left blank.</div>
+      <div className="acts"><CsvBar specKey="members" t={t} say={say}/>
+        <button className="btn btn-primary" onClick={()=>setEdit({name:"",role:"",order:t.rows.length+1,photo:"",year:"",majors:"",linkedin:"",email:"",bio:""})}>+ Add member</button></div></div>
+    <div className="info-box">Year, majors, bio, LinkedIn, email, and photo are all <b>optional</b> — cards look right with any combination. Majors come from a fixed list so they stay consistent across the page.</div>
     {sorted.map(m=>{
-      const extras=[m.year,m.major].filter(Boolean).join(" · ");
+      const majors=splitList(m.majors||m.major);
       const has=[m.bio&&"bio",m.linkedin&&"LinkedIn",m.email&&"email",m.photo&&"photo"].filter(Boolean);
       return (<div className="adm-item" key={m.id}>
         <div className="meta"><b>{m.name}</b><small>
-          {m.role} · shown #{m.order}{extras?" · "+extras:""}
+          {m.role} · #{m.order}{m.year?" · "+m.year:""}
+          {majors.length?" · "+majors.join(" + "):""}
           {has.length?" · has "+has.join(", "):""}</small></div>
         <div className="acts"><button className="mini" onClick={()=>setEdit(m)}>Edit</button>
           <button className="mini del" onClick={()=>window.confirm("Remove "+m.name+"?")&&t.remove(m.id)}>Delete</button></div>
@@ -912,129 +1201,124 @@ function MemberAdmin({t}){
   </>);
 }
 function MemberForm({init,onSave,onCancel}){
-  const [f,setF]=useState({year:"",major:"",linkedin:"",email:"",bio:"",...init});
+  const [f,setF]=useState({year:"",majors:"",linkedin:"",email:"",bio:"",photo:"",...init});
+  const [majors,setMajors]=useState(()=>{const l=splitList(init.majors||init.major);return l.length?l:[""]});
   const set=(k,v)=>setF(s=>({...s,[k]:v}));
+  const setMajor=(i,v)=>setMajors(l=>l.map((x,j)=>j===i?v:x));
+  const addMajor=()=>setMajors(l=>[...l,""]);
+  const delMajor=(i)=>setMajors(l=>l.length===1?[""]:l.filter((_,j)=>j!==i));
+  const used=majors.filter(Boolean);
+  const submit=()=>{
+    if(!f.name.trim()||!f.role.trim()) return;
+    const clean=[...new Set(majors.filter(Boolean))];
+    onSave({...f,majors:clean.join(", ")});
+  };
   return(<>
     <div className="field"><label>Full name</label><input value={f.name} autoFocus onChange={e=>set("name",e.target.value)}/></div>
     <div className="field"><label>Role / title</label><input value={f.role} onChange={e=>set("role",e.target.value)} placeholder="e.g. VP of Finance"/>
       <div className="hint">Type exactly "President" to show the gold President badge.</div></div>
     <div className="f2">
-      <div className="field"><label>Year <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+      <div className="field"><label>Year <span className="opt">(optional)</span></label>
         <select value={f.year||""} onChange={e=>set("year",e.target.value)}>{YEARS.map(y=><option key={y} value={y}>{y||"—"}</option>)}</select></div>
       <div className="field"><label>Display order</label><input type="number" min="1" value={f.order} onChange={e=>set("order",+e.target.value)}/></div>
     </div>
-    <div className="field"><label>Major <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
-      <input value={f.major||""} onChange={e=>set("major",e.target.value)} placeholder="Accounting"/></div>
-    <div className="field"><label>Short bio <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
-      <textarea value={f.bio||""} onChange={e=>set("bio",e.target.value)} placeholder="A sentence or two — internship experience, what they're excited about this year, etc."/>
-      <div className="hint">Two sentences reads best. Leave blank and the card just shows name, role, and year.</div></div>
-    <div className="field"><label>LinkedIn URL <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+    <div className="field"><label>Majors <span className="opt">(optional)</span></label>
+      {majors.map((m,i)=>(<div className="major-row" key={i}>
+        <select value={m} onChange={e=>setMajor(i,e.target.value)}>
+          <option value="">Select a major…</option>
+          {MAJORS.filter(x=>x===m||!used.includes(x)).map(x=><option key={x} value={x}>{x}</option>)}
+        </select>
+        {majors.length>1&&<button type="button" onClick={()=>delMajor(i)} aria-label="Remove major">×</button>}
+      </div>))}
+      {majors.filter(Boolean).length===majors.length&&majors.length<4&&
+        <button type="button" className="add-major" onClick={addMajor}>+ Add another major</button>}
+      <div className="hint">Pulled from a fixed list so spelling stays consistent. To add an option, edit the <b>MAJORS</b> list at the top of the file.</div></div>
+    <div className="field"><label>Short bio <span className="opt">(optional)</span></label>
+      <textarea value={f.bio||""} onChange={e=>set("bio",e.target.value)} placeholder="A sentence or two — internship experience, what they're excited about this year."/>
+      <div className="hint">Two sentences reads best.</div></div>
+    <div className="field"><label>LinkedIn URL <span className="opt">(optional)</span></label>
       <input value={f.linkedin||""} onChange={e=>set("linkedin",e.target.value)} placeholder="https://www.linkedin.com/in/..."/></div>
-    <div className="field"><label>Email <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+    <div className="field"><label>Email <span className="opt">(optional)</span></label>
       <input value={f.email||""} onChange={e=>set("email",e.target.value)} placeholder="abc123@pitt.edu"/></div>
-    <div className="field"><label>Photo URL <span style={{fontWeight:400,color:"var(--ink-soft)"}}>(optional)</span></label>
+    <div className="field"><label>Photo URL <span className="opt">(optional)</span></label>
       <input value={f.photo||""} onChange={e=>set("photo",e.target.value)} placeholder="https://..."/>
-      <div className="hint">Leave blank to show initials. See the README for where to host photos.</div></div>
+      <div className="hint">Blank shows initials on navy.</div></div>
     <div className="modal-acts"><button className="mini" onClick={onCancel}>Cancel</button>
-      <button className="btn btn-primary" onClick={()=>f.name.trim()&&f.role.trim()&&onSave(f)}>Save</button></div>
+      <button className="btn btn-primary" onClick={submit}>Save</button></div>
   </>);
 }
 
-function SponsorAdmin({t}){
+function SponsorAdmin({t,say}){
   const [edit,setEdit]=useState(null);
   const save=async(s)=>{ s.id?await t.update(s.id,s):await t.add(s); setEdit(null); };
+  const withLogo=t.rows.filter(r=>r.logo).length;
   return(<>
     <div className="panel-head"><h3 className="serif">Recruiters / Firms</h3>
-      <button className="btn btn-primary" onClick={()=>setEdit({name:""})}>+ Add firm</button></div>
-    <div className="info-box">This is the firm wall on the Recruiters page — every firm in UPAA's network, not just this semester.</div>
+      <div className="acts"><CsvBar specKey="sponsors" t={t} say={say}/>
+        <button className="btn btn-primary" onClick={()=>setEdit({name:"",logo:"",site:""})}>+ Add firm</button></div></div>
+    <div className="info-box">
+      <b>Logos:</b> {withLogo} of {t.rows.length} firms have one. A firm with no logo shows its name as text, so the wall looks intentional either way — you can add them one at a time.
+      <br/><br/>
+      Ask each recruiter for their firm's logo file or brand/media kit — firms have brand guidelines and usually hand over an approved PNG or SVG happily. That's a natural ask for Jasen to fold into his recruiter emails, and it avoids grabbing a low-res logo off Google Images.
+    </div>
     {t.rows.map(s=>(
       <div className="adm-item" key={s.id}>
-        <div className="meta"><b>{s.name}</b></div>
+        <div style={{display:"flex",alignItems:"center",flex:1,minWidth:0}}>
+          <span className="logo-chip">{s.logo?<img src={s.logo} alt=""/>:<span style={{fontSize:10,color:"var(--ink-soft)"}}>txt</span>}</span>
+          <div className="meta"><b>{s.name}</b><small>{s.logo?"logo set":"name shown as text"}{s.site?" · links out":""}</small></div>
+        </div>
         <div className="acts"><button className="mini" onClick={()=>setEdit(s)}>Edit</button>
           <button className="mini del" onClick={()=>window.confirm("Remove "+s.name+"?")&&t.remove(s.id)}>Delete</button></div>
       </div>))}
     {edit&&<Modal title={edit.id?"Edit firm":"Add firm"} onClose={()=>setEdit(null)}>
       <div className="field"><label>Firm name</label>
-        <input autoFocus value={edit.name} onChange={e=>setEdit({...edit,name:e.target.value})}
-          onKeyDown={e=>e.key==="Enter"&&edit.name.trim()&&save(edit)}/></div>
+        <input autoFocus value={edit.name} onChange={e=>setEdit({...edit,name:e.target.value})}/></div>
+      <div className="field"><label>Logo URL <span className="opt">(optional)</span></label>
+        <input value={edit.logo||""} onChange={e=>setEdit({...edit,logo:e.target.value})} placeholder="https://.../logo.png"/>
+        <div className="hint">PNG or SVG with a transparent background works best. Blank shows the name as text.</div></div>
+      {edit.logo&&<div style={{margin:"0 0 16px"}}>
+        <div style={{fontSize:13,fontWeight:600,color:"var(--navy)",marginBottom:6}}>Preview</div>
+        <div className="spon" style={{maxWidth:200}}><img src={edit.logo} alt=""/></div></div>}
+      <div className="field"><label>Website <span className="opt">(optional)</span></label>
+        <input value={edit.site||""} onChange={e=>setEdit({...edit,site:e.target.value})} placeholder="https://www.pwc.com"/>
+        <div className="hint">Makes the tile clickable.</div></div>
       <div className="modal-acts"><button className="mini" onClick={()=>setEdit(null)}>Cancel</button>
         <button className="btn btn-primary" onClick={()=>edit.name.trim()&&save(edit)}>Save</button></div></Modal>}
   </>);
 }
 
-/* ---- Mailing list ---- */
-function MailAdmin({t}){
+function MailAdmin({t,say}){
   const [q,setQ]=useState("");
   const [add,setAdd]=useState(null);
-  const [imp,setImp]=useState(null);
-  const [toast,setToast]=useState("");
-  const fileRef=useRef();
-  const say=(m)=>{setToast(m);setTimeout(()=>setToast(""),2200)};
-
   const all=t.rows.slice().reverse();
   const active=all.filter(r=>(r.status||"active")==="active");
   const shown=all.filter(r=>{
     const s=q.trim().toLowerCase();
     return !s||[r.name,r.email,r.year,r.major].some(v=>(v||"").toLowerCase().includes(s));
   });
-
   const copyEmails=async()=>{
     const list=active.map(r=>r.email).filter(Boolean).join(", ");
     if(!list){ say("No active emails to copy."); return; }
-    say(await copyText(list)?`Copied ${active.length} email${active.length===1?"":"s"} — paste into BCC`:"Couldn't copy — try Export CSV");
+    say(await copyText(list)?`Copied ${active.length} email${active.length===1?"":"s"} — paste into BCC`:"Couldn't copy — try Export");
   };
-  const exportCSV=()=>download("upaa-mailing-list.csv",
-    toCSV(["name","email","year","major","status","source","joined"],
-      all.map(r=>[r.name,r.email,r.year,r.major,r.status||"active",r.source||"",r.created])));
-
-  const onFile=async(ev)=>{
-    const file=ev.target.files?.[0]; if(!file) return;
-    const rows=parseCSV(await file.text()); ev.target.value="";
-    if(rows.length<2){ setImp({error:"That file had no data rows."}); return; }
-    const head=rows[0].map(h=>h.trim().toLowerCase());
-    const idx=n=>head.indexOf(n);
-    if(idx("email")<0){ setImp({error:"The file needs an 'email' column."}); return; }
-    const have=new Set(t.rows.map(r=>(r.email||"").toLowerCase()));
-    const parsed=[];
-    rows.slice(1).forEach(r=>{
-      const email=(r[idx("email")]||"").trim();
-      if(!email||!email.includes("@")||have.has(email.toLowerCase())) return;
-      have.add(email.toLowerCase());
-      parsed.push({
-        name:idx("name")>=0?(r[idx("name")]||"").trim():"",
-        email,
-        year:idx("year")>=0?(r[idx("year")]||"").trim():"",
-        major:idx("major")>=0?(r[idx("major")]||"").trim():"",
-        status:"active", source:"import", created:todayISO(),
-      });
-    });
-    if(!parsed.length){ setImp({error:"No new email addresses found — everything in that file is already on the list."}); return; }
-    setImp({rows:parsed});
-  };
-
   const toggle=(r)=>t.update(r.id,{status:(r.status||"active")==="active"?"unsubscribed":"active"});
-
   return(<>
     <div className="stat-preview" style={{gridTemplateColumns:"repeat(3,1fr)"}}>
       <div className="sp"><b>{all.length}</b><small>total on the list</small></div>
       <div className="sp"><b>{active.length}</b><small>active</small></div>
       <div className="sp"><b>{all.length-active.length}</b><small>unsubscribed</small></div>
     </div>
-    <div className="info-box"><b>This is the live mailing list.</b> Anyone who fills out the form on the Join page lands here automatically. Use <b>Copy all emails</b> to grab every active address as a comma-separated list, then paste it straight into the BCC field in Outlook or Gmail.</div>
-
+    <div className="info-box"><b>This is the live mailing list.</b> Sign-ups from the Join page land here automatically. <b>Copy all emails</b> puts every active address on your clipboard, comma-separated — paste straight into BCC in Outlook or Gmail.</div>
     <div className="panel-head">
       <input className="searchbar" placeholder="Search name, email, major…" value={q} onChange={e=>setQ(e.target.value)}/>
       <div className="acts">
         <button className="mini" onClick={copyEmails}>Copy all emails</button>
-        <button className="mini" onClick={exportCSV}>Export CSV</button>
-        <button className="mini" onClick={()=>fileRef.current.click()}>Import CSV</button>
-        <input ref={fileRef} type="file" accept=".csv,text/csv" style={{display:"none"}} onChange={onFile}/>
-        <button className="btn btn-primary" onClick={()=>setAdd({name:"",email:"",year:"",major:""})}>+ Add manually</button>
+        <CsvBar specKey="signups" t={t} say={say}/>
+        <button className="btn btn-primary" onClick={()=>setAdd({name:"",email:"",year:"",major:""})}>+ Add</button>
       </div>
     </div>
-
     {all.length===0
-      ? <div className="empty">Nobody on the list yet. Sign-ups from the Join page appear here — put the site on a QR code at tabling and it fills itself. You can also add people by hand or import a CSV from a sign-in sheet.</div>
+      ? <div className="empty">Nobody on the list yet. Sign-ups from the Join page appear here — put the site on a QR code at tabling and it fills itself. You can also add people by hand or import a sign-in sheet.</div>
       : shown.length===0
         ? <div className="empty">No one matches "{q}".</div>
         : <table className="sig"><thead><tr>
@@ -1043,16 +1327,17 @@ function MailAdmin({t}){
               <td>{r.name||"—"}</td><td>{r.email}</td><td>{r.year||"—"}</td><td>{r.major||"—"}</td><td>{r.created}</td>
               <td style={{textAlign:"right",whiteSpace:"nowrap"}}>
                 <button className={"mini"+(off?" good":"")} onClick={()=>toggle(r)}>{off?"Resubscribe":"Unsubscribe"}</button>{" "}
-                <button className="mini del" onClick={()=>window.confirm("Delete "+(r.name||r.email)+" from the list?")&&t.remove(r.id)}>×</button>
+                <button className="mini del" onClick={()=>window.confirm("Delete "+(r.name||r.email)+"?")&&t.remove(r.id)}>×</button>
               </td></tr>);})}</tbody></table>}
-
     {add&&<Modal title="Add to mailing list" onClose={()=>setAdd(null)}>
-      <div className="field"><label>Full name</label><input autoFocus value={add.name} onChange={e=>setAdd({...add,name:e.target.value})}/></div>
+      <div className="field"><label>Full name <span className="opt">(optional)</span></label><input autoFocus value={add.name} onChange={e=>setAdd({...add,name:e.target.value})}/></div>
       <div className="field"><label>Email</label><input type="email" value={add.email} onChange={e=>setAdd({...add,email:e.target.value})} placeholder="abc123@pitt.edu"/></div>
       <div className="f2">
         <div className="field"><label>Year</label>
           <select value={add.year} onChange={e=>setAdd({...add,year:e.target.value})}>{YEARS.map(y=><option key={y} value={y}>{y||"—"}</option>)}</select></div>
-        <div className="field"><label>Major</label><input value={add.major} onChange={e=>setAdd({...add,major:e.target.value})}/></div>
+        <div className="field"><label>Major</label>
+          <select value={add.major} onChange={e=>setAdd({...add,major:e.target.value})}>
+            <option value="">—</option>{MAJORS.map(m=><option key={m}>{m}</option>)}</select></div>
       </div>
       <div className="modal-acts"><button className="mini" onClick={()=>setAdd(null)}>Cancel</button>
         <button className="btn btn-primary" onClick={async()=>{
@@ -1061,22 +1346,6 @@ function MailAdmin({t}){
           setAdd(null);say("Added to the list");
         }}>Add</button></div>
     </Modal>}
-
-    {imp&&<Modal title="Import to mailing list" onClose={()=>setImp(null)}>
-      {imp.error
-        ? <><p style={{fontSize:14,color:"var(--danger)",marginBottom:18}}>{imp.error}</p>
-            <div className="modal-acts"><button className="mini" onClick={()=>setImp(null)}>Close</button></div></>
-        : <><p style={{fontSize:14,color:"var(--ink-soft)",marginBottom:14}}>
-              Found <b>{imp.rows.length}</b> new {imp.rows.length===1?"person":"people"}. Duplicates already on the list were skipped.</p>
-            <div style={{maxHeight:180,overflow:"auto",border:"1px solid var(--line)",borderRadius:8,marginBottom:18}}>
-              {imp.rows.map((r,i)=><div key={i} style={{padding:"9px 12px",borderBottom:"1px solid var(--paper-2)",fontSize:13}}>
-                <b style={{color:"var(--navy)"}}>{r.name||r.email}</b>{r.name&&<span style={{color:"var(--ink-soft)"}}> · {r.email}</span>}</div>)}
-            </div>
-            <div className="modal-acts"><button className="mini" onClick={()=>setImp(null)}>Cancel</button>
-              <button className="btn btn-primary" onClick={async()=>{await t.addMany(imp.rows);say("Added "+imp.rows.length+" to the list");setImp(null);}}>Add {imp.rows.length}</button></div></>}
-    </Modal>}
-
-    <Toast msg={toast}/>
   </>);
 }
 
