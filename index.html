@@ -2264,24 +2264,52 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 /* Publish upcoming events as schema.org Event data once they've loaded, so
    search engines can read the real schedule rather than only the static
    organisation block in <head>. */
+
+/* US Eastern offset for a given date. Hardcoding -05:00 was wrong for most of
+   the fall: DST runs from the second Sunday in March to the first Sunday in
+   November, so Sep/Oct events are -04:00 and only Nov/Dec are -05:00. */
+function easternOffset(iso){
+  const [y,m,d]=iso.split("-").map(Number);
+  const nthSunday=(year,month,n)=>{           // month is 1-based
+    const first=new Date(Date.UTC(year,month-1,1));
+    const day=1+((7-first.getUTCDay())%7)+(n-1)*7;
+    return new Date(Date.UTC(year,month-1,day));
+  };
+  const start=nthSunday(y,3,2);               // DST begins, 2nd Sunday of March
+  const end=nthSunday(y,11,1);                // DST ends, 1st Sunday of November
+  const t=Date.UTC(y,m-1,d);
+  return (t>=start.getTime()&&t<end.getTime()) ? "-04:00" : "-05:00";
+}
+
 (async function eventSchema(){
   if(!LIVE) return;
   try{
     const {data}=await sb.from("events").select("*").order("date");
     if(!data) return;
-    const items=data.filter(e=>!isPast(e.date)).map(e=>({
-      "@context":"https://schema.org","@type":"Event",
-      name:e.title,
-      startDate:`${e.date}T${normTime(e.time)}:00-05:00`,
-      endDate:`${e.date}T${endOf(e)}:00-05:00`,
-      eventStatus:"https://schema.org/EventScheduled",
-      eventAttendanceMode:"https://schema.org/OfflineEventAttendanceMode",
-      location:{"@type":"Place",name:e.location,
-        address:{"@type":"PostalAddress",addressLocality:"Pittsburgh",addressRegion:"PA",addressCountry:"US"}},
-      description:e.desc||undefined,
-      organizer:{"@type":"Organization",name:"University of Pittsburgh Accounting Association",url:"https://pittupaa.com/"},
-      isAccessibleForFree:true,
-    }));
+    const items=data.filter(e=>!isPast(e.date)).map(e=>{
+      const off=easternOffset(e.date);
+      const ev={
+        "@context":"https://schema.org","@type":"Event",
+        name:e.title,
+        startDate:`${e.date}T${normTime(e.time)}:00${off}`,
+        endDate:`${e.date}T${endOf(e)}:00${off}`,
+        eventStatus:"https://schema.org/EventScheduled",
+        eventAttendanceMode:"https://schema.org/OfflineEventAttendanceMode",
+        location:{"@type":"Place",name:e.location,
+          address:{"@type":"PostalAddress",addressLocality:"Pittsburgh",addressRegion:"PA",addressCountry:"US"}},
+        image:["https://pittupaa.com/og-image.png"],
+        organizer:{"@type":"Organization",
+          name:"University of Pittsburgh Accounting Association",url:"https://pittupaa.com/"},
+        isAccessibleForFree:true,
+        offers:{"@type":"Offer",price:"0",priceCurrency:"USD",
+          availability:"https://schema.org/InStock",
+          url:"https://pittupaa.com/",validFrom:`${e.date}T00:00:00${off}`},
+      };
+      if(e.desc) ev.description=e.desc;
+      // the presenting firm is the closest match for "performer"
+      if(e.firm) ev.performer={"@type":"Organization",name:e.firm};
+      return ev;
+    });
     if(!items.length) return;
     const s=document.createElement("script");
     s.type="application/ld+json";
