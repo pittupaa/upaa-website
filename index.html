@@ -4,7 +4,45 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UPAA — University of Pittsburgh Accounting Association</title>
-<meta name="description" content="The University of Pittsburgh Accounting Association connects Pitt students with recruiters and professionals from leading public accounting firms. Meetings Wednesdays at 7PM in 2500 Sennott Square." />
+<meta name="description" content="The University of Pittsburgh Accounting Association connects Pitt students with recruiters from Deloitte, EY, PwC, KPMG and more. Meetings Wednesdays at 7PM in 2500 Sennott Square. Open to all Pitt students." />
+<link rel="canonical" href="https://pittupaa.com/" />
+<meta name="theme-color" content="#0A2342" />
+
+<!-- Link previews (iMessage, GroupMe, Slack, LinkedIn, Instagram DMs).
+     For a club that shares its URL by text and social far more than it is
+     found by search, this is the part that actually gets seen. -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="UPAA — Pitt Accounting Association" />
+<meta property="og:title" content="UPAA — University of Pittsburgh Accounting Association" />
+<meta property="og:description" content="Meet recruiters from Deloitte, EY, PwC, KPMG and more. Meetings Wednesdays at 7PM in 2500 Sennott Square. Open to all Pitt students." />
+<meta property="og:url" content="https://pittupaa.com/" />
+<meta property="og:image" content="https://pittupaa.com/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="UPAA — where accounting students become professionals. Meetings Wednesdays at 7PM in 2500 Sennott Square." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="UPAA — University of Pittsburgh Accounting Association" />
+<meta name="twitter:description" content="Meet recruiters from Deloitte, EY, PwC, KPMG and more. Wednesdays at 7PM in 2500 Sennott Square." />
+<meta name="twitter:image" content="https://pittupaa.com/og-image.png" />
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"CollegeOrUniversity",
+  "name":"University of Pittsburgh Accounting Association",
+  "alternateName":"UPAA",
+  "url":"https://pittupaa.com/",
+  "email":"contact@pittupaa.com",
+  "description":"A student organization at the University of Pittsburgh connecting accounting and finance students with recruiters and professionals from leading public accounting firms.",
+  "parentOrganization":{"@type":"CollegeOrUniversity","name":"University of Pittsburgh"},
+  "location":{
+    "@type":"Place",
+    "name":"2500 Sennott Square",
+    "address":{"@type":"PostalAddress","addressLocality":"Pittsburgh","addressRegion":"PA","addressCountry":"US"}
+  },
+  "sameAs":["https://www.instagram.com/pitt_accounting/"]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -408,6 +446,25 @@
 </head>
 <body>
 <div id="root"></div>
+<noscript>
+  <!-- Real content for crawlers and anyone without JS. The app renders over
+       this; it never both appears. -->
+  <div style="max-width:760px;margin:0 auto;padding:48px 24px;font-family:system-ui,sans-serif;line-height:1.6">
+    <h1>University of Pittsburgh Accounting Association (UPAA)</h1>
+    <p>UPAA connects Pitt students with the firms, recruiters, and skills that turn an accounting major into a career. We meet <strong>Wednesdays at 7:00 PM in 2500 Sennott Square</strong> during the fall and spring semesters, and membership is open to every Pitt student. Dues are $10 per semester.</p>
+    <h2>What we do</h2>
+    <ul>
+      <li>Recruiters and professionals from public accounting firms present at nearly every meeting.</li>
+      <li>Resume reviews, networking practice, and CPA exam guidance.</li>
+      <li>Office visits and a community of accounting students building their networks together.</li>
+    </ul>
+    <h2>Firms that recruit our members</h2>
+    <p>Deloitte, EY, PwC, KPMG, BDO, RSM, Baker Tilly, CLA, Forvis Mazars, Grossman Yanak &amp; Ford, Maher Duessel, and Cohen &amp; Co.</p>
+    <h2>Join UPAA</h2>
+    <p>Come to any meeting, or email <a href="mailto:contact@pittupaa.com">contact@pittupaa.com</a>. Follow <a href="https://www.instagram.com/pitt_accounting/">@pitt_accounting</a> on Instagram.</p>
+    <p><em>This site needs JavaScript for the full schedule and E-Board directory.</em></p>
+  </div>
+</noscript>
 <script type="text/babel">
 const {useState,useEffect,useMemo,useRef} = React;
 
@@ -2203,6 +2260,35 @@ function App(){
   return <Public toAdmin={()=>go("admin")}/>;
 }
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+
+/* Publish upcoming events as schema.org Event data once they've loaded, so
+   search engines can read the real schedule rather than only the static
+   organisation block in <head>. */
+(async function eventSchema(){
+  if(!LIVE) return;
+  try{
+    const {data}=await sb.from("events").select("*").order("date");
+    if(!data) return;
+    const items=data.filter(e=>!isPast(e.date)).map(e=>({
+      "@context":"https://schema.org","@type":"Event",
+      name:e.title,
+      startDate:`${e.date}T${normTime(e.time)}:00-05:00`,
+      endDate:`${e.date}T${endOf(e)}:00-05:00`,
+      eventStatus:"https://schema.org/EventScheduled",
+      eventAttendanceMode:"https://schema.org/OfflineEventAttendanceMode",
+      location:{"@type":"Place",name:e.location,
+        address:{"@type":"PostalAddress",addressLocality:"Pittsburgh",addressRegion:"PA",addressCountry:"US"}},
+      description:e.desc||undefined,
+      organizer:{"@type":"Organization",name:"University of Pittsburgh Accounting Association",url:"https://pittupaa.com/"},
+      isAccessibleForFree:true,
+    }));
+    if(!items.length) return;
+    const s=document.createElement("script");
+    s.type="application/ld+json";
+    s.textContent=JSON.stringify(items);
+    document.head.appendChild(s);
+  }catch(e){ /* structured data is a nicety; never break the page for it */ }
+})();
 </script>
 </body>
 </html>
