@@ -604,8 +604,25 @@ function useTable(table, seed, orderBy, opts){
     rows, err,
     async add(row){
       if(LIVE){
+        if(skipFetch){
+          /* Public pages (the Join form and #subscribe) may INSERT but not
+             SELECT — that's what keeps the mailing list private. Asking for the
+             row back with .select() needs SELECT permission and would fail, so
+             insert without a returning clause and track it locally. */
+          const {error}=await sb.from(table).insert(payload(row));
+          if(error){
+            console.error("insert failed:",error);
+            setErr(error.message); return false;
+          }
+          setRows(r=>[...r,{...payload(row),id:Date.now()+Math.random()}]);
+          setErr("");
+          return true;
+        }
         const {data,error}=await sb.from(table).insert(payload(row)).select();
-        if(error){setErr(error.message);return false;}
+        if(error){
+          console.error("insert failed:",error);
+          setErr(error.message); return false;
+        }
         if(data){ setRows(r=>[...r,...data]); setErr(""); }
       } else setRows(r=>[...r,{...row,id:Date.now()+Math.random()}]);
       return true;
@@ -614,6 +631,7 @@ function useTable(table, seed, orderBy, opts){
       if(!list.length) return true;
       if(LIVE){
         const {data,error}=await sb.from(table).insert(list.map(payload)).select();
+        if(error) console.error("bulk insert failed:",error);
         if(error){setErr(error.message);return false;}
         if(data) setRows(r=>[...r,...data]);
       } else setRows(r=>[...r,...list.map(x=>({...x,id:Date.now()+Math.random()}))]);
