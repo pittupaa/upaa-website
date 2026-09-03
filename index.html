@@ -475,7 +475,7 @@ const SUPABASE_URL = "https://sfqiltmndauooheirznw.supabase.co";       // <-- pa
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmcWlsdG1uZGF1b29oZWlyem53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4ODMxMjQsImV4cCI6MjEwMzQ1OTEyNH0.UtCHhzz45XNWEnokd9bEB-XoiYAi9ncdNOGRLXPZkfQ";  // <-- paste Supabase anon public key
 /* Only used in demo mode (no Supabase keys). Once connected, the admin panel
    uses real Supabase Auth accounts and this value is ignored entirely. */
-const DEMO_PASSWORD = "upaafall2026";
+const DEMO_PASSWORD = "upaa2026";
 
 const LIVE = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 /* detectSessionInUrl is off deliberately: this site routes on the URL hash
@@ -586,6 +586,11 @@ function useTable(table, seed, orderBy, opts){
   const [rows,setRows]=useState(seed);
   const [err,setErr]=useState("");
   const skipFetch=opts&&opts.fetch===false;
+  /* reloadKey re-runs the fetch when it changes. The admin panel passes the
+     signed-in user id, because the panel mounts while the login screen is up —
+     so the first fetch goes out anonymously and `signups` (which has no anon
+     SELECT) fails. Without this the Mailing List tab stays empty after login. */
+  const reloadKey=opts&&opts.reloadKey;
   useEffect(()=>{
     if(!LIVE||skipFetch) return;
     let alive=true;
@@ -595,11 +600,14 @@ function useTable(table, seed, orderBy, opts){
         if(orderBy) q=q.order(orderBy);
         const {data,error}=await q;
         if(error) throw error;
-        if(alive&&data) setRows(data);
-      }catch(e){ if(alive) setErr(e.message||"Could not load "+table); }
+        if(alive&&data){ setRows(data); setErr(""); }
+      }catch(e){
+        console.error("load "+table+" failed:",e);
+        if(alive) setErr(e.message||"Could not load "+table);
+      }
     })();
     return ()=>{alive=false};
-  },[]);
+  },[reloadKey]);
   return {
     rows, err,
     async add(row){
@@ -1800,11 +1808,13 @@ function Admin({toSite}){
   const [tab,setTab]=useState("events");
   const [toast,setToast]=useState("");
   const say=(m)=>{setToast(m);setTimeout(()=>setToast(""),2200)};
-  const members=useTable("members",SEED.members,"order");
-  const events=useTable("events",SEED.events,"date");
-  const sponsors=useTable("sponsors",SEED.sponsors,"id");
-  const recaps=useTable("recaps",SEED.recaps,"date");
-  const signups=useTable("signups",SEED.signups,"id");
+  // refetch once the session is known — see the reloadKey note in useTable
+  const rk = LIVE ? (session?.user?.id || "anon") : "demo";
+  const members=useTable("members",SEED.members,"order",{reloadKey:rk});
+  const events=useTable("events",SEED.events,"date",{reloadKey:rk});
+  const sponsors=useTable("sponsors",SEED.sponsors,"id",{reloadKey:rk});
+  const recaps=useTable("recaps",SEED.recaps,"date",{reloadKey:rk});
+  const signups=useTable("signups",SEED.signups,"id",{reloadKey:rk});
   const stats=useStats(events,sponsors);
   if(LIVE&&!ready) return (<div className="admin-wrap"><div className="login-box">
     <p style={{margin:0,color:"var(--ink-soft)",fontSize:14}}>Checking your session…</p></div></div>);
