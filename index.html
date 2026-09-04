@@ -280,7 +280,63 @@
   .recap h3{font-size:19px;margin:7px 0 8px}
   .recap p{font-size:14px;color:var(--ink-soft);line-height:1.6}
   .recap .by{font-size:12.5px;color:var(--ink-soft);margin-top:12px;padding-top:12px;border-top:1px solid var(--paper-2)}
-  .recap-full p{font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:14px;white-space:pre-wrap}
+  .recap-full p{font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:14px}
+  .rt-h2,.rt-h3{font-family:'Fraunces',serif;color:var(--navy);margin:20px 0 8px;line-height:1.25;font-weight:600}
+  .rt-h2{font-size:20px} .rt-h3{font-size:17px}
+  .rt-ul,.rt-ol{margin:0 0 14px 22px;padding:0}
+  .rt-ul li,.rt-ol li{font-size:15px;color:var(--ink);line-height:1.7;margin-bottom:5px}
+  .rt-q{border-left:3px solid var(--gold);background:var(--paper);padding:11px 16px;
+    margin:0 0 14px;font-size:15px;color:var(--ink-soft);font-style:italic}
+  .rt-a{color:var(--navy);font-weight:600;text-decoration:underline;
+    text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:2px}
+  .rt-a:hover{color:var(--gold-deep)}
+  .att-list{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+  .att-item{display:flex;align-items:center;gap:12px;background:var(--paper);
+    border:1px solid var(--line);border-radius:10px;padding:11px 14px;transition:.15s}
+  .att-item:hover{border-color:var(--navy);background:var(--white)}
+  .att-item .ext{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+    background:var(--navy);color:var(--paper);border-radius:5px;padding:5px 8px;
+    flex-shrink:0;min-width:46px;text-align:center;letter-spacing:.04em}
+  .att-item .nm{flex:1;font-size:14px;color:var(--navy);font-weight:500;word-break:break-word}
+  .att-item .dl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-soft);flex-shrink:0}
+  .att-count{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-soft);
+    border:1px solid var(--line);border-radius:99px;padding:2px 8px;margin-left:8px}
+  .fmt-help{background:var(--paper);border:1px solid var(--line);border-radius:9px;
+    padding:12px 14px;margin-top:8px;font-size:12.5px;color:var(--ink-soft);line-height:1.8}
+  .fmt-help code{font-family:'JetBrains Mono',monospace;font-size:11.5px;
+    background:var(--paper-2);padding:1px 5px;border-radius:4px;color:var(--navy)}
+  .prev-box{background:var(--white);border:1px solid var(--line);border-radius:10px;
+    padding:16px 18px;margin-top:8px;max-height:300px;overflow:auto}
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:3px;gap:2px;margin-bottom:8px}
+  .seg button{font:inherit;font-size:12.5px;font-weight:600;padding:6px 13px;border:none;
+    background:none;border-radius:6px;cursor:pointer;color:var(--ink-soft)}
+  .seg button.on{background:var(--white);color:var(--navy);box-shadow:0 1px 2px rgba(10,35,66,.1)}
+  .file-row{display:flex;align-items:center;gap:9px;background:var(--paper);
+    border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-bottom:6px}
+  .file-row .nm{flex:1;font-size:13px;color:var(--navy);word-break:break-all}
+  /* resources */
+  .handoff{background:#EEF3FA;border:1px solid #B9CCE4;border-radius:10px;padding:14px 16px;
+    font-size:13px;color:#1c3d63;margin-bottom:18px;line-height:1.6}
+  .handoff b{color:#12345B}
+  .handoff a{color:#12345B;font-weight:600;text-decoration:underline}
+  .res-cat{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin:34px 0 14px;
+    display:flex;align-items:center;gap:11px}
+  .res-cat::after{content:"";flex:1;height:1px;background:var(--line)}
+  .res-cat:first-of-type{margin-top:8px}
+  .res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .res{display:flex;gap:14px;align-items:flex-start;background:var(--white);
+    border:1px solid var(--line);border-radius:12px;padding:20px 22px;transition:.15s}
+  .res:hover{border-color:var(--navy);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .res .ico{width:38px;height:38px;border-radius:9px;background:var(--paper-2);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;
+    font-size:16px;font-weight:600;color:var(--navy)}
+  .res b{display:block;font-family:'Fraunces',serif;font-size:17px;color:var(--navy);
+    line-height:1.3;margin-bottom:3px}
+  .res .dsc{display:block;font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+  .res .host{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;
+    color:var(--gold-deep);margin-top:8px;word-break:break-all}
   .recap-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;margin-top:16px}
   .recap-gal img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
 
@@ -421,7 +477,8 @@
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:var(--paper);font-size:14px;padding:11px 20px;border-radius:9px;z-index:200;box-shadow:var(--shadow)}
   .cols{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--paper-2);border-radius:7px;padding:10px 12px;color:var(--navy);word-break:break-word;margin:10px 0 14px}
 
-  @media(max-width:980px){ .nav-links button{font-size:13px;padding:8px 9px} }
+  @media(max-width:1120px){ .nav-links button{font-size:13px;padding:8px 8px} }
+  @media(max-width:1010px){ .nav-links button{font-size:12.5px;padding:8px 6px} }
   @media(max-width:860px){
     .hero-in{grid-template-columns:1fr;gap:36px}
     .stats,.stat-preview{grid-template-columns:repeat(2,1fr)}
@@ -499,7 +556,18 @@ const CLUB = {
    See "Publishing a subscribable calendar" in the README. */
 const CALENDAR_FEED_URL = "https://sfqiltmndauooheirznw.supabase.co/functions/v1/calendar";
 
+/* Set to true once the Zoho Campaigns sync is live.
+   Zoho then owns sending and unsubscribes; this site owns intake only.
+   It disables "Copy all emails", because that reads Supabase — where someone
+   who unsubscribed in Zoho still looks active. Emailing them would be the one
+   genuinely harmful thing this setup could do. */
+const ZOHO_SYNC_LIVE = true;
+/* Optional: your Campaigns list URL, so the panel can link straight to it. */
+const ZOHO_LIST_URL = "https://campaigns.zoho.com/campaigns/newui/org937867641#/portal/ws/0/contacts/contacts-lists/show/1710446000000049282/contacts";
+
 const EVENT_TYPES=["Meeting","Firm Presentation","Office Visit","Social","Other"];
+/* Categories for the Resources page, shown in this order. */
+const LINK_CATS=["CPA Exam & Prep","Career Events","Pitt Business","Recruiting & Resumes","Other"];
 const YEARS=["","Freshman","Sophomore","Junior","Senior","Graduate"];
 
 /* Standardized major list — edit here and every dropdown updates.
@@ -546,6 +614,23 @@ const SEED = {
   ],
   recaps:[],
   signups:[],
+  links:[
+    {id:1,title:"Meridian CPA Review",category:"CPA Exam & Prep",order:1,url:"",
+     desc:"CPA review provider presenting to UPAA on December 2."},
+    {id:2,title:"Atlas CPA",category:"CPA Exam & Prep",order:2,url:"",
+     desc:"CPA study help and exam resources."},
+    {id:3,title:"AICPA — CPA Exam Overview",category:"CPA Exam & Prep",order:3,
+     url:"https://www.aicpa-cima.com/resources/landing/cpa-exam",
+     desc:"Official CPA Evolution structure, the core sections and the three disciplines."},
+    {id:4,title:"Fall 2026 Career Conference",category:"Career Events",order:1,url:"",
+     desc:"Friday, September 18 at the Petersen Events Center."},
+    {id:5,title:"Pitt Business Resumania",category:"Career Events",order:2,url:"",
+     desc:"Drop-in resume reviews before the career fair. Tafel Center, Sennott Square."},
+    {id:6,title:"Pitt Business Events Calendar",category:"Pitt Business",order:1,url:"",
+     desc:"Everything else Pitt Business runs — panels, workshops, and info sessions."},
+    {id:7,title:"Handshake",category:"Recruiting & Resumes",order:1,url:"",
+     desc:"Where Pitt postings and employer events live. Log in with your Pitt account."},
+  ],
 };
 
 /* Strip fields that must never appear in a write payload:
@@ -927,6 +1012,102 @@ function AddToCal({e}){
 }
 
 /* ============================================================
+   RICH TEXT — a small Markdown subset, rendered to React elements
+   ------------------------------------------------------------
+   Deliberately not HTML: nothing an author types can inject markup, and the
+   link pattern only ever matches http(s), so no javascript: URLs are possible.
+   ============================================================ */
+const INLINE_RX=/(\*\*[^*\n]+\*\*)|(\*[^*\n]+\*)|(\[[^\]\n]+\]\((https?:\/\/[^\s)]+)\))|((?:https?:\/\/|www\.)[^\s<)]+)/;
+function inlineBits(s){
+  const out=[]; let rest=String(s??""), k=0;
+  for(;;){
+    const m=INLINE_RX.exec(rest);
+    if(!m){ if(rest) out.push(rest); break; }
+    if(m.index>0) out.push(rest.slice(0,m.index));
+    const tok=m[0];
+    if(m[1])      out.push(<strong key={k++}>{tok.slice(2,-2)}</strong>);
+    else if(m[2]) out.push(<em key={k++}>{tok.slice(1,-1)}</em>);
+    else if(m[3]) out.push(<a key={k++} className="rt-a" href={m[4]} target="_blank"
+                     rel="noopener noreferrer">{tok.slice(1,tok.indexOf("]"))}</a>);
+    else {
+      const href=tok.startsWith("http")?tok:"https://"+tok;
+      out.push(<a key={k++} className="rt-a" href={href} target="_blank"
+                 rel="noopener noreferrer">{tok.replace(/^https?:\/\//,"")}</a>);
+    }
+    rest=rest.slice(m.index+tok.length);
+  }
+  return out;
+}
+function RichText({text}){
+  /* Line-based rather than block-based: people write a heading directly above a
+     list with no blank line between, and that must still parse correctly. */
+  const lines=String(text??"").split(/\n/);
+  const out=[]; let i=0, k=0;
+  const isUl=(l)=>/^\s*[-*+]\s+/.test(l);
+  const isOl=(l)=>/^\s*\d+[.)]\s+/.test(l);
+  const isQ=(l)=>/^\s*>\s?/.test(l);
+  const isH=(l)=>/^#{2,3}\s/.test(l);
+  const plain=(l)=>l.trim()&&!isUl(l)&&!isOl(l)&&!isQ(l)&&!isH(l);
+  while(i<lines.length){
+    const l=lines[i];
+    if(!l.trim()){ i++; continue; }
+    if(isH(l)){
+      const lvl=l.match(/^#+/)[0].length>=3?3:2;
+      out.push(<div key={k++} className={"rt-h"+lvl}>{inlineBits(l.replace(/^#+\s*/,""))}</div>);
+      i++; continue;
+    }
+    if(isUl(l)){
+      const items=[];
+      while(i<lines.length&&isUl(lines[i])) items.push(lines[i++].replace(/^\s*[-*+]\s+/,""));
+      out.push(<ul key={k++} className="rt-ul">{items.map((t,j)=>
+        <li key={j}>{inlineBits(t)}</li>)}</ul>);
+      continue;
+    }
+    if(isOl(l)){
+      const items=[];
+      while(i<lines.length&&isOl(lines[i])) items.push(lines[i++].replace(/^\s*\d+[.)]\s+/,""));
+      out.push(<ol key={k++} className="rt-ol">{items.map((t,j)=>
+        <li key={j}>{inlineBits(t)}</li>)}</ol>);
+      continue;
+    }
+    if(isQ(l)){
+      const parts=[];
+      while(i<lines.length&&isQ(lines[i])) parts.push(lines[i++].replace(/^\s*>\s?/,""));
+      out.push(<blockquote key={k++} className="rt-q">{inlineBits(parts.join(" "))}</blockquote>);
+      continue;
+    }
+    const para=[];
+    while(i<lines.length&&plain(lines[i])) para.push(lines[i++].trim());
+    out.push(<p key={k++}>{inlineBits(para.join(" "))}</p>);
+  }
+  return out;
+}
+
+/* ---- attachments: one per line, stored as "filename|url" ---- */
+function parseFiles(s){
+  return String(s??"").split(/\n/).map(l=>l.trim()).filter(Boolean).map(l=>{
+    const i=l.lastIndexOf("|");
+    return i<0 ? {name:(l.split("/").pop()||"file"), url:l}
+               : {name:l.slice(0,i).trim(), url:l.slice(i+1).trim()};
+  }).filter(f=>/^https?:\/\//.test(f.url));
+}
+const serializeFiles=(list)=>list.map(f=>`${f.name}|${f.url}`).join("\n");
+const fileExt=(name)=>{
+  const m=/\.([A-Za-z0-9]{1,5})$/.exec(name||"");
+  return (m?m[1]:"FILE").toUpperCase().slice(0,5);
+};
+function Attachments({value}){
+  const files=parseFiles(value);
+  if(!files.length) return null;
+  return(<div className="att-list">{files.map((f,i)=>(
+    <a className="att-item" key={i} href={f.url} target="_blank" rel="noopener noreferrer">
+      <span className="ext">{fileExt(f.name)}</span>
+      <span className="nm">{f.name}</span>
+      <span className="dl">OPEN ↗</span>
+    </a>))}</div>);
+}
+
+/* ============================================================
    IMAGE UPLOADS  (Supabase Storage)
    ============================================================ */
 const BUCKET = "uploads";
@@ -971,6 +1152,20 @@ async function uploadImage(file, folder, keepAlpha){
     : error.message);
   const {data}=sb.storage.from(BUCKET).getPublicUrl(path);
   return {url:data.publicUrl};
+}
+
+/* Any file type, no image processing — slide decks, PDFs, handouts. */
+async function uploadFile(file, folder){
+  if(file.size>25*1024*1024) throw new Error("That file is over 25MB — try compressing it first.");
+  const safe=(file.name||"file").replace(/[^A-Za-z0-9._-]/g,"-").slice(-60);
+  if(!LIVE) return {url:URL.createObjectURL(file), name:file.name||safe, demo:true};
+  const path=`${folder}/${Date.now()}-${Math.random().toString(36).slice(2,6)}-${safe}`;
+  const {error}=await sb.storage.from(BUCKET).upload(path,file,
+    {contentType:file.type||"application/octet-stream",upsert:false});
+  if(error) throw new Error(error.message.includes("Bucket not found")
+    ? `Storage bucket "${BUCKET}" doesn't exist yet — see the README.` : error.message);
+  const {data}=sb.storage.from(BUCKET).getPublicUrl(path);
+  return {url:data.publicUrl, name:file.name||safe};
 }
 
 /* Upload-or-paste field. Drag a file on, click to browse, or paste a URL. */
@@ -1144,7 +1339,7 @@ const CSV = {
   },
   recaps:{
     file:"upaa-recaps",
-    cols:["title","date","author","summary","body","photos"],
+    cols:["title","date","author","summary","body","photos","files"],
     required:["title","date"],
     sample:[
       ["PwC & AKPsi Joint Session","2026-09-23","Benjamin Ni",
@@ -1154,10 +1349,27 @@ const CSV = {
     ],
     notes:"date is the date of the event being recapped. summary is the short blurb on the card (1-2 sentences). body is the full write-up — use a blank line between paragraphs. photos: optional, comma-separated image URLs; the first one becomes the cover image.",
     build:(g)=>({title:g("title"),date:g("date"),author:g("author"),
-      summary:g("summary"),body:g("body"),photos:g("photos")}),
+      summary:g("summary"),body:g("body"),photos:g("photos"),files:g("files")}),
     valid:(r)=>r.title&&/^\d{4}-\d{2}-\d{2}$/.test(r.date),
     label:(r)=>`${r.title} · ${r.date}`,
-    out:(r)=>[r.title,r.date,r.author||"",r.summary||"",r.body||"",r.photos||""],
+    out:(r)=>[r.title,r.date,r.author||"",r.summary||"",r.body||"",r.photos||"",r.files||""],
+  },
+  links:{
+    file:"upaa-resources",
+    cols:["title","url","category","desc","order"],
+    required:["title"],
+    sample:[
+      ["Meridian CPA Review","https://example.com","CPA Exam & Prep","CPA review provider presenting to UPAA on December 2.","1"],
+      ["Fall 2026 Career Conference","https://example.com","Career Events","Friday, September 18 at the Petersen Events Center.","1"],
+      ["Handshake","https://pitt.joinhandshake.com","Recruiting & Resumes","Where Pitt postings and employer events live.","1"],
+    ],
+    notes:"category must be one of: CPA Exam & Prep, Career Events, Pitt Business, Recruiting & Resumes, Other. url is optional — a link with no url shows as plain text. order controls position within its category.",
+    build:(g)=>({title:g("title"),url:g("url"),
+      category:LINK_CATS.find(c=>c.toLowerCase()===g("category").toLowerCase())||"Other",
+      desc:g("desc"),order:+(g("order")||99)||99}),
+    valid:(r)=>!!r.title,
+    label:(r)=>`${r.title} · ${r.category}`,
+    out:(r)=>[r.title,r.url||"",r.category||"Other",r.desc||"",r.order??""],
   },
   signups:{
     file:"upaa-mailing-list",
@@ -1317,9 +1529,11 @@ function Public({toAdmin}){
   /* fetch:false — the mailing list is readable only when signed in, so the
      public site never tries to SELECT it. It only ever inserts. */
   const signups=useTable("signups",SEED.signups,"id",{fetch:false});
+  const reslinks=useTable("links",SEED.links,"order");
   const stats=useStats(events,sponsors);
   const nav=(p)=>{setPage(p);setMenu(false);window.scrollTo(0,0)};
-  const links=[["home","Home"],["about","About"],["board","E-Board"],["events","Events"],["recaps","Recaps"],["sponsors","Recruiters"]];
+  const links=[["home","Home"],["about","About"],["board","E-Board"],["events","Events"],
+    ["recaps","Recaps"],["sponsors","Recruiters"],["resources","Resources"]];
 
   return (<div>
     <div className="ticker"><span>UPAA · UNIVERSITY OF PITTSBURGH ACCOUNTING ASSOCIATION · MEETINGS {CLUB.meetDay.toUpperCase()} AT {CLUB.meetTime} · {CLUB.meetRoom.toUpperCase()} · ALL PITT STUDENTS WELCOME · FOLLOW @PITT_ACCOUNTING ·</span></div>
@@ -1343,6 +1557,7 @@ function Public({toAdmin}){
     {page==="events" && <Events events={events} recaps={recaps} stats={stats}/>}
     {page==="recaps" && <Recaps recaps={recaps}/>}
     {page==="sponsors" && <Sponsors sponsors={sponsors}/>}
+    {page==="resources" && <Resources links={reslinks}/>}
     {page==="join" && <Join signups={signups}/>}
 
     <footer><div className="foot-in">
@@ -1588,7 +1803,9 @@ function RecapCard({r,onOpen}){
       <span className="rdate">{fmtDate(r.date).short}</span>
       <h3>{r.title}</h3>
       {r.summary&&<p>{r.summary}</p>}
-      {r.author&&<span className="by">Written by {r.author}</span>}
+      {r.author&&<span className="by">Written by {r.author}
+        {parseFiles(r.files).length>0&&<span className="att-count">
+          {parseFiles(r.files).length} file{parseFiles(r.files).length>1?"s":""}</span>}</span>}
     </div>
   </button>);
 }
@@ -1597,10 +1814,9 @@ function RecapModal({r,onClose}){
   return(<Modal wide title={r.title} onClose={onClose}>
     <p style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,color:"var(--gold-deep)",textTransform:"uppercase",letterSpacing:".08em",marginTop:-10,marginBottom:16}}>
       {fmtDate(r.date).short}{r.author?" · by "+r.author:""}</p>
-    <div className="recap-full">
-      {(r.body||r.summary||"").split(/\n\s*\n/).map((p,i)=><p key={i}>{p}</p>)}
-    </div>
+    <div className="recap-full"><RichText text={r.body||r.summary||""}/></div>
     {photos.length>0&&<div className="recap-gal">{photos.map((p,i)=><img key={i} src={p} alt="" loading="lazy"/>)}</div>}
+    <Attachments value={r.files}/>
     <div className="modal-acts"><button className="btn btn-primary" onClick={onClose}>Close</button></div>
   </Modal>);
 }
@@ -1615,6 +1831,44 @@ function Recaps({recaps}){
       ? <div className="empty">No recaps posted yet. Write-ups from each meeting will appear here through the semester.</div>
       : <div className="recap-grid">{sorted.map(r=><RecapCard key={r.id} r={r} onOpen={()=>setOpen(r)}/>)}</div>}
     {open&&<RecapModal r={open} onClose={()=>setOpen(null)}/>}
+  </section></main>);
+}
+
+function Resources({links}){
+  const rows=links.rows.slice().sort((a,b)=>
+    (LINK_CATS.indexOf(a.category)-LINK_CATS.indexOf(b.category)) ||
+    ((a.order??99)-(b.order??99)) || a.title.localeCompare(b.title));
+  const host=(u)=>{ try{ return new URL(u).hostname.replace(/^www\./,""); }catch(e){ return ""; } };
+  const Card=({l})=>{
+    const inner=(<>
+      <span className="ico">{(l.title||"?").trim()[0].toUpperCase()}</span>
+      <span style={{flex:1,minWidth:0}}>
+        <b>{l.title}</b>
+        {l.desc&&<span className="dsc">{l.desc}</span>}
+        {l.url&&<span className="host">{host(l.url)} ↗</span>}
+      </span>
+    </>);
+    return l.url
+      ? <a className="res" href={l.url} target="_blank" rel="noopener noreferrer">{inner}</a>
+      : <div className="res" style={{cursor:"default"}}>{inner}</div>;
+  };
+  return(<main><section className="section">
+    <div className="eyebrow">Resources</div>
+    <h2 className="h-sec">Useful links.</h2>
+    <p className="lead" style={{marginBottom:30}}>CPA exam resources, career events, and everything
+      else worth knowing about — including things Pitt Business runs that aren't UPAA events.</p>
+    {rows.length===0
+      ? <div className="empty">No links posted yet.</div>
+      : LINK_CATS.filter(c=>rows.some(l=>l.category===c)).map(cat=>(
+          <div key={cat}>
+            <div className="res-cat">{cat}</div>
+            <div className="res-grid">
+              {rows.filter(l=>l.category===cat).map(l=><Card key={l.id} l={l}/>)}
+            </div>
+          </div>))}
+    <p className="lead" style={{marginTop:34,fontSize:15}}>Know something that belongs here?
+      Email <a href={"mailto:"+CLUB.email} style={{color:"var(--navy)",fontWeight:600,
+      textDecoration:"underline"}}>{CLUB.email}</a>.</p>
   </section></main>);
 }
 
@@ -1815,6 +2069,7 @@ function Admin({toSite}){
   const sponsors=useTable("sponsors",SEED.sponsors,"id",{reloadKey:rk});
   const recaps=useTable("recaps",SEED.recaps,"date",{reloadKey:rk});
   const signups=useTable("signups",SEED.signups,"id",{reloadKey:rk});
+  const reslinks=useTable("links",SEED.links,"order",{reloadKey:rk});
   const stats=useStats(events,sponsors);
   if(LIVE&&!ready) return (<div className="admin-wrap"><div className="login-box">
     <p style={{margin:0,color:"var(--ink-soft)",fontSize:14}}>Checking your session…</p></div></div>);
@@ -1831,13 +2086,14 @@ function Admin({toSite}){
     <div className="admin-body">
       {!LIVE&&<div className="banner"><span>⚠️</span><div><b>Demo mode.</b> Everything works so you can try it out, but changes reset on refresh until Supabase is connected. The README has the setup.</div></div>}
       <div className="tabs">
-        {[["events","Events"],["recaps","Recaps"],["members","E-Board"],["sponsors","Recruiters"],["mail","Mailing List"]]
+        {[["events","Events"],["recaps","Recaps"],["members","E-Board"],["sponsors","Recruiters"],["resources","Resources"],["mail","Mailing List"]]
           .map(([k,l])=><button key={k} className={tab===k?"on":""} onClick={()=>setTab(k)}>{l}</button>)}
       </div>
       {tab==="events"&&<EventAdmin t={events} stats={stats} say={say}/>}
       {tab==="recaps"&&<RecapAdmin t={recaps} events={events} say={say}/>}
       {tab==="members"&&<MemberAdmin t={members} say={say}/>}
       {tab==="sponsors"&&<SponsorAdmin t={sponsors} say={say}/>}
+      {tab==="resources"&&<LinkAdmin t={reslinks} say={say}/>}
       {tab==="mail"&&<MailAdmin t={signups} say={say}/>}
       <Toast msg={toast}/>
     </div>
@@ -1948,13 +2204,14 @@ function RecapAdmin({t,events,say}){
     <ErrBar t={t} name="recaps"/>
     <div className="panel-head"><h3 className="serif">Event Recaps</h3>
       <div className="acts"><CsvBar specKey="recaps" t={t} say={say}/>
-        <button className="btn btn-primary" onClick={()=>setEdit({title:"",date:"",author:"",summary:"",body:"",photos:""})}>+ Write recap</button></div></div>
+        <button className="btn btn-primary" onClick={()=>setEdit({title:"",date:"",author:"",summary:"",body:"",photos:"",files:""})}>+ Write recap</button></div></div>
     {sorted.length===0&&<div className="empty">No recaps yet. Write one after the next meeting, or start from a past event above.</div>}
     {sorted.map(r=>(
       <div className="adm-item" key={r.id}>
         <div className="meta"><b>{r.title}</b><small>
           {fmtDate(r.date).short}{r.author?" · by "+r.author:""}
           {splitList(r.photos).length?" · "+splitList(r.photos).length+" photo(s)":""}
+          {parseFiles(r.files).length?" · "+parseFiles(r.files).length+" file(s)":""}
           {!r.body?" · no body yet":""}</small></div>
         <div className="acts"><button className="mini" onClick={()=>setEdit(r)}>Edit</button>
           <button className="mini del" onClick={()=>window.confirm("Delete this recap?")&&t.remove(r.id)}>Delete</button></div>
@@ -1964,7 +2221,8 @@ function RecapAdmin({t,events,say}){
   </>);
 }
 function RecapForm({init,events,onSave,onCancel}){
-  const [f,setF]=useState({author:"",summary:"",body:"",photos:"",...init});
+  const [f,setF]=useState({author:"",summary:"",body:"",photos:"",files:"",...init});
+  const [tab,setTab]=useState("write");
   const set=(k,v)=>setF(s=>({...s,[k]:v}));
   const prefill=(id)=>{
     const e=events.find(x=>String(x.id)===String(id));
@@ -1987,12 +2245,83 @@ function RecapForm({init,events,onSave,onCancel}){
       <div className="field"><label>Written by <span className="opt">(optional)</span></label><input value={f.author} onChange={e=>set("author",e.target.value)} placeholder="Benjamin Ni"/></div>
     </div>
     <div className="field"><label>Short summary</label><textarea style={{minHeight:60}} value={f.summary} onChange={e=>set("summary",e.target.value)} placeholder="One or two sentences — this is what shows on the card."/></div>
-    <div className="field"><label>Full write-up</label><textarea style={{minHeight:190}} value={f.body} onChange={e=>set("body",e.target.value)} placeholder={"What happened, who spoke, what the key takeaways were.\n\nLeave a blank line between paragraphs."}/>
-      <div className="hint">Blank line between paragraphs. This is what members read when they open the recap.</div></div>
+    <div className="field"><label>Full write-up</label>
+      <div className="seg">
+        <button type="button" className={tab==="write"?"on":""} onClick={()=>setTab("write")}>Write</button>
+        <button type="button" className={tab==="preview"?"on":""} onClick={()=>setTab("preview")}>Preview</button>
+        <button type="button" className={tab==="help"?"on":""} onClick={()=>setTab("help")}>Formatting</button>
+      </div>
+      {tab==="write"&&<textarea style={{minHeight:230}} value={f.body}
+        onChange={e=>set("body",e.target.value)}
+        placeholder={"What happened, who spoke, what the key takeaways were.\n\n## Key takeaways\n- Apply early — recruiting starts sooner than you think\n- The Pittsburgh office hires heavily from Pitt\n\nSee [their internship page](https://example.com) for details."}/>}
+      {tab==="preview"&&<div className="prev-box">
+        {f.body?.trim() ? <RichText text={f.body}/>
+          : <span style={{color:"var(--ink-soft)",fontSize:13}}>Nothing to preview yet.</span>}</div>}
+      {tab==="help"&&<div className="fmt-help">
+        <code>## Heading</code> and <code>### Smaller heading</code><br/>
+        <code>- item</code> for a bulleted list · <code>1. item</code> for numbered<br/>
+        <code>**bold**</code> · <code>*italic*</code><br/>
+        <code>[link text](https://…)</code> — or just paste a URL and it links itself<br/>
+        <code>&gt; quote</code> for a pull quote, good for something a recruiter said<br/>
+        Leave a blank line between paragraphs.
+      </div>}</div>
     <RecapPhotos value={f.photos} onChange={(v)=>set("photos",v)}/>
+    <RecapFiles value={f.files} onChange={(v)=>set("files",v)}/>
     <div className="modal-acts"><button className="mini" onClick={onCancel}>Cancel</button>
       <button className="btn btn-primary" onClick={()=>f.title.trim()&&f.date&&onSave(f)}>Save recap</button></div>
   </>);
+}
+
+/* Attachment uploader — slide decks, PDFs, handouts. Stored as "name|url". */
+function RecapFiles({value,onChange}){
+  const list=parseFiles(value);
+  const ref=useRef();
+  const [busy,setBusy]=useState(false);
+  const [err,setErr]=useState("");
+  const [over,setOver]=useState(false);
+  const take=async(files)=>{
+    if(!files||!files.length) return;
+    setErr(""); setBusy(true);
+    const added=[];
+    for(const file of Array.from(files).slice(0,8)){
+      try{
+        const {url,name,demo}=await uploadFile(file,"files");
+        added.push({name,url});
+        if(demo) setErr("Uploaded for preview only — connect Supabase Storage to keep it.");
+      }catch(e){ setErr(e.message||"That file failed to upload."); }
+    }
+    if(added.length) onChange(serializeFiles([...list,...added]));
+    setBusy(false);
+  };
+  const rename=(i,name)=>onChange(serializeFiles(list.map((f,j)=>j===i?{...f,name}:f)));
+  return(<div className="field">
+    <label>Attachments <span className="opt">(optional)</span></label>
+    <div className={"drop"+(over?" over":"")+(busy?" busy":"")}
+      onClick={()=>!busy&&ref.current.click()}
+      onDragOver={e=>{e.preventDefault();setOver(true)}}
+      onDragLeave={()=>setOver(false)}
+      onDrop={e=>{e.preventDefault();setOver(false);take(e.dataTransfer.files)}}>
+      <b>{busy?"Uploading…":"Drop files here, or click to choose"}</b>
+      <small>Slide decks, PDFs, handouts · up to 25MB each</small>
+    </div>
+    <input ref={ref} type="file" multiple style={{display:"none"}}
+      onChange={e=>{take(e.target.files); e.target.value=""}}/>
+    {err&&<div className="hint" style={{color:"var(--danger)"}}>{err}</div>}
+    {list.length>0&&<div style={{marginTop:10}}>
+      {list.map((f,i)=>(<div className="file-row" key={i}>
+        <span className="ext" style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,
+          fontWeight:600,background:"var(--navy)",color:"var(--paper)",borderRadius:5,
+          padding:"4px 7px",minWidth:44,textAlign:"center"}}>{fileExt(f.name)}</span>
+        <input className="nm" value={f.name} onChange={e=>rename(i,e.target.value)}
+          style={{border:"1px solid var(--line)",borderRadius:6,padding:"5px 8px",
+            font:"inherit",fontSize:13,background:"var(--white)"}}/>
+        <button type="button" className="mini del" onClick={()=>
+          onChange(serializeFiles(list.filter((_,j)=>j!==i)))}>×</button>
+      </div>))}
+      <div className="hint">Rename a file to control how it appears to members —
+        e.g. "Deloitte slides" rather than "UPAA-deck-final-v3.pptx".</div>
+    </div>}
+  </div>);
 }
 
 /* Multi-photo uploader for recaps: add several, reorder, first is the cover. */
@@ -2190,6 +2519,62 @@ function SponsorAdmin({t,say}){
   </>);
 }
 
+function LinkAdmin({t,say}){
+  const [edit,setEdit]=useState(null);
+  const sorted=t.rows.slice().sort((a,b)=>
+    (LINK_CATS.indexOf(a.category)-LINK_CATS.indexOf(b.category)) ||
+    ((a.order??99)-(b.order??99)) || (a.title||"").localeCompare(b.title||""));
+  const save=async(l)=>{
+    const ok=l.id?await t.update(l.id,l):await t.add(l);
+    if(ok!==false) setEdit(null);
+  };
+  const noUrl=t.rows.filter(l=>!l.url).length;
+  return(<>
+    <ErrBar t={t} name="links"/>
+    <div className="panel-head"><h3 className="serif">Resources</h3>
+      <div className="acts"><CsvBar specKey="links" t={t} say={say}/>
+        <button className="btn btn-primary" onClick={()=>setEdit(
+          {title:"",url:"",category:LINK_CATS[0],desc:"",order:t.rows.length+1})}>+ Add link</button></div></div>
+    <div className="info-box">Anything useful to members — CPA prep, career events, Pitt Business
+      sessions that aren't ours. A link with no URL still shows, just as plain text, which is handy
+      for something you know is coming but can't link to yet.
+      {noUrl>0&&<><br/><br/><b>{noUrl} {noUrl===1?"entry has":"entries have"} no URL yet.</b></>}</div>
+    {sorted.length===0&&<div className="empty">Nothing here yet. Add a link, or import a CSV.</div>}
+    {sorted.map(l=>(
+      <div className="adm-item" key={l.id}>
+        <div className="meta"><b>{l.title}</b><small>
+          {l.category} · #{l.order}
+          {l.url?" · "+l.url.replace(/^https?:\/\/(www\.)?/,"").slice(0,42):" · no URL yet"}</small></div>
+        <div className="acts"><button className="mini" onClick={()=>setEdit(l)}>Edit</button>
+          <button className="mini del" onClick={()=>window.confirm("Remove "+l.title+"?")&&t.remove(l.id)}>Delete</button></div>
+      </div>))}
+    {edit&&<Modal title={edit.id?"Edit link":"Add link"} onClose={()=>setEdit(null)}>
+      <div className="field"><label>Title</label>
+        <input autoFocus value={edit.title} onChange={e=>setEdit({...edit,title:e.target.value})}
+          placeholder="e.g. Meridian CPA Review"/></div>
+      <div className="field"><label>URL <span className="opt">(optional)</span></label>
+        <input value={edit.url||""} onChange={e=>setEdit({...edit,url:e.target.value})}
+          placeholder="https://..."/>
+        <div className="hint">Leave blank and it shows as plain text with no link.</div></div>
+      <div className="f2">
+        <div className="field"><label>Category</label>
+          <select value={edit.category||LINK_CATS[0]}
+            onChange={e=>setEdit({...edit,category:e.target.value})}>
+            {LINK_CATS.map(c=><option key={c}>{c}</option>)}</select></div>
+        <div className="field"><label>Order in category</label>
+          <input type="number" min="1" value={edit.order??1}
+            onChange={e=>setEdit({...edit,order:+e.target.value})}/></div>
+      </div>
+      <div className="field"><label>Description <span className="opt">(optional)</span></label>
+        <textarea style={{minHeight:64}} value={edit.desc||""}
+          onChange={e=>setEdit({...edit,desc:e.target.value})}
+          placeholder="One line on why a member would click this."/></div>
+      <div className="modal-acts"><button className="mini" onClick={()=>setEdit(null)}>Cancel</button>
+        <button className="btn btn-primary" onClick={()=>edit.title.trim()&&save(edit)}>Save</button></div>
+    </Modal>}
+  </>);
+}
+
 function MailAdmin({t,say}){
   const [q,setQ]=useState("");
   const [add,setAdd]=useState(null);
@@ -2201,6 +2586,10 @@ function MailAdmin({t,say}){
     return !s||[r.name,r.email,r.year,r.major].some(v=>(v||"").toLowerCase().includes(s));
   });
   const copyEmails=async()=>{
+    if(ZOHO_SYNC_LIVE){
+      say("Send from Zoho Campaigns — it tracks unsubscribes, this list doesn't.");
+      return;
+    }
     const list=active.map(r=>r.email).filter(Boolean).join(", ");
     if(!list){ say("No active emails to copy."); return; }
     say(await copyText(list)?`Copied ${active.length} email${active.length===1?"":"s"} — paste into BCC`:"Couldn't copy — try Export");
@@ -2208,12 +2597,26 @@ function MailAdmin({t,say}){
   const toggle=(r)=>t.update(r.id,{status:(r.status||"active")==="active"?"unsubscribed":"active"});
   return(<>
     <div className="stat-preview" style={{gridTemplateColumns:"repeat(3,1fr)"}}>
-      <div className="sp"><b>{all.length}</b><small>total on the list</small></div>
-      <div className="sp"><b>{active.length}</b><small>active</small></div>
-      <div className="sp"><b>{all.length-active.length}</b><small>unsubscribed</small></div>
+      <div className="sp"><b>{all.length}</b><small>{ZOHO_SYNC_LIVE?"captured here":"total on the list"}</small></div>
+      <div className="sp"><b>{active.length}</b><small>{ZOHO_SYNC_LIVE?"sent to Zoho":"active"}</small></div>
+      <div className="sp"><b>{all.length-active.length}</b><small>opted out here</small></div>
     </div>
     <ErrBar t={t} name="signups"/>
-    <div className="info-box"><b>This is the live mailing list.</b> Sign-ups land here automatically. <b>Copy all emails</b> puts every active address on your clipboard, comma-separated — paste straight into BCC in Outlook or Gmail.</div>
+    {ZOHO_SYNC_LIVE
+      ? <div className="handoff">
+          <b>Zoho Campaigns is the mailing list now.</b> Sign-ups from this site are pushed there
+          automatically, and Zoho handles unsubscribes. Send every email from Zoho — not from here.
+          <br/><br/>
+          Copying addresses out of this table is switched off on purpose: someone who unsubscribed
+          in Zoho still shows as active here, so a BCC blast from this list would email people who
+          asked you to stop.
+          <br/><br/>
+          <b>Export still works</b> — keep using it for backups and for handing the club over. Just
+          don't send from it.
+          {ZOHO_LIST_URL&&<><br/><br/><a href={ZOHO_LIST_URL} target="_blank" rel="noopener noreferrer">
+            Open the list in Zoho Campaigns ↗</a></>}
+        </div>
+      : <div className="info-box"><b>This is the live mailing list.</b> Sign-ups land here automatically. <b>Copy all emails</b> puts every active address on your clipboard, comma-separated — paste straight into BCC in Outlook or Gmail.</div>}
     <div className="info-box">
       <b>Sign-up link for QR codes.</b> This page is just the mailing-list form — no nav, nothing else to get lost in. Put it on a QR code for tabling.
       <div className="qr-row">
@@ -2225,7 +2628,7 @@ function MailAdmin({t,say}){
     <div className="panel-head">
       <input className="searchbar" placeholder="Search name, email, major…" value={q} onChange={e=>setQ(e.target.value)}/>
       <div className="acts">
-        <button className="mini" onClick={copyEmails}>Copy all emails</button>
+        {!ZOHO_SYNC_LIVE&&<button className="mini" onClick={copyEmails}>Copy all emails</button>}
         <CsvBar specKey="signups" t={t} say={say}/>
         <button className="btn btn-primary" onClick={()=>setAdd({name:"",email:"",year:"",major:""})}>+ Add</button>
       </div>
@@ -2239,7 +2642,9 @@ function MailAdmin({t,say}){
             <tbody>{shown.map(r=>{const off=(r.status||"active")!=="active";return(<tr key={r.id} className={off?"off":""}>
               <td>{r.name||"—"}</td><td>{r.email}</td><td>{r.year||"—"}</td><td>{r.major||"—"}</td><td>{r.created}</td>
               <td style={{textAlign:"right",whiteSpace:"nowrap"}}>
-                <button className={"mini"+(off?" good":"")} onClick={()=>toggle(r)}>{off?"Resubscribe":"Unsubscribe"}</button>{" "}
+                <button className={"mini"+(off?" good":"")}
+                  title={ZOHO_SYNC_LIVE?"Marks them here only — also unsubscribe them in Zoho":""}
+                  onClick={()=>toggle(r)}>{off?"Resubscribe":"Unsubscribe"}</button>{" "}
                 <button className="mini del" onClick={()=>window.confirm("Delete "+(r.name||r.email)+"?")&&t.remove(r.id)}>×</button>
               </td></tr>);})}</tbody></table>}
     {add&&<Modal title="Add to mailing list" onClose={()=>setAdd(null)}>
