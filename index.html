@@ -307,6 +307,25 @@
     background:var(--paper-2);padding:1px 5px;border-radius:4px;color:var(--navy)}
   .prev-box{background:var(--white);border:1px solid var(--line);border-radius:10px;
     padding:16px 18px;margin-top:8px;max-height:300px;overflow:auto}
+  /* WYSIWYG editor */
+  .rt-editor{border:1px solid var(--line);border-radius:0 0 8px 8px;background:var(--white);
+    padding:14px 16px;font-size:15px;line-height:1.7;color:var(--ink);overflow-y:auto;
+    outline:none;font-family:'Inter',sans-serif}
+  .rt-editor:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(10,35,66,.07)}
+  .rt-editor:empty::before{content:attr(data-placeholder);color:var(--ink-soft);opacity:.75}
+  .rt-editor p{margin:0 0 12px}
+  .rt-editor p:last-child{margin-bottom:0}
+  .rt-editor h2,.rt-editor h3{font-family:'Fraunces',serif;color:var(--navy);
+    margin:18px 0 8px;line-height:1.25;font-weight:600}
+  .rt-editor h2{font-size:20px} .rt-editor h3{font-size:17px}
+  .rt-editor ul,.rt-editor ol{margin:0 0 12px;padding-left:24px}
+  .rt-editor li{margin-bottom:5px}
+  .rt-editor blockquote{border-left:3px solid var(--gold);background:var(--paper);
+    margin:0 0 12px;padding:10px 15px;color:var(--ink-soft);font-style:italic}
+  .rt-editor a{color:var(--navy);text-decoration:underline;
+    text-decoration-color:var(--gold);text-decoration-thickness:2px}
+  .rt-editor strong{font-weight:700;color:var(--navy)}
+  .mdbar button.on{background:var(--navy);color:var(--paper);border-color:var(--navy)}
   /* formatting toolbar */
   .mdbar{display:flex;flex-wrap:wrap;gap:4px;padding:7px 8px;background:var(--paper-2);
     border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0}
@@ -1097,6 +1116,65 @@ function RichText({text}){
   return out;
 }
 
+/* ============================================================
+   HTML SANITISER
+   ------------------------------------------------------------
+   Recap bodies are now stored as HTML from the WYSIWYG editor. Only these tags
+   and attributes survive, and links must be http(s) — so nothing an author
+   pastes in (from Word, Google Docs, or anywhere else) can inject markup or a
+   javascript: URL into the public page.
+   ============================================================ */
+const OK_TAGS={P:1,BR:1,STRONG:1,B:1,EM:1,I:1,U:1,H2:1,H3:1,UL:1,OL:1,LI:1,
+               BLOCKQUOTE:1,A:1,DIV:1,SPAN:1};
+const MAP_TAG={B:"STRONG",I:"EM",DIV:"P"};
+function sanitizeHtml(html){
+  if(!html) return "";
+  const doc=new DOMParser().parseFromString("<div id='r'>"+html+"</div>","text/html");
+  const root=doc.getElementById("r");
+  const walk=(node)=>{
+    for(const child of Array.from(node.childNodes)){
+      if(child.nodeType===3) continue;                        // text is fine
+      if(child.nodeType!==1){ child.remove(); continue; }      // comments etc.
+      const tag=child.tagName;
+      if(!OK_TAGS[tag]){
+        // keep the words, drop the tag
+        while(child.firstChild) node.insertBefore(child.firstChild,child);
+        child.remove(); continue;
+      }
+      // strip every attribute except a safe href
+      for(const attr of Array.from(child.attributes)){
+        if(tag==="A"&&attr.name==="href"&&/^https?:\/\//i.test(attr.value)) continue;
+        child.removeAttribute(attr.name);
+      }
+      if(tag==="A"){
+        if(!child.getAttribute("href")){
+          while(child.firstChild) node.insertBefore(child.firstChild,child);
+          child.remove(); continue;
+        }
+        child.setAttribute("target","_blank");
+        child.setAttribute("rel","noopener noreferrer");
+      }
+      if(MAP_TAG[tag]){
+        const rep=doc.createElement(MAP_TAG[tag]);
+        while(child.firstChild) rep.appendChild(child.firstChild);
+        node.replaceChild(rep,child);
+        walk(rep); continue;
+      }
+      walk(child);
+    }
+  };
+  walk(root);
+  return root.innerHTML.trim();
+}
+
+/* Older recaps were stored as Markdown. Render whichever the content is. */
+const looksLikeHtml=(s)=>/<(p|h2|h3|ul|ol|li|strong|em|u|a|blockquote|br)\b/i.test(String(s||""));
+function RecapBody({text}){
+  if(looksLikeHtml(text))
+    return <div className="rt-body" dangerouslySetInnerHTML={{__html:sanitizeHtml(text)}}/>;
+  return <RichText text={text}/>;
+}
+
 /* ---- attachments: one per line, stored as "filename|url" ---- */
 function parseFiles(s){
   return String(s??"").split(/\n/).map(l=>l.trim()).filter(Boolean).map(l=>{
@@ -1828,7 +1906,7 @@ function RecapModal({r,onClose}){
   return(<Modal wide title={r.title} onClose={onClose}>
     <p style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,color:"var(--gold-deep)",textTransform:"uppercase",letterSpacing:".08em",marginTop:-10,marginBottom:16}}>
       {fmtDate(r.date).short}{r.author?" · by "+r.author:""}</p>
-    <div className="recap-full"><RichText text={r.body||r.summary||""}/></div>
+    <div className="recap-full"><RecapBody text={r.body||r.summary||""}/></div>
     {photos.length>0&&<div className="recap-gal">{photos.map((p,i)=><img key={i} src={p} alt="" loading="lazy"/>)}</div>}
     <Attachments value={r.files}/>
     <div className="modal-acts"><button className="btn btn-primary" onClick={onClose}>Close</button></div>
@@ -2203,7 +2281,9 @@ function RecapAdmin({t,events,say}){
   const [edit,setEdit]=useState(null);
   const sorted=t.rows.slice().sort((a,b)=>b.date.localeCompare(a.date));
   const save=async(r)=>{
-    const ok=r.id?await t.update(r.id,r):await t.add(r);
+    // sanitise once more here, so nothing unexpected ever reaches the database
+    const clean={...r, body: looksLikeHtml(r.body)?sanitizeHtml(r.body):r.body};
+    const ok=clean.id?await t.update(clean.id,clean):await t.add(clean);
     if(ok!==false) setEdit(null);
   };
   const pastEvents=events.rows.filter(e=>isPast(e.date)).sort((a,b)=>b.date.localeCompare(a.date));
@@ -2265,22 +2345,24 @@ function RecapForm({init,events,onSave,onCancel}){
         <button type="button" className={tab==="preview"?"on":""} onClick={()=>setTab("preview")}>Preview</button>
         <button type="button" className={tab==="help"?"on":""} onClick={()=>setTab("help")}>Formatting</button>
       </div>
-      {tab==="write"&&<MarkdownEditor value={f.body} onChange={(v)=>set("body",v)} minHeight={230}
-        placeholder={"What happened, who spoke, and what the key takeaways were.\n\nUse the buttons above to add headings, lists, links and quotes — you never have to type the formatting yourself."}/>}
-      {tab==="preview"&&<div className="prev-box">
-        {f.body?.trim() ? <RichText text={f.body}/>
+      {tab==="write"&&<RichEditor value={f.body} onChange={(v)=>set("body",v)} minHeight={240}
+        placeholder={"What happened, who spoke, and what the key takeaways were. Use the buttons above for headings, lists, links and quotes."}/>}
+      {tab==="preview"&&<div className="prev-box recap-full">
+        {f.body&&f.body.replace(/<[^>]*>/g,"").trim()
+          ? <RecapBody text={f.body}/>
           : <span style={{color:"var(--ink-soft)",fontSize:13}}>Nothing to preview yet.</span>}</div>}
       {tab==="help"&&<div className="fmt-help">
-        <b style={{color:"var(--navy)"}}>You shouldn't need this.</b> Use the buttons above the
-        text box — select some text and click <b>B</b>, <b>H2</b>, <b>• List</b> and so on. Press
-        the same button again to undo it. <b>Cmd/Ctrl+B</b>, <b>+I</b> and <b>+K</b> also work.
+        <b style={{color:"var(--navy)"}}>Just type — the box shows real formatting.</b> Bold looks
+        bold, headings look like headings. Nothing to memorise.
         <br/><br/>
-        If you'd rather type it directly, this is what the buttons produce:<br/>
-        <code>## Heading</code> · <code>### Smaller heading</code><br/>
-        <code>- item</code> bulleted · <code>1. item</code> numbered<br/>
-        <code>**bold**</code> · <code>*italic*</code> · <code>[text](https://…)</code><br/>
-        <code>&gt; quote</code> for a pull quote<br/>
-        A pasted URL links itself. Leave a blank line between paragraphs.
+        Select some text, then click <b>B</b>, <b>H2</b>, <b>• List</b> and so on. A lit-up button
+        means the cursor is inside that formatting; click it again to turn it off.
+        <b> Cmd/Ctrl+B</b> and <b>+I</b> work, and <b>Cmd/Ctrl+K</b> adds a link.
+        <br/><br/>
+        <b>Pasting from Word or Google Docs is fine.</b> Headings, bold and lists carry over;
+        everything else is stripped so the page keeps its own styling.
+        <br/><br/>
+        <b>Clear</b> strips formatting from the selected text if something gets stuck.
       </div>}</div>
     <RecapPhotos value={f.photos} onChange={(v)=>set("photos",v)}/>
     <RecapFiles value={f.files} onChange={(v)=>set("files",v)}/>
@@ -2341,7 +2423,112 @@ function RecapFiles({value,onChange}){
   </div>);
 }
 
-/* Formatting toolbar over a plain textarea.
+/* True WYSIWYG editor.
+   ---------------------------------------------------------------------------
+   Bold looks bold — no ** markers on screen. Built on contenteditable, which
+   is uncontrolled on purpose: writing React state back into it on every
+   keystroke would fight the cursor. Content is set once on mount, read back on
+   input, and sanitised on the way out.
+   ---------------------------------------------------------------------------*/
+function RichEditor({value,onChange,placeholder,minHeight}){
+  const ref=useRef();
+  const [act,setAct]=useState({});
+
+  useEffect(()=>{                     // seed once; never write back mid-typing
+    if(ref.current) ref.current.innerHTML=looksLikeHtml(value)?sanitizeHtml(value):
+      (value?String(value).split(/\n\s*\n/).map(p=>"<p>"+p.replace(/\n/g," ")+"</p>").join(""):"");
+  },[]);
+
+  const push=()=>{ if(ref.current) onChange(ref.current.innerHTML); };
+
+  const refreshState=()=>{
+    try{
+      setAct({
+        bold:document.queryCommandState("bold"),
+        italic:document.queryCommandState("italic"),
+        ul:document.queryCommandState("insertUnorderedList"),
+        ol:document.queryCommandState("insertOrderedList"),
+        block:(document.queryCommandValue("formatBlock")||"").toLowerCase(),
+      });
+    }catch(e){}
+  };
+
+  const exec=(cmd,val)=>{
+    ref.current&&ref.current.focus();
+    try{ document.execCommand(cmd,false,val); }catch(e){}
+    push(); refreshState();
+  };
+
+  const block=(tag)=>{
+    const cur=(()=>{ try{ return (document.queryCommandValue("formatBlock")||"").toLowerCase(); }
+                     catch(e){ return ""; } })();
+    exec("formatBlock", cur===tag ? "p" : tag);
+  };
+
+  const link=()=>{
+    const sel=window.getSelection();
+    const had=sel&&String(sel).length>0;
+    const url=window.prompt("Link address","https://");
+    if(!url||url==="https://") return;
+    if(!/^https?:\/\//i.test(url)){ window.alert("Links need to start with http:// or https://"); return; }
+    if(had) exec("createLink",url);
+    else{
+      exec("insertHTML",`<a href="${url}">${url.replace(/^https?:\/\//,"")}</a>`);
+    }
+  };
+
+  /* Paste arrives as Word/Docs markup — run it through the same whitelist
+     rather than dumping their inline styles into the page. */
+  const onPaste=(e)=>{
+    const html=e.clipboardData.getData("text/html");
+    const txt=e.clipboardData.getData("text/plain");
+    e.preventDefault();
+    const clean=html?sanitizeHtml(html):(txt||"").replace(/[<>]/g,"");
+    try{ document.execCommand("insertHTML",false,clean); }catch(e2){}
+    push();
+  };
+
+  const onKey=(e)=>{
+    if(e.metaKey||e.ctrlKey){
+      const k=e.key.toLowerCase();
+      if(k==="k"){ e.preventDefault(); link(); return; }
+    }
+    setTimeout(refreshState,0);
+  };
+
+  const B=[
+    ["H2","Heading",        ()=>block("h2"),      ()=>act.block==="h2"],
+    ["H3","Smaller heading",()=>block("h3"),      ()=>act.block==="h3"],
+    null,
+    ["B","Bold",            ()=>exec("bold"),     ()=>act.bold,   "b"],
+    ["I","Italic",          ()=>exec("italic"),   ()=>act.italic, "i"],
+    ["Link","Insert a link (Cmd/Ctrl+K)", link,   ()=>false],
+    null,
+    ["• List","Bulleted list",  ()=>exec("insertUnorderedList"), ()=>act.ul],
+    ["1. List","Numbered list", ()=>exec("insertOrderedList"),   ()=>act.ol],
+    ["❝ Quote","Pull quote",    ()=>block("blockquote"),         ()=>act.block==="blockquote"],
+    null,
+    ["Clear","Remove formatting", ()=>exec("removeFormat"),      ()=>false],
+  ];
+
+  return(<div>
+    <div className="mdbar">
+      {B.map((b,i)=> b===null
+        ? <span className="sep" key={"s"+i}></span>
+        : <button type="button" key={b[0]} title={b[1]}
+            className={(b[4]==="b"?"b ":b[4]==="i"?"i ":"")+(b[3]()?"on":"")}
+            onMouseDown={e=>e.preventDefault()}
+            onClick={b[2]}>{b[0]}</button>)}
+    </div>
+    <div ref={ref} className="rt-editor" contentEditable suppressContentEditableWarning
+      data-placeholder={placeholder||""} style={{minHeight:minHeight||230}}
+      onInput={push} onBlur={push} onPaste={onPaste}
+      onKeyUp={onKey} onKeyDown={onKey} onMouseUp={refreshState}/>
+  </div>);
+}
+
+/* Formatting toolbar over a plain textarea. Kept for any plain-text field that
+   still wants Markdown-style helpers.
    ---------------------------------------------------------------------------
    The stored format is still the same small Markdown subset — this just types
    it for you, so nobody has to remember the syntax. Every button toggles: press
