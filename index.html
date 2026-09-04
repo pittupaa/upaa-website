@@ -307,6 +307,20 @@
     background:var(--paper-2);padding:1px 5px;border-radius:4px;color:var(--navy)}
   .prev-box{background:var(--white);border:1px solid var(--line);border-radius:10px;
     padding:16px 18px;margin-top:8px;max-height:300px;overflow:auto}
+  /* formatting toolbar */
+  .mdbar{display:flex;flex-wrap:wrap;gap:4px;padding:7px 8px;background:var(--paper-2);
+    border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0}
+  .mdbar button{font:inherit;font-size:12.5px;font-weight:600;color:var(--navy);
+    background:var(--white);border:1px solid var(--line);border-radius:6px;
+    padding:5px 10px;cursor:pointer;line-height:1.3;transition:.12s}
+  .mdbar button:hover{border-color:var(--navy);background:var(--paper)}
+  .mdbar button:active{transform:translateY(1px)}
+  .mdbar .sep{width:1px;background:var(--line);margin:2px 3px}
+  .mdbar .b{font-weight:800}
+  .mdbar .i{font-style:italic;font-family:Georgia,serif}
+  .mdbar-note{font-size:11.5px;color:var(--ink-soft);margin-left:auto;align-self:center;
+    padding-right:2px}
+  .md-ta{border-radius:0 0 8px 8px!important;border-top:1px solid var(--line)!important}
   .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line);
     border-radius:8px;padding:3px;gap:2px;margin-bottom:8px}
   .seg button{font:inherit;font-size:12.5px;font-weight:600;padding:6px 13px;border:none;
@@ -2251,19 +2265,22 @@ function RecapForm({init,events,onSave,onCancel}){
         <button type="button" className={tab==="preview"?"on":""} onClick={()=>setTab("preview")}>Preview</button>
         <button type="button" className={tab==="help"?"on":""} onClick={()=>setTab("help")}>Formatting</button>
       </div>
-      {tab==="write"&&<textarea style={{minHeight:230}} value={f.body}
-        onChange={e=>set("body",e.target.value)}
-        placeholder={"What happened, who spoke, what the key takeaways were.\n\n## Key takeaways\n- Apply early — recruiting starts sooner than you think\n- The Pittsburgh office hires heavily from Pitt\n\nSee [their internship page](https://example.com) for details."}/>}
+      {tab==="write"&&<MarkdownEditor value={f.body} onChange={(v)=>set("body",v)} minHeight={230}
+        placeholder={"What happened, who spoke, and what the key takeaways were.\n\nUse the buttons above to add headings, lists, links and quotes — you never have to type the formatting yourself."}/>}
       {tab==="preview"&&<div className="prev-box">
         {f.body?.trim() ? <RichText text={f.body}/>
           : <span style={{color:"var(--ink-soft)",fontSize:13}}>Nothing to preview yet.</span>}</div>}
       {tab==="help"&&<div className="fmt-help">
-        <code>## Heading</code> and <code>### Smaller heading</code><br/>
-        <code>- item</code> for a bulleted list · <code>1. item</code> for numbered<br/>
-        <code>**bold**</code> · <code>*italic*</code><br/>
-        <code>[link text](https://…)</code> — or just paste a URL and it links itself<br/>
-        <code>&gt; quote</code> for a pull quote, good for something a recruiter said<br/>
-        Leave a blank line between paragraphs.
+        <b style={{color:"var(--navy)"}}>You shouldn't need this.</b> Use the buttons above the
+        text box — select some text and click <b>B</b>, <b>H2</b>, <b>• List</b> and so on. Press
+        the same button again to undo it. <b>Cmd/Ctrl+B</b>, <b>+I</b> and <b>+K</b> also work.
+        <br/><br/>
+        If you'd rather type it directly, this is what the buttons produce:<br/>
+        <code>## Heading</code> · <code>### Smaller heading</code><br/>
+        <code>- item</code> bulleted · <code>1. item</code> numbered<br/>
+        <code>**bold**</code> · <code>*italic*</code> · <code>[text](https://…)</code><br/>
+        <code>&gt; quote</code> for a pull quote<br/>
+        A pasted URL links itself. Leave a blank line between paragraphs.
       </div>}</div>
     <RecapPhotos value={f.photos} onChange={(v)=>set("photos",v)}/>
     <RecapFiles value={f.files} onChange={(v)=>set("files",v)}/>
@@ -2321,6 +2338,106 @@ function RecapFiles({value,onChange}){
       <div className="hint">Rename a file to control how it appears to members —
         e.g. "Deloitte slides" rather than "UPAA-deck-final-v3.pptx".</div>
     </div>}
+  </div>);
+}
+
+/* Formatting toolbar over a plain textarea.
+   ---------------------------------------------------------------------------
+   The stored format is still the same small Markdown subset — this just types
+   it for you, so nobody has to remember the syntax. Every button toggles: press
+   it on already-formatted text and the formatting comes off.
+   ---------------------------------------------------------------------------*/
+function MarkdownEditor({value,onChange,placeholder,minHeight}){
+  const ref=useRef();
+  const text=value||"";
+
+  /* Apply a transform, then put the cursor back where the user expects it.
+     Without the rAF the textarea has re-rendered and the selection is lost. */
+  const run=(fn)=>{
+    const ta=ref.current; if(!ta) return;
+    const s=ta.selectionStart, e=ta.selectionEnd;
+    const out=fn(text,s,e);
+    if(!out) return;
+    onChange(out.text);
+    requestAnimationFrame(()=>{
+      const t=ref.current; if(!t) return;
+      t.focus(); t.setSelectionRange(out.selStart,out.selEnd);
+    });
+  };
+
+  /* ---- inline markers: **bold**, *italic* ---- */
+  const wrap=(marker,fallback)=>(t,s,e)=>{
+    const m=marker.length;
+    const sel=t.slice(s,e), before=t.slice(0,s), after=t.slice(e);
+    // markers inside the selection -> strip them
+    if(sel.length>=2*m && sel.startsWith(marker) && sel.endsWith(marker)){
+      const inner=sel.slice(m,-m);
+      return {text:before+inner+after, selStart:s, selEnd:s+inner.length};
+    }
+    // markers just outside the selection -> strip those instead
+    if(before.endsWith(marker) && after.startsWith(marker)){
+      return {text:before.slice(0,-m)+sel+after.slice(m), selStart:s-m, selEnd:e-m};
+    }
+    const body=sel||fallback;
+    return {text:before+marker+body+marker+after,
+            selStart:s+m, selEnd:s+m+body.length};
+  };
+
+  /* ---- line prefixes: headings, lists, quotes ---- */
+  const lines=(strip,add)=>(t,s,e)=>{
+    const ls=t.lastIndexOf("\n",s-1)+1;
+    let le=t.indexOf("\n",e); if(le<0) le=t.length;
+    const block=t.slice(ls,le)||"";
+    const arr=block.split("\n");
+    const on=arr.every(l=>strip.test(l));
+    const out=arr.map((l,i)=> on ? l.replace(strip,"") : add(l.replace(/^\s*(#{2,3}\s+|[-*+]\s+|\d+[.)]\s+|>\s?)/,""),i));
+    const nb=out.join("\n");
+    return {text:t.slice(0,ls)+nb+t.slice(le), selStart:ls, selEnd:ls+nb.length};
+  };
+
+  const link=()=>(t,s,e)=>{
+    const sel=t.slice(s,e);
+    const url=window.prompt("Link address","https://");
+    if(!url||url==="https://") return null;
+    const label=sel||"link text";
+    const md=`[${label}](${url})`;
+    return {text:t.slice(0,s)+md+t.slice(e),
+            selStart:s+1, selEnd:s+1+label.length};
+  };
+
+  const B=[
+    ["H2","Heading",        lines(/^##\s+/,        l=>"## "+l)],
+    ["H3","Smaller heading",lines(/^###\s+/,       l=>"### "+l)],
+    null,
+    ["B","Bold",            wrap("**","bold text"), "b"],
+    ["I","Italic",          wrap("*","italic text"), "i"],
+    ["Link","Insert a link",link()],
+    null,
+    ["• List","Bulleted list",  lines(/^\s*[-*+]\s+/,  l=>"- "+l)],
+    ["1. List","Numbered list", lines(/^\s*\d+[.)]\s+/, (l,i)=>`${i+1}. `+l)],
+    ["❝ Quote","Pull quote",    lines(/^\s*>\s?/,      l=>"> "+l)],
+  ];
+
+  const onKey=(ev)=>{
+    if(!(ev.metaKey||ev.ctrlKey)) return;
+    const k=ev.key.toLowerCase();
+    if(k==="b"){ ev.preventDefault(); run(wrap("**","bold text")); }
+    else if(k==="i"){ ev.preventDefault(); run(wrap("*","italic text")); }
+    else if(k==="k"){ ev.preventDefault(); run(link()); }
+  };
+
+  return(<div>
+    <div className="mdbar">
+      {B.map((b,i)=> b===null
+        ? <span className="sep" key={"s"+i}></span>
+        : <button type="button" key={b[0]} title={b[1]}
+            className={b[3]==="b"?"b":b[3]==="i"?"i":""}
+            onClick={()=>run(b[2])}>{b[0]}</button>)}
+      <span className="mdbar-note">select text first, or click to insert</span>
+    </div>
+    <textarea ref={ref} className="md-ta" style={{minHeight:minHeight||230}}
+      value={text} placeholder={placeholder}
+      onChange={e=>onChange(e.target.value)} onKeyDown={onKey}/>
   </div>);
 }
 
