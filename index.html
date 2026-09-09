@@ -738,6 +738,14 @@ function useTable(table, seed, orderBy, opts){
           const {error}=await sb.from(table).insert(payload(row));
           if(error){
             console.error("insert failed:",error);
+            /* 23505 is a unique-index violation: this address is already on the
+               list. The public form can't SELECT to check beforehand — that's
+               what keeps the list private — so this is how we find out. From
+               the person's point of view it's good news, not an error. */
+            if(error.code==="23505"||/duplicate key|already exists/i.test(error.message||"")){
+              setErr("");
+              return "duplicate";
+            }
             setErr(error.message); return false;
           }
           setRows(r=>[...r,{...payload(row),id:Date.now()+Math.random()}]);
@@ -1985,13 +1993,19 @@ function Sponsors({sponsors}){
 function Join({signups}){
   const [f,setF]=useState({name:"",email:"",year:"Freshman",major:""});
   const [sent,setSent]=useState(false);
+  const [dupe,setDupe]=useState(false);
   const [busy,setBusy]=useState(false);
   const set=(k,v)=>setF(s=>({...s,[k]:v}));
   const submit=async()=>{
     if(!f.name.trim()||!f.email.trim()) return;
     setBusy(true);
-    await signups.add({...f,created:todayISO(),status:"active",source:"website"});
-    setBusy(false);setSent(true);
+    const ok=await signups.add({...f,email:f.email.trim(),created:todayISO(),
+      status:"active",source:"website"});
+    setBusy(false);
+    // "duplicate" means the address is already on the list — reassure rather
+    // than error, since from the person's point of view they succeeded.
+    setDupe(ok==="duplicate");
+    setSent(true);
   };
   return(<main><section className="section">
     <div className="join">
@@ -2007,7 +2021,9 @@ function Join({signups}){
     <div className="signup-card">
       <h3 className="serif">Join the mailing list</h3>
       <p>We'll email you about meetings, firm visits, and recruiting deadlines. No spam.</p>
-      {sent ? <div className="ok-msg">Thanks{f.name?", "+f.name.trim().split(" ")[0]:""}! You're on the list — we'll be in touch before the next meeting.</div> : <>
+      {sent ? <div className="ok-msg">{dupe
+        ? <>You're already on the list{f.name?", "+f.name.trim().split(" ")[0]:""} — nothing more to do. We'll be in touch before the next meeting.</>
+        : <>Thanks{f.name?", "+f.name.trim().split(" ")[0]:""}! You're on the list — we'll be in touch before the next meeting.</>}</div> : <>
         <div className="field"><label htmlFor="su-n">Full name</label><input id="su-n" value={f.name} onChange={e=>set("name",e.target.value)}/></div>
         <div className="field"><label htmlFor="su-e">Pitt email</label><input id="su-e" type="email" value={f.email} onChange={e=>set("email",e.target.value)} placeholder="abc123@pitt.edu"/></div>
         <div className="f2">
@@ -2032,6 +2048,7 @@ function Join({signups}){
 function SubscribePage({signups,toSite}){
   const [f,setF]=useState({name:"",email:"",year:"Freshman",major:""});
   const [sent,setSent]=useState(false);
+  const [dupe,setDupe]=useState(false);
   const [busy,setBusy]=useState(false);
   const [err,setErr]=useState("");
   const set=(k,v)=>setF(s=>({...s,[k]:v}));
@@ -2043,6 +2060,7 @@ function SubscribePage({signups,toSite}){
     const ok=await signups.add({...f,email,created:todayISO(),status:"active",source:"qr"});
     setBusy(false);
     if(ok===false){ setErr("Something went wrong — please try again, or grab an E-Board member."); return; }
+    setDupe(ok==="duplicate");
     setSent(true);
   };
   return(<div className="sub-page"><div className="sub-card">
@@ -2054,8 +2072,10 @@ function SubscribePage({signups,toSite}){
     {sent ? (
       <div className="sub-box sub-done">
         <div className="tick">✓</div>
-        <h2 className="serif">You're on the list!</h2>
-        <p>Thanks{f.name?", "+f.name.trim().split(" ")[0]:""} — we'll email you before the next meeting.</p>
+        <h2 className="serif">{dupe?"You're already on the list":"You're on the list!"}</h2>
+        <p>{dupe
+          ? <>No need to sign up again{f.name?", "+f.name.trim().split(" ")[0]:""} — you'll get the next email either way.</>
+          : <>Thanks{f.name?", "+f.name.trim().split(" ")[0]:""} — we'll email you before the next meeting.</>}</p>
         <div className="sub-meta">{CLUB.meetDay} · {CLUB.meetTime}<br/>{CLUB.meetRoom}</div>
         <p style={{fontSize:14,marginBottom:14}}>Join the GroupMe too — that's where reminders go out.</p>
         <div className="sub-socials">
