@@ -576,13 +576,38 @@ const sb = LIVE ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth:{ detectSessionInUrl:false, persistSession:true, autoRefreshToken:true }
 }) : null;
 
+/* Defaults only. The live values come from the `settings` table so a future
+   E-Board can change the room, time or dues from the admin panel instead of
+   editing this file. CLUB is mutated in place on load — deliberately, because
+   it's referenced in ~20 places across the site and patching the object means
+   none of those call sites need to know where the value came from. useClub()
+   forces the re-render once the real values arrive. */
 const CLUB = {
-  meetDay:"Wednesdays", meetTime:"7:00 PM", meetRoom:"2500 Sennott Square",
-  email:"contact.upaa@gmail.com",
+  meetDay:"Wednesdays", meetTime:"7:00 PM", meetRoom:"Lawrence Hall 106",
+  email:"contact@pittupaa.com",
   dues:"$10", duesPeriod:"per semester",
   groupme:"https://groupme.com/join_group/90540929/hL5jPmb9",
   instagram:"https://www.instagram.com/pitt_accounting/",
 };
+
+/* column in `settings`  ->  key in CLUB */
+const SETTINGS_MAP = {
+  meet_day:"meetDay", meet_time:"meetTime", meet_room:"meetRoom",
+  email:"email", dues:"dues", dues_period:"duesPeriod",
+  groupme:"groupme", instagram:"instagram",
+};
+function applySettings(row){
+  if(!row) return false;
+  let changed=false;
+  for(const col in SETTINGS_MAP){
+    const v=row[col];
+    if(v!==null&&v!==undefined&&String(v).trim()!==""){
+      const key=SETTINGS_MAP[col];
+      if(CLUB[key]!==v){ CLUB[key]=v; changed=true; }
+    }
+  }
+  return changed;
+}
 
 /* Optional: a published .ics feed people can subscribe to (auto-updating).
    Leave blank and the Subscribe options simply don't appear.
@@ -677,6 +702,27 @@ function payload(row){
     out[k]=row[k];
   }
   return out;
+}
+
+/* Loads the settings row and patches CLUB, then bumps state so anything
+   rendering CLUB values updates. Safe to call from more than one component. */
+function useClub(){
+  const [,bump]=useState(0);
+  useEffect(()=>{
+    if(!LIVE) return;
+    let alive=true;
+    (async()=>{
+      try{
+        const {data,error}=await sb.from("settings").select("*").eq("id",1).maybeSingle();
+        if(error) throw error;
+        if(alive&&applySettings(data)) bump(n=>n+1);
+      }catch(e){
+        // The site still works on the hardcoded defaults, so this is not fatal.
+        console.error("settings load failed (using defaults):",e);
+      }
+    })();
+    return ()=>{alive=false};
+  },[]);
 }
 
 /* ---- auth ----
@@ -1631,6 +1677,7 @@ function Public({toAdmin}){
   const signups=useTable("signups",SEED.signups,"id",{fetch:false});
   const reslinks=useTable("links",SEED.links,"order");
   const stats=useStats(events,sponsors);
+  useClub();
   const nav=(p)=>{setPage(p);setMenu(false);window.scrollTo(0,0)};
   const links=[["home","Home"],["about","About"],["board","E-Board"],["events","Events"],
     ["recaps","Recaps"],["sponsors","Recruiters"],["resources","Resources"]];
@@ -2183,6 +2230,7 @@ function Admin({toSite}){
   const signups=useTable("signups",SEED.signups,"id",{reloadKey:rk});
   const reslinks=useTable("links",SEED.links,"order",{reloadKey:rk});
   const stats=useStats(events,sponsors);
+  useClub();
   if(LIVE&&!ready) return (<div className="admin-wrap"><div className="login-box">
     <p style={{margin:0,color:"var(--ink-soft)",fontSize:14}}>Checking your session…</p></div></div>);
 
@@ -2198,7 +2246,7 @@ function Admin({toSite}){
     <div className="admin-body">
       {!LIVE&&<div className="banner"><span>⚠️</span><div><b>Demo mode.</b> Everything works so you can try it out, but changes reset on refresh until Supabase is connected. The README has the setup.</div></div>}
       <div className="tabs">
-        {[["events","Events"],["recaps","Recaps"],["members","E-Board"],["sponsors","Recruiters"],["resources","Resources"],["mail","Mailing List"]]
+        {[["events","Events"],["recaps","Recaps"],["members","E-Board"],["sponsors","Recruiters"],["resources","Resources"],["mail","Mailing List"],["settings","Club Info"]]
           .map(([k,l])=><button key={k} className={tab===k?"on":""} onClick={()=>setTab(k)}>{l}</button>)}
       </div>
       {tab==="events"&&<EventAdmin t={events} stats={stats} say={say}/>}
@@ -2207,6 +2255,7 @@ function Admin({toSite}){
       {tab==="sponsors"&&<SponsorAdmin t={sponsors} say={say}/>}
       {tab==="resources"&&<LinkAdmin t={reslinks} say={say}/>}
       {tab==="mail"&&<MailAdmin t={signups} say={say}/>}
+      {tab==="settings"&&<SettingsAdmin say={say}/>}
       <Toast msg={toast}/>
     </div>
   </div>);
@@ -2896,6 +2945,88 @@ function LinkAdmin({t,say}){
       <div className="modal-acts"><button className="mini" onClick={()=>setEdit(null)}>Cancel</button>
         <button className="btn btn-primary" onClick={()=>edit.title.trim()&&save(edit)}>Save</button></div>
     </Modal>}
+  </>);
+}
+
+/* Club info: meeting day/time/room, dues, contact links. Writes the single
+   settings row, then patches CLUB so the change shows immediately without a
+   page reload. */
+function SettingsAdmin({say}){
+  const FIELDS=[
+    ["meet_day","Meeting day","Wednesdays","meetDay"],
+    ["meet_time","Meeting time","7:00 PM","meetTime"],
+    ["meet_room","Room","Lawrence Hall 106","meetRoom"],
+    ["dues","Dues","$10","dues"],
+    ["dues_period","Dues period","per semester","duesPeriod"],
+    ["email","Contact email","contact@pittupaa.com","email"],
+    ["groupme","GroupMe invite link","https://groupme.com/join_group/…","groupme"],
+    ["instagram","Instagram URL","https://www.instagram.com/…","instagram"],
+  ];
+  const [f,setF]=useState(()=>{
+    const o={}; FIELDS.forEach(([col,,,key])=>o[col]=CLUB[key]||""); return o;
+  });
+  const [busy,setBusy]=useState(false);
+  const [err,setErr]=useState("");
+  const set=(k,v)=>setF(s=>({...s,[k]:v}));
+
+  useEffect(()=>{
+    if(!LIVE) return;
+    let alive=true;
+    (async()=>{
+      const {data,error}=await sb.from("settings").select("*").eq("id",1).maybeSingle();
+      if(error){ if(alive) setErr(error.message); return; }
+      if(alive&&data){
+        const o={}; FIELDS.forEach(([col,,,key])=>o[col]=data[col]??CLUB[key]??"");
+        setF(o);
+      }
+    })();
+    return ()=>{alive=false};
+  },[]);
+
+  const save=async()=>{
+    setErr(""); setBusy(true);
+    if(!LIVE){
+      applySettings(f); setBusy(false);
+      say("Saved for this preview — connect Supabase to keep it."); return;
+    }
+    const {error}=await sb.from("settings").update(f).eq("id",1);
+    setBusy(false);
+    if(error){
+      console.error("settings save failed:",error);
+      setErr(error.message.includes("does not exist")
+        ? "The settings table doesn't exist yet — run migration-settings.sql."
+        : error.message);
+      return;
+    }
+    applySettings(f);
+    say("Club info updated across the site");
+  };
+
+  return(<>
+    <div className="panel-head"><h3 className="serif">Club Info</h3></div>
+    <div className="info-box">These values appear all over the public site — the
+      ticker, the About page, the Events page, the Join page, the footer and the
+      QR sign-up page. Change the room here once and it updates everywhere,
+      so nobody has to edit the HTML.
+      <br/><br/>
+      <b>This doesn't change events you've already created.</b> Existing events keep
+      whatever location you gave them — update those in the Events tab.</div>
+    {err&&<div className="err-banner"><b>Couldn't save.</b> <code>{err}</code></div>}
+    <div className="f2">
+      {FIELDS.map(([col,label,ph])=>(
+        <div className="field" key={col}>
+          <label htmlFor={"set-"+col}>{label}</label>
+          <input id={"set-"+col} value={f[col]||""} placeholder={ph}
+            onChange={e=>set(col,e.target.value)}/>
+        </div>))}
+    </div>
+    <div className="modal-acts" style={{marginTop:6}}>
+      <button className="btn btn-primary" disabled={busy} onClick={save}>
+        {busy?"Saving…":"Save club info"}</button>
+    </div>
+    <div className="hint" style={{marginTop:14}}>
+      Leaving a field blank falls back to the built-in default rather than
+      showing nothing.</div>
   </>);
 }
 
