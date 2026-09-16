@@ -1666,7 +1666,11 @@ function CsvBar({specKey,t,say}){
 
 /* ================= PUBLIC ================= */
 function Public({toAdmin}){
-  const [page,setPage]=useState("home");
+  /* Every public page has its own hash, so pittupaa.com/#resources actually
+     lands on Resources. Before this, only #admin and #subscribe were real
+     routes and every other hash silently fell through to home — which meant
+     the links in our emails all went to the homepage. */
+  const [page,setPage]=useState(pageFromHash);
   const [menu,setMenu]=useState(false);
   const members=useTable("members",SEED.members,"order");
   const events=useTable("events",SEED.events,"date");
@@ -1678,7 +1682,24 @@ function Public({toAdmin}){
   const reslinks=useTable("links",SEED.links,"order");
   const stats=useStats(events,sponsors);
   useClub();
-  const nav=(p)=>{setPage(p);setMenu(false);window.scrollTo(0,0)};
+  const nav=(p)=>{
+    setPage(p); setMenu(false); window.scrollTo(0,0);
+    /* replaceState rather than assigning location.hash: assigning fires
+       hashchange, which would bounce us through the handler below and fight
+       the state we just set. */
+    const h = p==="home" ? " " : "#"+p;
+    history.replaceState(null,"",p==="home"?location.pathname:h);
+  };
+  /* Someone pasting a link, or using back/forward, still works. */
+  useEffect(()=>{
+    const onHash=()=>{
+      const p=pageFromHash();
+      if(p==="__other__") return;        // #admin / #subscribe: App handles it
+      setPage(p); setMenu(false); window.scrollTo(0,0);
+    };
+    window.addEventListener("hashchange",onHash);
+    return ()=>window.removeEventListener("hashchange",onHash);
+  },[]);
   const links=[["home","Home"],["about","About"],["board","E-Board"],["events","Events"],
     ["recaps","Recaps"],["sponsors","Recruiters"],["resources","Resources"]];
 
@@ -3122,13 +3143,36 @@ function MailAdmin({t,say}){
   </>);
 }
 
+/* ---- hash routing ----------------------------------------------------------
+   PUBLIC_PAGES maps a URL hash to a page id. Anything unrecognised falls back
+   to home, so a stale or mistyped link still lands somewhere sensible rather
+   than on a blank screen. Aliases are included because the obvious guess
+   should work: #recruiters and #firms both reach the Recruiters page.
+   -------------------------------------------------------------------------- */
+const PUBLIC_PAGES = {
+  "":"home", "#":"home", "#home":"home", "#top":"home",
+  "#about":"about",
+  "#board":"board", "#eboard":"board", "#e-board":"board", "#team":"board",
+  "#events":"events", "#schedule":"events", "#calendar":"events",
+  "#recaps":"recaps", "#recap":"recaps",
+  "#sponsors":"sponsors", "#recruiters":"sponsors", "#firms":"sponsors",
+  "#resources":"resources", "#resource":"resources", "#links":"resources",
+  "#join":"join", "#membership":"join",
+};
+const APP_ROUTES = ["#admin","#subscribe","#join-list"];
+function pageFromHash(){
+  const h=(location.hash||"").toLowerCase();
+  if(APP_ROUTES.includes(h)) return "__other__";
+  return PUBLIC_PAGES[h] || "home";
+}
+
 /* ================= ROOT ================= */
 function App(){
   const routeOf=()=>{
     const h=(location.hash||"").toLowerCase();
     if(h==="#admin") return "admin";
     if(h==="#subscribe"||h==="#join-list") return "subscribe";
-    return "public";
+    return "public";   /* Public then routes the rest itself via PUBLIC_PAGES */
   };
   const [view,setView]=useState(routeOf);
   useEffect(()=>{
@@ -3137,7 +3181,8 @@ function App(){
     return ()=>window.removeEventListener("hashchange",onHash);
   },[]);
   const go=(v)=>{
-    location.hash = v==="admin"?"admin" : v==="subscribe"?"subscribe" : "";
+    if(v==="admin"||v==="subscribe"){ location.hash=v; }
+    else { history.replaceState(null,"",location.pathname); }
     setView(v); window.scrollTo(0,0);
   };
   /* The subscribe page needs its own signups handle, since it renders outside
