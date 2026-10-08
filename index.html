@@ -588,13 +588,17 @@ const CLUB = {
   dues:"$10", duesPeriod:"per semester",
   groupme:"https://groupme.com/join_group/90540929/hL5jPmb9",
   instagram:"https://www.instagram.com/pitt_accounting/",
+  /* Blank until it's filled in under Admin -> Club Info. Every LinkedIn link
+     on the site checks this first, so an empty value hides the link rather
+     than shipping a dead one. */
+  linkedin:"",
 };
 
 /* column in `settings`  ->  key in CLUB */
 const SETTINGS_MAP = {
   meet_day:"meetDay", meet_time:"meetTime", meet_room:"meetRoom",
   email:"email", dues:"dues", dues_period:"duesPeriod",
-  groupme:"groupme", instagram:"instagram",
+  groupme:"groupme", instagram:"instagram", linkedin:"linkedin",
 };
 function applySettings(row){
   if(!row) return false;
@@ -1732,6 +1736,7 @@ function Public({toAdmin}){
       <small>© {new Date().getFullYear()} University of Pittsburgh Accounting Association · {CLUB.meetRoom}</small>
       <div className="foot-links">
         <a href={CLUB.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
+        {CLUB.linkedin && <a href={CLUB.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>}
         <a href={CLUB.groupme} target="_blank" rel="noopener noreferrer">GroupMe</a>
         <a href={"mailto:"+CLUB.email}>Contact</a>
         <a href="#subscribe">Mailing list</a>
@@ -2054,7 +2059,7 @@ function Sponsors({sponsors}){
     <h2 className="h-sec">Firms that recruit our members.</h2>
     <p className="lead" style={{marginBottom:36}}>UPAA members get face time with recruiters from national and regional public accounting firms throughout the year — Big Four, mid-market, and local.</p>
     <div className="spons">{sponsors.rows.map(s=><Tile key={s.id} s={s}/>)}</div>
-    <p className="lead" style={{marginTop:32,fontSize:15}}>Interested in presenting to our members? Email <a href={"mailto:"+CLUB.email} style={{color:"var(--navy)",fontWeight:600,textDecoration:"underline"}}>{CLUB.email}</a>.</p>
+    <p className="lead" style={{marginTop:32,fontSize:15}}>Interested in presenting to our members? Email <a href={"mailto:"+CLUB.email} style={{color:"var(--navy)",fontWeight:600,textDecoration:"underline"}}>{CLUB.email}</a>{CLUB.linkedin && <>, or <a href={CLUB.linkedin} target="_blank" rel="noopener noreferrer" style={{color:"var(--navy)",fontWeight:600,textDecoration:"underline"}}>connect with us on LinkedIn</a></>}.</p>
   </section></main>);
 }
 
@@ -2084,6 +2089,7 @@ function Join({signups}){
       <div className="btn-row">
         <a className="btn btn-gold" href={CLUB.groupme} target="_blank" rel="noopener noreferrer">Join the GroupMe →</a>
         <a className="btn btn-out" href={CLUB.instagram} target="_blank" rel="noopener noreferrer">Follow on Instagram</a>
+        {CLUB.linkedin && <a className="btn btn-out" href={CLUB.linkedin} target="_blank" rel="noopener noreferrer">Follow on LinkedIn</a>}
       </div>
     </div>
     <div className="signup-card">
@@ -2982,6 +2988,7 @@ function SettingsAdmin({say}){
     ["email","Contact email","contact@pittupaa.com","email"],
     ["groupme","GroupMe invite link","https://groupme.com/join_group/…","groupme"],
     ["instagram","Instagram URL","https://www.instagram.com/…","instagram"],
+    ["linkedin","LinkedIn page URL","https://www.linkedin.com/company/…","linkedin"],
   ];
   const [f,setF]=useState(()=>{
     const o={}; FIELDS.forEach(([col,,,key])=>o[col]=CLUB[key]||""); return o;
