@@ -4,9 +4,21 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UPAA — University of Pittsburgh Accounting Association</title>
-<meta name="description" content="The University of Pittsburgh Accounting Association connects Pitt students with recruiters from Deloitte, EY, PwC, KPMG and more. Meetings Wednesdays at 7PM in 2500 Sennott Square. Open to all Pitt students." />
+<meta name="description" content="The University of Pittsburgh Accounting Association connects Pitt students with recruiters from Deloitte, EY, PwC, KPMG and more. Meetings Wednesdays at 7PM. Open to all Pitt students." />
 <link rel="canonical" href="https://pittupaa.com/" />
 <meta name="theme-color" content="#0A2342" />
+<!-- Favicons — the UPAA badge. ?v=2 is a cache-buster: browsers hold onto
+     favicons far longer than other files, so bump the number whenever the icon
+     changes or people will keep seeing the old one.
+     The .ico covers older browsers and Google Search results (which
+     want a 48px multiple); the PNGs are what modern tabs actually request.
+     apple-touch-icon is square with no rounded corners on purpose — iOS rounds
+     it itself, and a pre-rounded icon gets white slivers in the corners. -->
+<link rel="icon" href="/favicon.ico?v=2" sizes="48x48" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=2" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=2" />
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
 
 <!-- Link previews (iMessage, GroupMe, Slack, LinkedIn, Instagram DMs).
      For a club that shares its URL by text and social far more than it is
@@ -14,16 +26,16 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="UPAA — Pitt Accounting Association" />
 <meta property="og:title" content="UPAA — University of Pittsburgh Accounting Association" />
-<meta property="og:description" content="Meet recruiters from Deloitte, EY, PwC, KPMG and more. Meetings Wednesdays at 7PM in 2500 Sennott Square. Open to all Pitt students." />
+<meta property="og:description" content="Meet recruiters from Deloitte, EY, PwC, KPMG and more. Meetings Wednesdays at 7PM. Open to all Pitt students." />
 <meta property="og:url" content="https://pittupaa.com/" />
-<meta property="og:image" content="https://pittupaa.com/og-image.png" />
+<meta property="og:image" content="https://pittupaa.com/og-image-v2.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="UPAA — where accounting students become professionals. Meetings Wednesdays at 7PM in 2500 Sennott Square." />
+<meta property="og:image:alt" content="UPAA — where accounting students become professionals. Meetings Wednesdays at 7PM, open to all Pitt students." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="UPAA — University of Pittsburgh Accounting Association" />
-<meta name="twitter:description" content="Meet recruiters from Deloitte, EY, PwC, KPMG and more. Wednesdays at 7PM in 2500 Sennott Square." />
-<meta name="twitter:image" content="https://pittupaa.com/og-image.png" />
+<meta name="twitter:description" content="Meet recruiters from Deloitte, EY, PwC, KPMG and more. Wednesdays at 7PM, open to all Pitt students." />
+<meta name="twitter:image" content="https://pittupaa.com/og-image-v2.png" />
 
 <script type="application/ld+json">
 {
@@ -37,7 +49,7 @@
   "parentOrganization":{"@type":"CollegeOrUniversity","name":"University of Pittsburgh"},
   "location":{
     "@type":"Place",
-    "name":"2500 Sennott Square",
+    "name":"University of Pittsburgh",
     "address":{"@type":"PostalAddress","addressLocality":"Pittsburgh","addressRegion":"PA","addressCountry":"US"}
   },
   "sameAs":["https://www.instagram.com/pitt_accounting/"]
@@ -541,7 +553,7 @@
        this; it never both appears. -->
   <div style="max-width:760px;margin:0 auto;padding:48px 24px;font-family:system-ui,sans-serif;line-height:1.6">
     <h1>University of Pittsburgh Accounting Association (UPAA)</h1>
-    <p>UPAA connects Pitt students with the firms, recruiters, and skills that turn an accounting major into a career. We meet <strong>Wednesdays at 7:00 PM in 2500 Sennott Square</strong> during the fall and spring semesters, and membership is open to every Pitt student. Dues are $10 per semester.</p>
+    <p>UPAA connects Pitt students with the firms, recruiters, and skills that turn an accounting major into a career. We meet <strong>Wednesdays at 7:00 PM</strong> during the fall and spring semesters, and membership is open to every Pitt student. Dues are $10 per semester.</p>
     <h2>What we do</h2>
     <ul>
       <li>Recruiters and professionals from public accounting firms present at nearly every meeting.</li>
@@ -655,10 +667,10 @@ const SEED = {
     {id:7,name:"Benjamin Ni",role:"Historian",order:7,photo:"",year:"Sophomore",majors:"Accounting",linkedin:"",email:"",bio:""},
   ],
   events:[
-    {id:1,title:"PwC — Co-Hosted with Alpha Kappa Psi",date:"2026-09-23",time:"19:00",end_time:"20:00",location:"2500 Sennott Square",
+    {id:1,title:"PwC — Co-Hosted with Alpha Kappa Psi",date:"2026-09-23",time:"19:00",end_time:"20:00",location:"Lawrence Hall 106",
      type:"Firm Presentation",firm:"PwC",
      desc:"A joint session with AKPsi featuring PwC recruiters. Hear about internships, recruiting timelines, and life at the firm."},
-    {id:2,title:"Stacy Splitstone — AI and the Accounting Profession",date:"2026-11-11",time:"19:00",end_time:"20:00",location:"2500 Sennott Square",
+    {id:2,title:"Stacy Splitstone — AI and the Accounting Profession",date:"2026-11-11",time:"19:00",end_time:"20:00",location:"Lawrence Hall 106",
      type:"Meeting",firm:"",
      desc:"Pitt Business EIR Stacy Splitstone on how AI is reshaping the profession and what firms are looking for in new hires."},
   ],
@@ -1439,7 +1451,7 @@ const CSV = {
     required:["title","date"],
     sample:[
       ["First General Body Meeting","2026-09-02","19:00","20:00","Meeting","","2500 Sennott Square","Kick off the semester, meet the E-Board, and hear what UPAA has planned."],
-      ["PwC — Co-Hosted with AKPsi","2026-09-23","19:00","20:00","Firm Presentation","PwC","2500 Sennott Square","Joint session with AKPsi featuring PwC recruiters."],
+      ["PwC — Co-Hosted with AKPsi","2026-09-23","19:00","20:00","Firm Presentation","PwC","Lawrence Hall 106","Joint session with AKPsi featuring PwC recruiters."],
       ["Deloitte Office Visit","2026-10-07","14:00","16:00","Office Visit","Deloitte","Deloitte — Downtown Pittsburgh","Tour the office and meet recruiters."],
     ],
     notes:"date must be YYYY-MM-DD. time and end_time are 24-hour HH:MM (19:00 = 7pm); time defaults to 19:00 and end_time defaults to one hour after the start. type must be one of: Meeting, Firm Presentation, Office Visit, Social, Other. Leave firm blank for non-firm events.",
